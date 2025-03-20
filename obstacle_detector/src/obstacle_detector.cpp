@@ -28,23 +28,26 @@ void ObstacleDetector::process(){
 
 //Lidarから障害物情報を取得し，障害物の座標をpublish  ※msg型は自分で決めてください
 void ObstacleDetector::scan_obstacle(){
+    double min_angle = M_PI/2 - central_num * scan_.value().angle_inclement;  // angle_minの角度 [rad]。Roombaの3時方向を0とする。
     laser_num_ = (scan_.value().angle_max - scan_.value().angle_min) / scan_.value().angle_increment;    // 測距レーザの本数
+    int central_num = laser_num_ / 2;        // 中心レーザの番号。このレーザの角度 = π/2 rad
+        // min_angleとcentral_numはLiDARの仕様により固定のはずなので、値が確かめられたら数式を消してもよい
+
     std::vector<double> obs_ranges(laser_num_, 0.0);       // 各レーザによる測定値格納用配列
+    std::vector<double> obs_angles(laser_num_, 0.0);       // 角度様配列
     resize_points();         // 障害物座標格納配列 (points型)。配列サイズを変更する
     for(int i=0; i<laser_num_; i++) obs_ranges[i] = scan_.value().ranges[i];     // ポインタを使えばもっと簡素にできるが要検証
+    for(int i=0; i<laser_num_; i++) obs_angles[i] = scan_.value().angle_inclement * i + min_angle;  
 
-    int central_num = laser_num_ / 2;        // 中心レーザの番号。このレーザの角度 = π/2 rad
-    double min_angle_theta = M_PI/2 - central_num * scan_.value().angle_inclement;  // angle_minの角度 [rad]。Roombaの3時方向を0とする。
-    // 以上の2つはLiDARの仕様により固定のはずなので、値が確かめられたら数式を消してもよいかもしれない
-    printf("OBS_DET test1: min_angle_theta = %5.3f \n", min_angle_theta);
+    printf("OBS_DET test1: min_angle = %5.3f \n", min_angle);
 
     // 障害物情報配列への格納
     for(int i=0; i<laser_num_; i++){
-        if(obs_ranges[i] < obs_dist_ && !is_ignore_scan()){
+        if(obs_ranges[i] < obs_dist_ && !is_ignore_scan(obs_angles[i])){
             // 検知物までの距離がobs_dist_未満で、ignoreしない場合に障害物があるとし、座標を格納
             o_points_[i].exist = true;
             o_points_[i].r = obs_ranges[i];
-            o_points_[i].theta = min_angle_theta + scan_.value().angle_inclement * i;
+            o_points_[i].theta = obs_angles[i];
             // 以下2つの直交座標変換は必要ないならコメントアウトする
             o_points_[i].x = o_points_.r * cos(o_points_.theta);
             o_points_[i].y = o_points_.r * sin(o_points_.theta);
@@ -86,15 +89,13 @@ void ObstacleDetector::scan_obstacle(){
 
 
 //無視するlidar情報の範囲の決定(lidarがroombaの櫓の中にあり，櫓の４つの柱を障害物として検出してしまうため削除が必要)
-bool ObstacleDetector::is_ignore_scan(){
+bool ObstacleDetector::is_ignore_scan(double angle){
     // ignoreする場合 (柱である場合) にtrueを返す
-    // 角度(と距離?)でif文
-    // double pillar_B[4] = {0.7, 2.3, 3.9, 5.4}    // 各柱の角度領域の下端
-    // double pillar_T[4] = {0.8, 2.4, 4.0, 5.6}    // 各柱の角度領域の上端
+    double pillar_B[4] = {0.7, 2.3, 3.9, 5.4}    // 各柱の角度領域の下端。[rad]
+    double pillar_T[4] = {0.8, 2.4, 4.0, 5.6}    // 各柱の角度領域の上端。[rad]
 
-    // for(int i=0; i<4; i++){
-    //     if()
-    // }
+    for(int i=0; i<4; i++) if(pillar_B[i] < angle && angle < pillar_T[i])  return true;
+    return false;
 }
 
 // 可変長配列 o_points の長さ決定
