@@ -93,7 +93,9 @@ class Localizer : public rclcpp::Node
 
         // リスト
         std::vector<Particle> particles_;             // パーティクルクラウド（計算用）
+        std::vector<Particle> next_particles_;             // パーティクルクラウド（計算用）
         std::vector<double> ignore_angle_range_list_; // 柱に関する角度範囲の配列 [rad]
+        std::vector<int> indexes; // インデックスのリスト
 
         // msg受け取りフラグ
         bool flag_map_     = false;
