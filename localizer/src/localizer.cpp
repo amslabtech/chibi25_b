@@ -158,7 +158,7 @@ double Localizer::norm_rv(const double mean, const double stddev) // 平均と�
     return distribution(generator);
 }
 
-// パーティクルの重みの初期化(正規分布に基づいて初期値設定、正規化→初期化？)
+// パーティクルの重みの初期化しリストに追加(正規分布に基づいて初期値設定、正規化→初期化？)
 void Localizer::reset_weight(Particle &particle)
 {
     particle.weight = 1.0 / particle_num_; // 初期重み1.0を均等配分
@@ -253,7 +253,7 @@ void Localizer::motion_update()
 
             // 位置更新
             particle.x += dx_add_noise;
-            particle.y += dy_add_noize;
+            particle.y += dy_add_noise;
             particle.yaw += dyaw_add_noize;
         }
     }
@@ -268,7 +268,7 @@ void Localizer::observation_update()
     {
         for(auto& particle : particles_)
         {
-            // パーティクル1つのレーザ1本における平均尤度を算出、重みを更新
+            // パーティクル1つのレーザ(1本?)における平均尤度を算出、重みを更新
             const double alpha;
             alpha = calc_marginal_likelihood(); // 周辺尤度を算出
             particle.weight *= alpha; //！重みに尤度をかける
@@ -289,24 +289,34 @@ void Localizer::observation_update()
 // 周辺尤度の算出
 double Localizer::calc_marginal_likelihood()
 {
-    double marginal_likelihood = 1.0;
-    double likelihood_ = likelihood(map_, laser_, sensor_noise_ratio, laser_step, ignore_angle_range_list); // 各レーザの尤度を求める
-    // 全レーザの合計尤度をレーザで割って平均化
-    return margical_likelihood;
+    double marginal_likelihood = 0.0; //周辺尤度の平均
+    double likelihood_ = 0.0; // likelihood()関数の戻り値として得られる各レーザの尤度
+    int laser_number = 0; // センサの本数
+
+    for (int i=0; i<laser_.ranges.size(); i+=laser_step)
+    {
+        likelihood_ += likelihood(map_, laser_, sensor_noise_ratio, laser_step, ignore_angle_range_list); // この引数不安
+        laser_number++;
+    }
+    
+    marginal_likelihood = likelihood_ / laser_number; // 全レーザの合計尤度をレーザで割って平均化
+    return marginal_likelihood;
 }
 
-// 推定位置の決定
+// 推定位置の決定☆
 // 算出方法は複数ある（平均，加重平均，中央値など...）
+// 加重平均
 void Localizer::estimate_pose()
 {
-
-
     double sum_x = 0.0, sum_y = 0.0, sum_yaw = 0.0;
+    double weight_sum = 0.0;
+    
     for (const auto& particle : particles_)
     {
         sum_x += particle.x * particle.weight;
         sum_y += particle.y * particle.weight;
         sum_yaw += particle.yaw * particle.weight;
+        weight_sum += particle.weight;
     }
     estimated_pose_.x = sum_x;
     estimated_pose_.y = sum_y;
@@ -316,19 +326,17 @@ void Localizer::estimate_pose()
 // 重みの正規化(0から1の間、重要度重み、正規化→初期化？)
 void Localizer::normalize_belief()
 {
-
-
     double sum_weights = 0.0;
-    for (const auto& particle : particles_)
+    for (auto& particle : particles_)
     {
-        sum_weights += particle.weight;
+        sum_weights += particle.weight; // 重みの合計を計算
     }
 
     if (sum_weights > 0.0)
     {
         for (auto& particle : particles_)
         {
-            particle.weight /= sum_weights;
+            particle.weight /= sum_weights; //重要度重み算出
         }
     }
 }
@@ -339,7 +347,7 @@ void Localizer::expansion_resetting()
 
 }
 
-// リサンプリング（系統サンプリング）
+// リサンプリング（系統サンプリング）☆
 // 周辺尤度に応じてパーティクルをリサンプリング
 void Localizer::resampling(const double alpha)
 {
@@ -350,49 +358,68 @@ void Localizer::resampling(const double alpha)
     const std::vector<Particle> old(particles_);
     int size = particles_.size();
 
-    // particle数の動的変更
+    // particle数の動的変更(AMCL特有のサンプリング、尤度が高い時は粒子減らし尤度が低い時は粒子増やす)
+    if (alpha > 0.80) // alpha(尤度)高い
+    {
+        particle_num_ -= (particle_num_) / 3; // 粒子減らす
+    }
+
+    else if (alpha < 0.30) // 尤度低い
+    {
+        particle_num_ += (particle_num_) / 3; // 粒子増やす
+    }
 
     // サンプリングするパーティクルのインデックスを保持
+    indexes.reserve(particle_num_); // インデックスの数をパーティクルの数に合わせる
+    int index = 0;
+    for (int i=0; i<particle_num; i++)
+    {
+        index++;
+        indexes.push_back(index); // indexをhppで定義済みのリストに追加
+    }
 
     // リサンプリング
+    next_particles.reserve(particle_num_); // パーティクル数の保持
+    move(next_particles); // パーティクルを移動
 
-    // 重みを初期化
-    reset_weight();
+    // 重みを初期化しhppで定義済みのリストに追加
+    reset_weight(next_particles);
 }
 
 // 推定位置のパブリッシュ
 void Localizer::publish_estimated_pose()
 {
-        // 位置推定結果をパブリッシュする
-        geometry_msgs::PoseStamped pose_msg;
-        pose_msg.header.stamp = ros::Time::now();
-        pose_msg.header.frame_id = "world";
-        pose_msg.pose.position.x = estimated_pose_.x;
-        pose_msg.pose.position.y = estimated_pose_.y;
-        pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(estimated_pose_.yaw);
-
-        pose_pub_.publish(pose_msg);
+    // 位置推定結果をパブリッシュする
+    geometry_msgs::PoseStamped pose_msg;
+    estimated_pose_msg.header.stamp = this->now();
+    estimated_pose_msg.header.frame_id = "world";
+    estimated_pose_msg.pose.position.x = estimated_pose_.x;
+    estimated_pose_msg.pose.position.y = estimated_pose_.y;
+    estimated_pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(estimated_pose_.yaw);
+    
+    // <publisher名>->publish(<変数名>);
+    pub_estimated_pose_->publish(estimated_pose_msg_);
 }
 
 // パーティクルクラウドのパブリッシュ
 // パーティクル数が変わる場合，リサイズする
 void Localizer::publish_particles()
 {
-    if(is_visible_)
-    {
-        is_visible_ = true; // パーティクルクラウドをパブリッシュした
-    }
-
+    is_visible_ = true; // パーティクルクラウドをパブリッシュした
 
     particle_cloud_msg_.header.stamp = this->now();
-    particle_cloud_msg_.poses.clear();
+    particle_cloud_msg_.poses.clear(); // 前回までのパーティクルデータの削除
     for (const auto& particle : particles_)
     {
         geometry_msgs::msg::Pose pose;
         pose.position.x = particle.x;
         pose.position.y = particle.y;
+        // ！toMsg = tf2::Quaternion → geometry_msgs::msg::Quaternion
         pose.orientation = tf2::toMsg(tf2::Quaternion(0, 0, particle.yaw));
-        particle_cloud_msg_.poses.push_back(pose);
+
+        particle_cloud_msg_.poses.push_back(pose); // hppで定義済みのリストに追加
     }
+
+    // <publisher名>->publish(<変数名>);
     pub_particle_cloud_->publish(particle_cloud_msg_);
 }
