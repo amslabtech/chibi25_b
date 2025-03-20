@@ -7,6 +7,8 @@ using namespace std::chrono_literals;
 Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
 {
     // ###### パラメータの宣言 ######
+    robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
+    //  = this->declare_parameter<double>("origin_y");
 
 
     // ###### パラメータの取得 ######
@@ -38,20 +40,61 @@ void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの
     //https://docs.ros.org/en/lunar/api/nav_msgs/html/msg/OccupancyGrid.html
     //ChatGPTでは-1(未知)、0(空き)、100(障害物)を示す
 
-    resolution_ = msg -> info.resolution;//単位格子当たりの大きさを格納
+    resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
+    width_ = map_.info.width;//マップの幅
+    height_ = map_.info.height;//マップの高さ
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", resolution_);
 }
 
 // マップ全体の障害物を拡張処理（new_map_をpublishする）
 void Astar::obs_expander()
 {
+    if (!map_received_) {
+        RCLCPP_WARN(this->get_logger(), "Map not received yet, cannot expand obstacles.");
+        return;
+    }
 
+    // 新しいマップデータ（拡張後）を作成
+    new_map_ = map_;  // 元のマップをコピー
+    std::vector<int8_t> new_map_data = map_.data;  // 1Dのデータをコピー
+
+    margin_length = static_cast<int>(std::ceil(robot_radius_ / resolution_));  // セル単位の拡張範囲
+
+    for (int y = 0; y < height_; y++) {
+        for (int x = 0; x < width_; x++) {
+            index = y * width_ + x;
+            if (map_grid_[y][x] == 100) {  // 障害物セルを拡張
+                obs_expand(index, new_map_data);
+            }
+        }
+    }
+
+    // 新しいデータを `new_map_` に適用
+    new_map_.data = new_map_data;
+
+    // 拡張後のマップをPublish
+    pub_new_map_->publish(new_map_);
+    RCLCPP_INFO(this->get_logger(), "Published expanded obstacle map.");
 }
 
 // 指定されたインデックスの障害物を拡張（margin_length分）
-void Astar::obs_expand(const int index)
+void Astar::obs_expand(const int index,std::vector<int8_t> new_map_data)
 {
+    int x = index % width_;
+    int y = index / width_;
 
+    for (int dy = -margin_length; dy <= margin_length; dy++) {
+        for (int dx = -margin_length; dx <= margin_length; dx++) {
+            int nx = x + dx;
+            int ny = y + dy;
+            if (nx >= 0 && nx < width_ && ny >= 0 && ny < height_) {  // 範囲チェック
+                int n_index = ny * width_ + nx;
+                if (new_map_data[n_index] != 100) {
+                    new_map_data[n_index] = 50;  // 拡張エリア（50 = 半障害物）
+                }
+            }
+        }
+    }
 }
 
 // ヒューリスティック関数の計算
@@ -71,13 +114,19 @@ double Astar::make_heuristic(const Node_ node)
 // スタートとゴールの取得（mからグリッド単位への変換も行う）
 Node_ Astar::set_way_point(int phase)
 {
+    double grid_x,grid_y = 0.0;
+
+    grid_x = node.x / resolution_;
+    grid_y = node.y / resolution_;
+
+    node.x = grid_x;
+    node.y = grid_y;
+
     if(phase == 0){//スタート地点の格納にはphase=0
-        start_node_.x = node.x;//スタート地点のｘ座標を格納
-        start_node_.y = node.y;//スタート地点のｙ座標を格納
+        start_node_ = node;//スタート地点格納
     }
     if(phase == 1){//ゴール地点の格納にはphase=1
-        goal_node_.x = node.x;//目標のｘ座標を格納
-        goal_node_.y = node.y;//目標のｙ座標を格納
+        goal_node_ = node;//目標地点格納
     }
 
 }
@@ -99,7 +148,29 @@ void Astar::create_path(Node_ node)
 // ノード座標（グリッド）をgeometry_msgs::msg::PoseStamped（m単位のワールド座標系）に変換
 geometry_msgs::msg::PoseStamped Astar::node_to_pose(const Node_ node)
 {
+    double world_x = 0.0,world_y = 0.0;//ワールド座標系格納用
+    world_x = node.x * resolution_;//m単位に変換
+    world_y = node.y * resolution_;//m単位に変換
 
+    // PoseStampedの作成
+    geometry_msgs::msg::PoseStamped pose_stamped;
+    
+    // ヘッダー情報（ROSのタイムスタンプやフレームIDが必要な場合は適宜設定）
+    pose_stamped.header.frame_id = "map"; // マップ座標系（適宜変更）
+    pose_stamped.header.stamp = rclcpp::Clock().now(); // 現在の時間を設定
+    
+    // 位置情報の設定
+    pose_stamped.pose.position.x = world_x;
+    pose_stamped.pose.position.y = world_y;
+    pose_stamped.pose.position.z = 0.0; // 2DなのでZは0
+
+    // 姿勢（オリエンテーション）はとりあえず無回転のまま（単位クォータニオンを設定）
+    pose_stamped.pose.orientation.w = 1.0;
+    pose_stamped.pose.orientation.x = 0.0;
+    pose_stamped.pose.orientation.y = 0.0;
+    pose_stamped.pose.orientation.z = 0.0;
+
+    return pose_stamped;
 }
 
 
@@ -142,7 +213,7 @@ int Astar::check_list(const Node_ target_node, std::vector<Node_>& set)
 {
     auto result = std::find_if(list.begin(),list.end(), [](const Node_& n){
         return check_same_node(n,node);//同じノードを探す
-        //aytoで大丈夫？それからインデックス番号って？
+        //autoで大丈夫？それからインデックス番号って？
     });
 
     if(result == list.end()){
@@ -164,7 +235,20 @@ void Astar::swap_node(const Node_ node, std::vector<Node_>& list1, std::vector<N
 // 指定のノードが障害物である場合，trueを返す
 bool Astar::check_obs(const Node_ node)
 {
-    return  >= 50;//mapデータから障害物であるかどうかの判定をするが。果たしてNodeの情報を使用するのか
+    // (x, y) の座標を 1次元インデックスに変換
+    index = node.y * width + node.x;
+
+    // インデックスが範囲外でないかチェック
+    if (index < 0 || index >= static_cast<int>(new_map_.data.size())) {
+        return true;  // 範囲外なら障害物とみなす
+    }
+
+    // OccupancyGridのdata配列から値を取得
+    int8_t cell_value = new_map_.data[index];//int8_tは符号付整数型
+
+    // 100（障害物）なら true を返す
+    return (cell_value == 100);
+
 }
 
 // 隣接ノードを基にOpenリスト・Closeリストを更新
@@ -236,10 +320,11 @@ std::tuple<int, int> Astar::search_node(const Node_ node)
 }
 
 
-// 親ノードかの確認
+// 親ノードかの確認し、親ノードであればtrue
 bool Astar::check_parent(const int index, const Node_ node)
 {
-
+    return index = node.parent_y * width_ + node.parent_x;
+    //インデックスが親ノードである場合
 }
 
 

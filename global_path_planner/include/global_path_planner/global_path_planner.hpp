@@ -95,7 +95,7 @@ private:
 
     // 基本設定
     double sleep_time_; // デバッグ用スリープ時間 [s]
-    double margin_; // 障害物拡張マージン [m]
+    double margin_length; // 障害物拡張マージン [m]
 
     // ノード情報
     Node_ start_node_;  // 開始ノード
@@ -116,7 +116,7 @@ private:
     int width_;   // マップの幅
     double resolution_; // マップ解像度
     Node_ origin_;  // マップ原点
-    std::vector<std::vector<int>> map_grid_; // グリッドマップ
+    std::vector<std::vector<int>> map_grid_; // グリッドマップ、可変長の二次元配列
 
     // 時間計測
     rclcpp::Clock clock_; // 時間計測用
