@@ -88,7 +88,7 @@ class Localizer : public rclcpp::Node
         int       laser_step_;         // 何本ずつレーザを見るか [-]
         double    sensor_noise_ratio_; // 距離に対するセンサノイズ比 [-]
 
-        Pose      estimated_pose_;     // 推定位置
+        Pose estimated_pose_;     // 推定位置
         OdomModel odom_model_;         // odometryのモデル
 
         // リスト

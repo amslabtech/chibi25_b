@@ -43,11 +43,21 @@ void Pose::set(const double x, const double y, const double yaw)
    this->yaw_ = yaw; 
 }
 
-// パーティクルの移動
+// パーティクルの移動(位置と向きの更新)
 // ノイズを加えて，移動させる
 void Pose::move(double length, double direction, double rotation, const double fw_noise, const double rot_noise)
 {
-    
+    // ノイズを加える
+    double noisy_length = length + fw_noise * std::sqrt(std::abs(length));
+    double noisy_rotation = rotation + rot_noise * std::sqrt(std::abs(rotation));
+
+    // 移動させる
+    x_ += noisy_length * std::cos(yaw_ + direction); // 進行方向は現在の向き+移動方向
+    y_ += noisy_length * std::sin(yaw_ + direction);
+    yaw_ += noisy_rotation;
+
+    // 角度を適切化
+    normalize_angle();
 }
 
 // 適切な角度(-M_PI ~ M_PI)に変更
