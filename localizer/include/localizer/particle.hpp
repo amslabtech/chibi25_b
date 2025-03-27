@@ -17,7 +17,7 @@ class Particle
         double weight() const { return weight_; }
 
         // 尤度関数
-        double likelihood(const nav_msgs::msg::OccupancyGrid& map, const sensor_msgs::msg::LaserScan& laser,
+        static double likelihood(const nav_msgs::msg::OccupancyGrid& map, const sensor_msgs::msg::LaserScan& laser,
             const double sensor_noise_ratio, const int laser_step, const std::vector<double>& ignore_angle_range_list);
 
         // --- メンバ変数 ---
@@ -25,7 +25,7 @@ class Particle
 
     private:
         // 柱か判断
-        bool is_ignore_angle(double angle, const std::vector<double>& ignore_angle_range_list);
+        static bool is_ignore_angle(double angle, const std::vector<double>& ignore_angle_range_list);//#hiraiwa static 追加#
 
         // 壁までの距離を算出
         double calc_dist_to_wall(double x, double y, const double laser_angle, const nav_msgs::msg::OccupancyGrid& map,
@@ -38,7 +38,7 @@ class Particle
         bool in_map(const int grid_index, const int map_data_size);
 
         // 確率密度関数（正規分布）
-        double norm_pdf(const double x, const double mean, const double stddev);
+        static double norm_pdf(const double x, const double mean, const double stddev);
 
         // --- メンバ変数 ---
         double weight_; // [-]

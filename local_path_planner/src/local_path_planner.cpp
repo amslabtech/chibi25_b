@@ -33,8 +33,8 @@ DWAPlanner::DWAPlanner() : Node("local_path_planner"), clock_(RCL_ROS_TIME)
     this->declare_parameter("max_accel_",2.0);
     this->declare_parameter("max_dyawrate_",2.0);
 
-    this->declare_parameter("turn_there_yawrate_", 0.6);
-    this->declare_parameter("avoid_thres_vel_", 0.6);
+    this->declare_parameter("turn_theres_yawrate_", 0.6);
+    this->declare_parameter("avoid_theres_vel_", 0.6);
 
     this->declare_parameter("dt_", 0.1);
     this->declare_parameter("goal_tolerance_",0.5);
@@ -65,8 +65,8 @@ DWAPlanner::DWAPlanner() : Node("local_path_planner"), clock_(RCL_ROS_TIME)
     max_accel_ = this->get_parameter("max_accel_").as_double();
     max_dyawrate_ = this->get_parameter("max_dyawrate_").as_double();
 
-    turn_there_yawrate_ = this->get_parameter("turn_there_yawrate_").as_double();
-    avoid_thres_vel_ = this->get_parameter("avoid_thres_vel_").as_double();
+    turn_thres_yawrate_ = this->get_parameter("turn_theres_yawrate_").as_double();
+    avoid_thres_vel_ = this->get_parameter("avoid_theres_vel_").as_double();
     goal_tolerance_ = this->get_parameter("goal_tolerance_").as_double();
     predict_time_ = this->get_parameter("predict_time_").as_double();
     vel_reso_ = this->get_parameter("vel_reso_").as_double();
@@ -88,8 +88,8 @@ DWAPlanner::DWAPlanner() : Node("local_path_planner"), clock_(RCL_ROS_TIME)
 
 
     // ####### Subscriber #######
-    sub_local_goal_ = this->create_subscription<geometry_msgs::msg::PoseStamped>("/roomba/goal", rclcpp::QoS(1).reliable(),std::bind(&DWAPlanner::local_goal_callback(),this,std::placeholders::_1));
-    sub_obs_poses_ = this->create_subscription<geometry_msgs::msg::PoseArray>("/e_pose", rclcpp::QoS(1).reliable(),std::bind(&DWAPlanner::obs_poses_callback(),this,std::placeholders::_1));
+    sub_local_goal_ = this->create_subscription<geometry_msgs::msg::PointStamped>("/roomba/goal", rclcpp::QoS(1).reliable(),std::bind(&DWAPlanner::local_goal_callback,this,std::placeholders::_1));
+    sub_obs_poses_ = this->create_subscription<geometry_msgs::msg::PoseArray>("/e_pose", rclcpp::QoS(1).reliable(),std::bind(&DWAPlanner::obs_poses_callback,this,std::placeholders::_1));
 
     // ###### Publisher ######
     
@@ -188,8 +188,9 @@ bool DWAPlanner::can_move()
 // Roombaの制御入力を行う
 void DWAPlanner::roomba_control(const double velocity, const double yawrate)
 {
-    cmd_speed_.velocity = velocity;  // 並進速度をセット
-    cmd_speed_.yawrate  = yawrate;   // 旋回速度をセット
+    cmd_speed_.cntl.linear.x = velocity;  // 並進速度をセット   
+    cmd_speed_.cntl.angular.z = yawrate;  // 旋回速度をセット
+
 
     pub_cmd_speed_ -> publish(cmd_speed_);
 }
@@ -241,7 +242,7 @@ std::vector<double> DWAPlanner::calc_final_input()
     roomba_.yawrate  = input[1];
 
     // ###### pathの可視化 #######
-    visualize_traj(trajectories[index_of_max_score], pub_local_path_, this->now());
+    visualize_traj(trajectories[index_of_max_score], pub_predict_path_, this->now());
 
     //roomba_control(roomba_.velocity,roomba_.yawrate); 
 
@@ -455,5 +456,5 @@ void DWAPlanner::visualize_traj(const std::vector<State>& traj, rclcpp::Publishe
     }
 
     // 可視化のために Publish
-    pub_predict_path->publish(path_msg);
+    pub_predict_path_->publish(path_msg);
 }

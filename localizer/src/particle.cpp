@@ -20,13 +20,13 @@ Particle& Particle::operator =(const Particle& p)
                 pose_ = p.pose_;
                 weight_ = p.weight_;
         }
-        return this;//自身を返すことで連続代入が可能に
+        return *this;//自身を返すことで連続代入が可能に
 }
 
 // setter
 void Particle::set_weight(const double weight)
 {
-        weight = 1.0;
+        weight_ = weight; // メンバ変数に代入
 }
 
 // 尤度関数
@@ -36,16 +36,16 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
 {
         double L = 1.0; // 尤度
         // センサ情報からパーティクルの姿勢を評価
-        for(double i = 0;i < laser_.angle_max - laser_.angle_min; i += laser_.angle_increment)
+        for(double i = 0;i < laser.angle_max - laser.angle_min; i += laser.angle_increment)
         {
-                if(is_ignore_angle(i,ignore_angle_range_list))
+                if(is_ignore_angle(i,ignore_angle_range_list))//#hiraiwa thisを追加#
                 {
                         L *= 1.0;
                 }
                 else
                 {
-                        laser_->ranges[i];
-                        L *= norm_pdf(map_data[i],ranges[i],sensor_noise_ratio);
+                        laser.ranges[i];
+                        L *= norm_pdf(map.data[i],laser.ranges[i],sensor_noise_ratio);
                 }
         }
         return L;
@@ -65,6 +65,7 @@ bool Particle::is_ignore_angle(double angle, const std::vector<double>& ignore_a
             return true;
         }
     }
+    return false;//#hiraiwa returnを移動#
 }
 
 // 与えられた座標と角度の方向にある壁までの距離を算出
@@ -93,14 +94,16 @@ double Particle::calc_dist_to_wall(double x, double y, const double laser_angle,
                 double new_y = y + dist * sin(laser_angle);
                 int map_data_size = width*height;
                 
-                int grid_x = static_cast<int>((x-map_origin_x)/map_resolution);//grid座標に変換
-                int grid_y = static_cast<int>((x-map_origin_y)/map_resolution);//grid座標に変換
-                int grid_index=xy_to_grid_index(grid_x,grid_y,map_info);
+                int grid_x = static_cast<int>((x-origin_x)/resolution);//grid座標に変換 #hiraiwa map_を消去#
+                int grid_y = static_cast<int>((x-origin_y)/resolution);//grid座標に変換
+                int grid_index=xy_to_grid_index(grid_x,grid_y,map.info);
+                int cell_value=map.data[grid_index];
+                
                 if(!in_map(grid_index,map_data_size))
                 {
                         return search_limit*2.0;
                 }
-                int cell_value=map.data[grid_index];
+                
                 else 
                 {
                         if (cell_value == 100)
@@ -111,15 +114,11 @@ double Particle::calc_dist_to_wall(double x, double y, const double laser_angle,
                         {
                                 return search_limit * 2.0;  // 未知領域
                         }
-                        else
-                        {
-                        return search_limit * sensor_noise_ratio * 5.0;
-                        }
                 }
 
 
         }
-        
+        return search_limit * sensor_noise_ratio * 5.0;//#hiraiwa return の位置を移動
         
 }
 

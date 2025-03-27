@@ -1,9 +1,9 @@
 #include "local_goal_creator/local_goal_creator.hpp"
 LocalGoalCreator::LocalGoalCreator() : Node("LocalGoalCreator")
 {
-    pose_sub = this->create_subscription<geometry_msgs::msg::PoseStamped>("/e_pose", rclcpp::QoS(1).reliable(),std::bind(&LocalGoalCreator::poseCallback(),this,std::placeholders::_1));
+    pose_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>("/e_pose", rclcpp::QoS(1).reliable(),std::bind(&LocalGoalCreator::poseCallback,this,std::placeholders::_1));
     //estimated poseの購読
-    path_sub = this->create_subscription<nav_msgs::msg::Path>("/g_path", rclcpp::QoS(1).reliable(),std::bind(&LocalGoalCreator::pathCallback(),this,std::placeholders::_1));
+    path_sub_ = this->create_subscription<nav_msgs::msg::Path>("/g_path", rclcpp::QoS(1).reliable(),std::bind(&LocalGoalCreator::pathCallback,this,std::placeholders::_1));
     //global pathの購読
     //pubやsubの定義，tfの統合
     local_goal_pub_ = this->create_publisher<geometry_msgs::msg::PointStamped>("/roomba/goal",rclcpp::QoS(1).reliable());//#########
@@ -52,7 +52,7 @@ void LocalGoalCreator::publishGoal()
     double threshold_distance_ = 1.0;
     
     // ゴールに近づいたら次のゴールを選択
-    if (distance_to_goal < threshold_distance_) {
+    if (target_distance_ < threshold_distance_) {
         goal_index_ += index_step_;
 
         // インデックスがパスの範囲を超えたら最後のゴールに留まる
@@ -72,7 +72,7 @@ void LocalGoalCreator::publishGoal()
 }
 
 
-double LocalGoalCreator::getDistance(double goal_index)
+double LocalGoalCreator::getDistance()
 {
     //if (path_.poses.empty()) return std::numeric_limits<double>::max(); // パスが空なら最大値を返す
 
