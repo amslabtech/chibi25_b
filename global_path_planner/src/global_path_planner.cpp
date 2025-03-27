@@ -8,7 +8,8 @@ Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
 {
     // ###### パラメータの宣言 ######
     robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
-    //  = this->declare_parameter<double>("origin_y");
+    // grid_x_goal = this->declare_parameter<double>("grid_x_goal",0.0);
+    // grid_y_goal = this->declare_parameter<double>("grid_y_goal",0.0);
 
 
     // ###### パラメータの取得 ######
@@ -114,19 +115,23 @@ double Astar::make_heuristic(const Node_ node)
 // スタートとゴールの取得（mからグリッド単位への変換も行う）
 Node_ Astar::set_way_point(int phase)
 {
-    double grid_x,grid_y = 0.0;
-
-    grid_x = node.x / resolution_;
-    grid_y = node.y / resolution_;
-
-    node.x = grid_x;
-    node.y = grid_y;
-
     if(phase == 0){//スタート地点の格納にはphase=0
-        start_node_ = node;//スタート地点格納
+        double grid_x = 0.0,grid_y = 0.0;
+
+        start_node_.parent_x = start_node_.x;//親ノードもスタート位置なら
+        start_node_.parent_y = start_node_.y;
+
+        grid_x = current_node_.point.x / resolution_;
+        grid_y = current_node_.point.y / resolution_;
+
+        start_node_.x = grid_x;//スタート地点格納
+        start_node_.y = grid_y;
+        // 毎回更新していくのか区間ごとに変化させていくのか？
+        goal_node_ = create_neighbor_nodes(start_node_);
+        //スタートノードをもとに隣のノードをゴールとして設定する
     }
     if(phase == 1){//ゴール地点の格納にはphase=1
-        goal_node_ = node;//目標地点格納
+        
     }
 
 }
@@ -139,7 +144,9 @@ void Astar::create_path(Node_ node)
     partial_path.poses.push_back(node_to_pose(node));
 
     // ###### パスの作成 ######
+    while(node.parent){
 
+    }
 
     // ###### パスの追加 ######
 
@@ -152,25 +159,25 @@ geometry_msgs::msg::PoseStamped Astar::node_to_pose(const Node_ node)
     world_x = node.x * resolution_;//m単位に変換
     world_y = node.y * resolution_;//m単位に変換
 
-    // PoseStampedの作成
-    geometry_msgs::msg::PoseStamped pose_stamped;
+    geometry_msgs::msg::PoseStamped world_node;
+    //ワールド座標系のノードを作成
     
     // ヘッダー情報（ROSのタイムスタンプやフレームIDが必要な場合は適宜設定）
-    pose_stamped.header.frame_id = "map"; // マップ座標系（適宜変更）
-    pose_stamped.header.stamp = rclcpp::Clock().now(); // 現在の時間を設定
+    world_node.header.frame_id = "map"; // マップ座標系（適宜変更）
+    world_node.header.stamp = rclcpp::Clock().now(); // 現在の時間を設定
     
     // 位置情報の設定
-    pose_stamped.pose.position.x = world_x;
-    pose_stamped.pose.position.y = world_y;
-    pose_stamped.pose.position.z = 0.0; // 2DなのでZは0
+    world_node.pose.position.x = world_x;
+    world_node.pose.position.y = world_y;
+    world_node.pose.position.z = 0.0; // 2DなのでZは0
 
     // 姿勢（オリエンテーション）はとりあえず無回転のまま（単位クォータニオンを設定）
-    pose_stamped.pose.orientation.w = 1.0;
-    pose_stamped.pose.orientation.x = 0.0;
-    pose_stamped.pose.orientation.y = 0.0;
-    pose_stamped.pose.orientation.z = 0.0;
+    world_node.pose.orientation.w = 1.0;
+    world_node.pose.orientation.x = 0.0;
+    world_node.pose.orientation.y = 0.0;
+    world_node.pose.orientation.z = 0.0;
 
-    return pose_stamped;
+    return world_node;
 }
 
 
@@ -186,25 +193,19 @@ Node_ Astar::select_min_f()
 // スタートノードの場合，trueを返す
 bool Astar::check_start(const Node_ node)
 {
-    return node = start_node_;
+    return check_same_node(node,start_node_);
 }
 
 // ゴールノードの場合，trueを返す
 bool Astar::check_goal(const Node_ node)
 {
-    return node = goal_node_;
+    return check_same_node(node,goal_node_);
 }
 
 // 2つが同じノードである場合，trueを返す
 bool Astar::check_same_node(const Node_ n1, const Node_ n2)
 {
-    // if(n1.x == n2.x && n1.y == n2.y){
-    //     return true;//x座標とy座標が同じであればtrue
-    // }else{
-    //     return false;
-    // }
-
-    return n1 = n2;
+    return (n1.x == n2.x && n1.y == n2.y);
 }
 
 // 指定したリストに指定のノードが含まれるか検索
@@ -247,7 +248,7 @@ bool Astar::check_obs(const Node_ node)
     int8_t cell_value = new_map_.data[index];//int8_tは符号付整数型
 
     // 100（障害物）なら true を返す
-    return (cell_value == 100);
+    return (cell_value >= 50);
 
 }
 
@@ -258,11 +259,18 @@ void Astar::update_list(const Node_ node)
 {
     // 隣接ノードを宣言
     std::vector<Node_> neighbor_nodes;
+    create_neighbor_nodes(node,neighbor_nodes);
+    //隣接ノードを用意する
 
     // ###### 隣接ノード ######
+    for (auto& neighbor : neighbor_nodes){
+        if (close_list(neighbor)||check_obs(neighbor)){
+            swap_node(neighbor,open_list_,close_list_);
+            //close_list_の中身と同じものが入っていたらclose_list_へ
+        }
+        Node_ selected_min_f = select_min_f();
+    }
 
-
-    
 }
 
 // 現在のノードを基に隣接ノードを作成
@@ -272,9 +280,16 @@ void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbo
     std::vector<Motion_> motion_list;
 
     // ###### 動作モデルの作成 ######
+    get_motion(motion_list);
 
     // ###### 隣接ノードの作成 ######
-
+    for (const auto& motion : motion_list) {
+        Node_ neighbor = get_neighbor_node(node,motion);
+        neighbor_nodes.push_back(neighbor);
+        // if (is_valid_node(neighbor)) {
+        //     neighbor_nodes.push_back(neighbor);
+        // }
+    }
 }
 
 // 動作モデルを作成（前後左右，斜めの8方向）
@@ -294,21 +309,21 @@ void Astar::get_motion(std::vector<Motion_>& list)
 // 隣接したグリッドに移動しない場合はエラーメッセージを出力して終了
 Motion_ Astar::motion(const int dx,const int dy,const int cost)
 {
-    dx = abs(goal_node_.x - start_node_.y);//スタートからゴールまでのx座標移動距離
-    dy = abs(goal_node_.y - start_node_.y);//スタートからゴールまでのy座標移動距離
-
-    //斜め移動を考慮しなくてよいのか
-    // int difference = 0;//差分を設定
-    // difference = abs(dx - dy);//差を求めることによって斜め移動ができるか確認
-    
-    cost = dx + dy;//単純に加算してコストを求める
-
+    if (abs(dx) > 1 || abs(dy) > 1) {
+        std::cerr << "Error: Invalid motion (" << dx << ", " << dy << ")" << std::endl;
+        exit(EXIT_FAILURE);
+    }//エラー文
+    return Motion_{dx, dy, cost};
 }
 
 // 現在のノードと与えられたモーションを基に隣接ノードを計算し，その隣接ノードのf値と親ノードを更新して返す
 Node_ Astar::get_neighbor_node(const Node_ node, const Motion_ motion)
 {
-
+    Node_ neighbor;
+    neighbor.x = node.x + motion.dx;
+    neighbor.y = node.y + motion.dy;
+    neighbor.cost = motion.cost;
+    return neighbor;
 }
 
 // 指定されたノードがOpenリストまたはCloseリストに含まれているかを調べ，結果をインデックスとともに返す
@@ -316,7 +331,25 @@ Node_ Astar::get_neighbor_node(const Node_ node, const Motion_ motion)
 // -1はどちらのリストにもノードが含まれていないことを示す
 std::tuple<int, int> Astar::search_node(const Node_ node)
 {
+    //Openリストの検索
+    int index = 0;
+    for (const auto& n : open_list) {
+    if (n.x == node.x && n.y == node.y) {
+        return std::make_tuple(1, index);
+    }
+        index++;
+    }
 
+    // Closeリストの検索
+    index = 0;
+    for (const auto& n : close_list) {
+        if (n.x == node.x && n.y == node.y) {
+            return std::make_tuple(2, index);
+        }
+        index++;
+    }
+        // どちらにも存在しない場合
+    return std::make_tuple(-1, -1);
 }
 
 
@@ -349,15 +382,25 @@ int Astar::search_node_from_list(const Node_ node, std::vector<Node_>& list)
 // そのノードの情報をRvizにパブリッシュ
 void Astar::show_node_point(const Node_ node)
 {
-
+    if(!test_show_) return;
+    //ワールド座標系に変換
+    geometry_msgs::msg::PointStamped node_check = node_to_pose(node);
+    //座標返還後のノードを格納
+    pub_node_point_ -> publish(node_check);
+    //node_checkにパブリッシュ
 }
+
 
 // ［デバック用］指定されたパスをRvizに表示
 // test_show_がtrueの場合，パスのフレームIDを"map"に設定し
 // パス情報をRvizにパブリッシュ
 void Astar::show_path(nav_msgs::msg::Path& current_path)
 {
-
+    if(!test_show_) return;
+    current_path.header.frame_id = "map";
+    current_path.header.stamp = show_exe_time();
+    //経路情報がいつ作成されたものなのか記録
+    path_pub_->publish(current_path);
 }
 
 // 実行時間を表示（スタート時間beginを予め設定する）
@@ -377,6 +420,7 @@ void Astar::planning()
     const int total_phase = way_points_x_.size();
 
     // ###### ウェイポイント間の経路探索 ######
+    set_way_point(0);
 
 
     show_exe_time();
