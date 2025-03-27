@@ -1,12 +1,17 @@
 #ifndef obstacle_detector_HPP
 #define obstacle_detector_HPP
 
+#include <chrono>
 #include <rclcpp/rclcpp.hpp>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <sensor_msgs/msg/laser_scan.hpp>
+// #include <geometry_msgs/msg/point32.hpp>
+#include <sensor_msgs/msg/point_cloud.hpp>
 #include <math.h>
+
+using namespace std::chrono_literals;
 
 // 座標格納用構造体
 struct points{
@@ -26,8 +31,8 @@ class ObstacleDetector : public rclcpp::Node
 
     // 関数
     void scan_obstacle();   // 障害物情報の読み取りとpublish
-    bool is_ignore_scan();  // 柱かの判定
-    void resize_pionts();   // points配列の長さ決定
+    bool is_ignore_scan(double angle);  // 柱かの判定
+    void resize_points();   // points配列の長さ決定
     void points_print();    // 障害物情報のprintf
 
     // 変数
@@ -36,7 +41,8 @@ class ObstacleDetector : public rclcpp::Node
     std::optional<sensor_msgs::msg::LaserScan> scan_;
 
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;                 // scan SharedPtrは1stに倣って入れた
-    rclcpp::Publisher</* ??? */>::SharedPtr o_points_pub_;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr o_points_pub_;
+    rclcpp::TimerBase::SharedPtr timer_;
 
   private:
     std::vector<points> o_points_;
