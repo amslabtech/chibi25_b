@@ -1,8 +1,7 @@
 #include "localizer/localizer.hpp"
-#include "localizer/particle.hpp"
-// #include "localizer/pose.hpp"
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2/LinearMath/Quaternion.h> // tf2::Quaternion用
+// #include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 // デフォルトコンストラクタ
 // パラメータの宣言と取得
@@ -120,7 +119,7 @@ void Localizer::initialize()
         // particle.yaw = init_yaw_ + norm_rv(0, init_yaw_dev_);
 
         // パーティクルの重みの初期化とリストに追加
-        reset_weight(particle);
+        reset_weight();
     }
 }
 
@@ -130,39 +129,42 @@ void Localizer::process()
 {
     if(flag_map_ && flag_odom_ && flag_laser_) // map,odom,laserの値を取得できたとき
     {
-        // tfのブロードキャスト(他のノードに送信すること)、ros1ならtf::でros2ならtf2_ros::
-        static tf2_ros::TransformBroadcaster br; // tfの座標変換情報をブロードキャストするためのオブジェクト
-        tf2_ros::Transform transform; // Transformとはtfの座標変換を表すクラスでロボットの平行移動を表すtf::Vector3と回転情報を表すtf::Quaternionを持つ
-        std::transform.setOrigin(tf2_ros::Vector3(estimated_pose_.x, estimated_pose_.y, 0.0) ); // 位置を設定
-        tf2_ros::Quaternion q;
-        q.setRPY(0, 0, estimated_pose_.yaw); // 回転情報を入力(Roll, Pitch, Yaw)の順
-        transform.setRotation(q); // 回転を設定
-        br.sendTransform(tf2_ros::StampedTransform(std::transform, ros::Time::now(), "world", "robot")); // (座標系, タイムスタンプとして使う時刻, 親座標系の名前, 今使っている座標系の名前)  
+        // // tfのブロードキャスト(他のノードに送信すること)、ros1ならtf::でros2ならtf2_ros::
+        // static tf2_ros::TransformBroadcaster br; // tfの座標変換情報をブロードキャストするためのオブジェクト
+        // tf2_ros::Transform transform; // Transformとはtfの座標変換を表すクラスでロボットの平行移動を表すtf::Vector3と回転情報を表すtf::Quaternionを持つ
+        // std::transform.setOrigin(tf2_ros::Vector3(estimated_pose_.x, estimated_pose_.y, 0.0) ); // 位置を設定
+        // tf2_ros::Quaternion q;
+        // q.setRPY(0, 0, estimated_pose_.yaw); // 回転情報を入力(Roll, Pitch, Yaw)の順
+        // transform.setRotation(q); // 回転を設定
+        // br.sendTransform(tf2_ros::StampedTransform(std::transform, ros::Time::now(), "world", "robot")); // (座標系, タイムスタンプとして使う時刻, 親座標系の名前, 今使っている座標系の名前)  
 
         flag_broadcast_ = true; // tfブロードキャストした
 
-    //     // 初回のみ TransformBroadcaster を初期化
-    // if (!tf_broadcaster_) {
-    //     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
-    // }
+        // 初回のみ TransformBroadcaster を初期化
+        if (!flag_broadcast_) {
+            tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
+        }
 
-    // // 変換情報を格納する TransformStamped メッセージ
-    // geometry_msgs::msg::TransformStamped transform;
+        // 変換情報を格納する TransformStamped メッセージ
+        geometry_msgs::msg::TransformStamped transform;
 
-    // // ここで transform の座標情報を設定
-    // transform.header.stamp = this->now();
-    // transform.header.frame_id = "map";
-    // transform.child_frame_id = "base_link";
-    // transform.transform.translation.x = 1.0;
-    // transform.transform.translation.y = 2.0;
-    // transform.transform.translation.z = 0.0;
-    // transform.transform.rotation.x = 0.0;
-    // transform.transform.rotation.y = 0.0;
-    // transform.transform.rotation.z = 0.0;
-    // transform.transform.rotation.w = 1.0;
+        // ここで transform の座標情報を設定
+        transform.header.stamp = this->now();
+        transform.header.frame_id = "world"; // 親フレーム
+        transform.child_frame_id = "robot"; // 子フレーム
+        transform.transform.translation.x = estimated_pose_.x(); // カメラの推定位置
+        transform.transform.translation.y = estimated_pose_.y();
+        transform.transform.translation.z = 0.0;
+        tf2::Quaternion q;
+        q.setRPY(0, 0, estimated_pose_.yaw()); // 回転情報を入力(Roll, Pitch, Yaw)の順
+        q.normalize(); // クォータニオンの正規化
+        transform.transform.rotation.x = q.x(); // 回転(単位クォータニオン)
+        transform.transform.rotation.y = q.y();
+        transform.transform.rotation.z = q.z();
+        transform.transform.rotation.w = q.w();
 
-    // // 座標変換をブロードキャスト
-    // tf_broadcaster_->sendTransform(transform);
+        // 座標変換tfをブロードキャスト
+        tf_broadcaster_->sendTransform(transform); // ？hppに足したけどtf_broadcaster_の使用先
 
         // 位置推定
         localize();
@@ -194,11 +196,14 @@ double Localizer::norm_rv(const double mean, const double stddev) // 平均と�
     return distribution(generator);
 }
 
-// パーティクルの重みの初期化しリストに追加(正規分布に基づいて初期値設定、正規化→初期化？)
-void Localizer::reset_weight(Particle &particle)
+// 〇パーティクルの重みの初期化しリストに追加(正規分布に基づいて初期値設定、正規化→初期化？)
+void Localizer::reset_weight()
 {
-    particle.weight = 1.0 / particle_num_; // 初期重み1.0を均等配分
-    particles_.push_back(particle); // hppで定義済みのリストに追加
+    double another_weight = 1.0 / particle_num_; // 初期重み1.0を均等配分
+    // particles_.push_back(another_weight); // hppで定義済みのリストに追加
+    for (auto& particle : particles_) {
+        particle.set_weight(another_weight);
+    }
 }
 
 // map座標系からみたodom座標系の位置と姿勢をtfでbroadcast
@@ -234,7 +239,7 @@ void Localizer::broadcast_odom_state()
         map_to_odom_quat.setRPY(0, 0, dyaw);
 
         // yawからquaternionを作成(サンプルコードに記述済み)
-        tf2::Quaternion map_to_odom_quat;
+        // tf2::Quaternion map_to_odom_quat; // (？？)
 
         // odom座標系odomの位置姿勢情報格納するための変数(サンプルコードに記述済み)
         geometry_msgs::msg::TransformStamped odom_state;
@@ -288,15 +293,18 @@ void Localizer::motion_update()
         // パーティクルの位置を更新
         for (auto& particle : particles_)
         {
-            // ノイズを加える
+            // ノイズを加える#hiraiwa
             double dx_add_noise = dx + norm_rv(0, fx_noise);
             double dy_add_noise = dy + norm_rv(0, fx_noise);
             double dyaw_add_noize = dyaw + norm_rv(0, rot_noise);
+            double ddx,ddy,ddyaw;
+             ddx += dx_add_noise;
+             ddy += dy_add_noise;
+             ddyaw += dyaw_add_noize;
 
             // 位置更新
-            particle.x += dx_add_noise;
-            particle.y += dy_add_noise;
-            particle.yaw += dyaw_add_noize;
+            particle = Particle(ddx, ddy, ddyaw, particle.weight());//#hiraiwa#
+
         }
     }
 }
@@ -310,9 +318,10 @@ void Localizer::observation_update()
     {
         for(auto& particle : particles_)
         {
-            // パーティクル1つのレーザ(1本?)における平均尤度を算出、重みを更新
-            alpha_th_ = calc_marginal_likelihood(); // 周辺尤度を算出
-            particle.weight *= alpha_th_; //！重みに尤度をかける
+            // パーティクル1つのレ(ーザ(1本?)における平均尤度を算出、重みを更新
+            double yudo = calc_marginal_likelihood(); // 周辺尤度を算出
+            // particle.weight() *= yudo; //！重みに尤度をかける
+            particle.set_weight(particle.weight() * yudo);
         }
 
         // ここからはそれぞれの関数内でforでparticles_回す
@@ -337,12 +346,12 @@ double Localizer::calc_marginal_likelihood()
 
     for (int i=0; i<laser_.ranges.size(); i+=laser_step_)
     {
-        yudo_ = likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_);
+        yudo_ = Particle::likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_);
         sum_yudo_ += yudo_; 
         laser_number++;
     }
     
-    marginal_likelihood = sum_likeli_ / laser_number; // 全レーザの合計尤度をレーザで割って平均化
+    marginal_likelihood = sum_yudo_ / laser_number; // 全レーザの合計尤度をレーザで割って平均化
     return marginal_likelihood;
 }
 
@@ -354,16 +363,17 @@ void Localizer::estimate_pose()
     double sum_x = 0.0, sum_y = 0.0, sum_yaw = 0.0;
     double weight_sum = 0.0;
     
-    for (const auto& particle : particles_)
+    for (auto& particle : particles_)
     {
-        sum_x += particle.x * particle.weight;
-        sum_y += particle.y * particle.weight;
-        sum_yaw += particle.yaw * particle.weight;
-        weight_sum += particle.weight;
+        sum_x += particle.getPose().x() * particle.weight();
+        sum_y += particle.getPose().y() * particle.weight();
+        sum_yaw += particle.getPose().yaw() * particle.weight();
+        weight_sum += particle.weight();
     }
-    estimated_pose_.x = sum_x;
-    estimated_pose_.y = sum_y;
-    estimated_pose_.yaw = sum_yaw;
+    // estimated_pose_.x() = sum_x;
+    // estimated_pose_.y() = sum_y;
+    // estimated_pose_.yaw() = sum_yaw;
+    estimated_pose_.set(sum_x, sum_y, sum_yaw);
 }
 
 // 重みの正規化(0から1の間、重要度重み、正規化→初期化？)
@@ -372,14 +382,15 @@ void Localizer::normalize_belief()
     double sum_weights = 0.0;
     for (auto& particle : particles_)
     {
-        sum_weights += particle.weight; // 重みの合計を計算
+        sum_weights += particle.weight(); // 重みの合計を計算
     }
 
     if (sum_weights > 0.0)
     {
         for (auto& particle : particles_)
         {
-            particle.weight() /= sum_weights; //重要度重み算出
+            // particle.weight() /= sum_weights; //重要度重み算出
+            particle.set_weight(particle.weight() / sum_weights);
         }
     }
 }
@@ -423,23 +434,27 @@ void Localizer::resampling(const double alpha)
 
     // リサンプリング
     next_particles_.reserve(particle_num_); // パーティクル数の保持
-    std::move(next_particles_); // パーティクルを移動
+    std::move(next_particles_); // パーティクルを移動、☆Pose::moveもstatic関数にしているためここで使いたい
 
     // 重みを初期化しhppで定義済みのリストに追加
     for (auto& particle : next_particles_) { // next_patricles_の中身のparticleごとにfor回す
-        reset_weight(particle); // ！この関数の引数にnext_particles_のようなリストは来れない ↑
+        reset_weight(); // ！この関数の引数にnext_particles_のようなリストは来れない ↑
     }
 }
 
 // 推定位置のパブリッシュ
 void Localizer::publish_estimated_pose()
 {
-    // 位置推定結果をパブリッシュする
+    // ☆位置推定結果をパブリッシュする
     estimated_pose_msg_.header.stamp = this->now();
     estimated_pose_msg_.header.frame_id = "world";
-    estimated_pose_msg_.position.x = estimated_pose_.x;
-    estimated_pose_msg_.position.y = estimated_pose_.y;
-    estimated_pose_msg_.orientation = tf2_ros::createQuaternionMsgFromYaw(estimated_pose_.yaw);
+    estimated_pose_msg_.pose.position.x = estimated_pose_.x();
+    estimated_pose_msg_.pose.position.y = estimated_pose_.y();
+    // ！toMsg = tf2::Quaternion → geometry_msgs::msg::Quaternion
+    tf2::Quaternion q;
+    q.setRPY(0, 0, estimated_pose_.yaw()); // Roll=0, Pitch=0, Yaw=estimated_pose_.yaw()
+    estimated_pose_msg_.pose.orientation = tf2::toMsg(q);
+    // estimated_pose_msg_.pose.orientation = tf2::createQuaternionMsgFromYaw(estimated_pose_.yaw());
     
     // <publisher名>->publish(<変数名>);
     pub_estimated_pose_->publish(estimated_pose_msg_);
@@ -453,25 +468,36 @@ void Localizer::publish_particles()
 
     particle_cloud_msg_.header.stamp = this->now();
     particle_cloud_msg_.poses.clear(); // 前回までのパーティクルデータの削除
-    for (const auto& particle : particles_)
+    for (auto& particle : particles_)
     {
-        Pose pose;
-        pose.position.x = particle.position.x;
-        pose.position.y = particle.position.y;
+        geometry_msgs::msg::Pose pose;
+        pose.position.x = particle.getPose().x();
+        pose.position.y = particle.getPose().y();
+        // pose.position.z = particle.getPose().z();
+ 
         // ！toMsg = tf2::Quaternion → geometry_msgs::msg::Quaternion
-        pose.orientation = tf2::toMsg(tf2::Quaternion(0, 0, particle.position.yaw));
+        tf2::Quaternion q;
+        q.setRPY(0, 0, particle.getPose().yaw()); // roll=0, pitch=0, yaw=pose.yaw()
+        pose.orientation = tf2::toMsg(q); // tf2を使ってROSのQuaternionに変換
+        // pose.yaw() = tf2::toMsg(tf2::Quaternion(0, 0, particle.getPose().yaw()));
 
-        particle_cloud_msg_.poses.push_back(pose); // hppで定義済みのリストに追加
+        particle_cloud_msg_.poses.push_back(pose); // ☆hppで定義済みのリストに追加、particle_cloud_msg_の型より.poses.push_back(geometry_msgs::msg::～)にする
     }
 
     // <publisher名>->publish(<変数名>);
     pub_particle_cloud_->publish(particle_cloud_msg_);
 }
 
-// 327辺りと411 estimated_pose_
-// 171辺りと262辺りと280辺りと322辺りと421辺り particle
+    // for (auto& particle : particles_) {
+    //     // particles_の中のparticle一つごとにfor文回せる
+    // }
 
-// 421辺り pose
-// 127辺り tf関連の関数(サイトのを写した)
-// 307 他のcppの関数を持ってきたとき関数無いのエラー
-// 393 pose.sppで定義した関数として使えているのか
+    // Pose 変数名;はPose.cppに、Particle 変数名;はparticle.cppを見て内部の構造知る
+
+        // poseのは変数名.set(x, y, yaw);
+
+            // Particle
+            // accessor
+        // void set_weight(const double weight);   // 重みのセット、Particleの変数名.set_weight(引数)で使える
+        // double weight() const { return weight_; } // 値を返すだけの関数(右辺)だから、重みの値を変え直接代入するとき(*=)はset_weight()を使うか、double& にして参照を返すと.weight()を直接変更できる
+        // Particleのクラスの中にはPose pose_;の変数、getPose()があるから、pose_を介して座標にアクセス→particle.getPose().x()等

@@ -17,6 +17,7 @@ install(DIRECTORY
   launch
   param
   DESTINATION share/${PROJECT_NAME}/
+  OPTIONAL # launchのフォルダなくてもエラーにならない
 )
 # ヘッダーのインストールや共有ライブラリのエクスポート等を自動で行ってくれる
 ament_auto_package()

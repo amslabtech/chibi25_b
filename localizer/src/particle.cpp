@@ -116,11 +116,7 @@ double Particle::calc_dist_to_wall(double x, double y, const double laser_angle,
                                 return search_limit * sensor_noise_ratio * 5.0;
                         }
                 }
-
-
         }
-        
-        
 }
 
 // 座標からグリッドのインデックスを返す
