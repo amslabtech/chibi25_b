@@ -38,6 +38,7 @@ class ObstacleDetector : public rclcpp::Node
     // 変数
     double obs_dist_ = 0.0;
     int laser_num_ = 0;
+    double ignore_dist_ = 0.0;
     std::optional<sensor_msgs::msg::LaserScan> scan_;
 
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;                 // scan SharedPtrは1stに倣って入れた

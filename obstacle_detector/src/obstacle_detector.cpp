@@ -2,9 +2,11 @@
 
 ObstacleDetector::ObstacleDetector() : Node("obstacle_detector"){
     // global変数を定義(yamlファイルからパラメータを読み込めるようにすると，パラメータ調整が楽)
-    obs_dist_ = this->declare_parameter<double>("obs_dist", 0.7);         // 前方障害物までの距離。これを下回ると障害物として認識する
+    obs_dist_ = this->declare_parameter<double>("obs_dist", 1.5);         // 前方障害物までの距離。これを下回ると障害物として認識する
     laser_num_ = this->declare_parameter<int>("laser_num");
+    ignore_dist_ = this->declare_parameter<double>("ignore_dist", 0.2);     // これを下回った場合は無視する
     timer_ = this->create_wall_timer(0.5s, std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
+
 
     // subscriber
     scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
@@ -43,7 +45,11 @@ void ObstacleDetector::scan_obstacle(){
 
     // 障害物情報配列への格納
     for(int i=0; i<laser_num_; i++){
-        if(obs_ranges[i] < obs_dist_ && !is_ignore_scan(obs_angles[i])){
+        if(obs_ranges[i] < ignore_dist_) {
+            // 検知物までの距離がignore_dist_未満の場合は障害物でないとする
+            o_points_[i] = {false, 0, 0, 0, 0};
+
+        } else if(obs_ranges[i] < obs_dist_ && !is_ignore_scan(obs_angles[i])) {
             // 検知物までの距離がobs_dist_未満で、ignoreしない場合に障害物があるとし、座標を格納
             o_points_[i].exist = true;
             o_points_[i].r = obs_ranges[i];
@@ -51,6 +57,7 @@ void ObstacleDetector::scan_obstacle(){
             // 以下2つの直交座標変換は必要ないならコメントアウトする
             o_points_[i].x = o_points_[i].r * cos(o_points_[i].theta);
             o_points_[i].y = o_points_[i].r * sin(o_points_[i].theta);
+            
         } else {
             o_points_[i] = {false, 0, 0, 0, 0};
         }
@@ -91,8 +98,9 @@ void ObstacleDetector::scan_obstacle(){
 //無視するlidar情報の範囲の決定(lidarがroombaの櫓の中にあり，櫓の４つの柱を障害物として検出してしまうため削除が必要)
 bool ObstacleDetector::is_ignore_scan(double angle){
     // ignoreする場合 (柱である場合) にtrueを返す
-    double pillar_B[4] = {0.7, 2.3, 3.9, 5.4};    // 各柱の角度領域の下端。[rad]
-    double pillar_T[4] = {0.8, 2.4, 4.0, 5.6};    // 各柱の角度領域の上端。[rad]
+    // 柱の角度はExcelで調べました。データはGoogleドライブ参照
+    double pillar_B[4] = {-0.80, 0.63, 2.24, 3.75};    // 各柱の角度領域の下端。[rad]
+    double pillar_T[4] = {-0.62, 1.20, 2.74, 3.93};    // 各柱の角度領域の上端。[rad]
 
     for(int i=0; i<4; i++) if(pillar_B[i] < angle && angle < pillar_T[i])  return true;
     return false;
