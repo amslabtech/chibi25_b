@@ -1,0 +1,4 @@
+source;share/teamb_obstacle_detector/local_setup.bash
+source;share/teamb_obstacle_detector/local_setup.dsv
+source;share/teamb_obstacle_detector/local_setup.sh
+source;share/teamb_obstacle_detector/local_setup.zsh

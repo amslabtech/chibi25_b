@@ -44,6 +44,13 @@ void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの
     resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
     width_ = map_.info.width;//マップの幅
     height_ = map_.info.height;//マップの高さ
+    
+    // マップの原点を取得//
+    current_node_.point.x = map_.info.origin.position.x;
+    current_node_.point.y = map_.info.origin.position.y;
+    current_node_.point.z = 0.0;
+    
+    
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", resolution_);
 }
 
@@ -82,7 +89,7 @@ void Astar::obs_expander()
 void Astar::obs_expand(const int index,std::vector<int8_t> new_map_data)
 {
     int x = index % width_;
-    int y = index / width_;
+    int y = index / width_ + 1;
 
     for (int dy = -margin_length; dy <= margin_length; dy++) {
         for (int dx = -margin_length; dx <= margin_length; dx++) {
@@ -117,9 +124,13 @@ Node_ Astar::set_way_point(int phase)
 {
     if(phase == 0){//スタート地点の格納にはphase=0
         double grid_x = 0.0,grid_y = 0.0;
-
+        
         start_node_.parent_x = start_node_.x;//親ノードもスタート位置なら
         start_node_.parent_y = start_node_.y;
+        
+        // 初期化
+        start_node_.x = 0;
+        start_node_.y = 0;
 
         grid_x = current_node_.point.x / resolution_;
         grid_y = current_node_.point.y / resolution_;
@@ -130,7 +141,7 @@ Node_ Astar::set_way_point(int phase)
         goal_node_ = create_neighbor_nodes(start_node_);
         //スタートノードをもとに隣のノードをゴールとして設定する
     }
-    if(phase == 1){//ゴール地点の格納にはphase=1
+    if(phase == 1){//最終ゴール地点の格納にはphase=1
         
     }
 
@@ -144,13 +155,18 @@ void Astar::create_path(Node_ node)
     partial_path.poses.push_back(node_to_pose(node));
 
     // ###### パスの作成 ######
-    while(node.parent){
-
+        while (node.parent_x != node.x || node.parent_y != node.y) {
+        node = get_parent_node(node); // 親ノードを取得
+        partial_path.poses.push_back(node_to_pose(node));
     }
 
-    // ###### パスの追加 ######
+    // 逆順になっているので順番を反転
+    std::reverse(partial_path.poses.begin(), partial_path.poses.end());
 
+    // ###### パスの追加 ######
+    global_path_.poses.insert(global_path_.poses.end(), partial_path.poses.begin(), partial_path.poses.end());
 }
+
 
 // ノード座標（グリッド）をgeometry_msgs::msg::PoseStamped（m単位のワールド座標系）に変換
 geometry_msgs::msg::PoseStamped Astar::node_to_pose(const Node_ node)
@@ -237,7 +253,7 @@ void Astar::swap_node(const Node_ node, std::vector<Node_>& list1, std::vector<N
 bool Astar::check_obs(const Node_ node)
 {
     // (x, y) の座標を 1次元インデックスに変換
-    index = node.y * width + node.x;
+    index = node.y * width_ + node.x;
 
     // インデックスが範囲外でないかチェック
     if (index < 0 || index >= static_cast<int>(new_map_.data.size())) {
@@ -263,12 +279,19 @@ void Astar::update_list(const Node_ node)
     //隣接ノードを用意する
 
     // ###### 隣接ノード ######
+
+
     for (auto& neighbor : neighbor_nodes){
-        if (close_list(neighbor)||check_obs(neighbor)){
-            swap_node(neighbor,open_list_,close_list_);
-            //close_list_の中身と同じものが入っていたらclose_list_へ
+        
+        //close_list__の中身と同じものが入っていたらclose_list_へ
+        if (close_list_(neighbor)||check_obs(neighbor)){
+            swap_node(neighbor,open_list_,close_list__);   
         }
-        Node_ selected_min_f = select_min_f();
+
+        // コスト計算
+        double g_cost = node.f + motion.cost; // g値（実コスト）
+        double h_cost = make_heuristic({new_x, new_y}); // h値（ゴールへの推定コスト）
+        double f_cost = g_cost + h_cost; // f = g + h
     }
 
 }
@@ -333,20 +356,14 @@ std::tuple<int, int> Astar::search_node(const Node_ node)
 {
     //Openリストの検索
     int index = 0;
-    for (const auto& n : open_list) {
-    if (n.x == node.x && n.y == node.y) {
-        return std::make_tuple(1, index);
-    }
-        index++;
+    for (const auto& n : open_list_) {
+        search_node_from_list(node,open_list_);
     }
 
     // Closeリストの検索
     index = 0;
-    for (const auto& n : close_list) {
-        if (n.x == node.x && n.y == node.y) {
-            return std::make_tuple(2, index);
-        }
-        index++;
+    for (const auto& n : close_list__) {
+        search_node_from_list(node,close_list__);
     }
         // どちらにも存在しない場合
     return std::make_tuple(-1, -1);
@@ -368,7 +385,9 @@ bool Astar::check_parent(const int index, const Node_ node)
 int Astar::search_node_from_list(const Node_ node, std::vector<Node_>& list)
 {
     auto result = std::find_if(list.begin(),list.end(), [](const Node_& n){
-        return check_same_node(n,node);//同じノードを探す　autoだけ心配
+        if(check_same_node(n,node) == true){
+            return node.y * width + node.x;
+        }//同じノードを探す　autoだけ心配
     });
 
     if(result == list.end()){
@@ -420,8 +439,39 @@ void Astar::planning()
     const int total_phase = way_points_x_.size();
 
     // ###### ウェイポイント間の経路探索 ######
-    set_way_point(0);
+    set_way_point(0);//とりあえずphase1のみ
+    
+    start_node_.cost = 0;
+    open_list_.push(start_node_);
 
+    while (!open_list_.empty()) {
+        Node_ current = open_list_.top();
+        open_list.pop();
+
+        // ゴールに到達した場合、経路を作成
+        if (current.x == goal_node_.x && current.y == goal_node_.y) {
+            create_path(current);
+            break;
+        }
+
+        // 探索済みリストに追加
+        close_list_.insert(current);
+
+        // 隣接ノードを探索
+        std::vector<Node_> neighbors = create_neighbor_nodes(current);
+        for (auto& neighbor : neighbors) {
+            if (close_list_.find(neighbor) != close_list_.end()) {
+                continue; // すでに探索済みならスキップ
+            }
+
+            double new_cost = current.cost + calculate_cost(current, neighbor);
+            if (new_cost < neighbor.cost || !is_in_open_list(open_list, neighbor)) {
+                neighbor.cost = new_cost;
+                neighbor.parent = std::make_shared<Node_>(current);
+                open_list_.push(neighbor);
+            }
+        }
+    }
 
     show_exe_time();
     RCLCPP_INFO_STREAM(get_logger(), "COMPLITE ASTAR PROGLAM");

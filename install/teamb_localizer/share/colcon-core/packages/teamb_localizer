@@ -1,0 +1,1 @@
+ament_cmake_auto:geometry_msgs:nav_msgs:random:rclcpp:sensor_msgs:tf2:tf2_geometry_msgs:tf2_ros

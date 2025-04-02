@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/user/ws/src/chibi25_b/build/teamb_global_path_planner/teamb_global_path_planner_node" "TARGETS" "teamb_global_path_planner_node" "DESTINATION" "lib/teamb_global_path_planner")

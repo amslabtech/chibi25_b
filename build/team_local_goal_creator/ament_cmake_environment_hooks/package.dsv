@@ -1,0 +1,4 @@
+source;share/team_local_goal_creator/local_setup.bash
+source;share/team_local_goal_creator/local_setup.dsv
+source;share/team_local_goal_creator/local_setup.sh
+source;share/team_local_goal_creator/local_setup.zsh

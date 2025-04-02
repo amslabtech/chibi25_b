@@ -1,0 +1,714 @@
+[0.000000] (-) TimerEvent: {}
+[0.000814] (local_map_creator) JobQueued: {'identifier': 'local_map_creator', 'dependencies': OrderedDict()}
+[0.001244] (team_local_goal_creator) JobQueued: {'identifier': 'team_local_goal_creator', 'dependencies': OrderedDict()}
+[0.001303] (team_local_path_planner) JobQueued: {'identifier': 'team_local_path_planner', 'dependencies': OrderedDict()}
+[0.001324] (teamb_global_path_planner) JobQueued: {'identifier': 'teamb_global_path_planner', 'dependencies': OrderedDict()}
+[0.001341] (teamb_localizer) JobQueued: {'identifier': 'teamb_localizer', 'dependencies': OrderedDict()}
+[0.001472] (teamb_obstacle_detector) JobQueued: {'identifier': 'teamb_obstacle_detector', 'dependencies': OrderedDict()}
+[0.002202] (local_map_creator) JobStarted: {'identifier': 'local_map_creator'}
+[0.017632] (team_local_goal_creator) JobStarted: {'identifier': 'team_local_goal_creator'}
+[0.023607] (team_local_path_planner) JobStarted: {'identifier': 'team_local_path_planner'}
+[0.030536] (teamb_global_path_planner) JobStarted: {'identifier': 'teamb_global_path_planner'}
+[0.035812] (teamb_localizer) JobStarted: {'identifier': 'teamb_localizer'}
+[0.041473] (teamb_obstacle_detector) JobStarted: {'identifier': 'teamb_obstacle_detector'}
+[0.052674] (local_map_creator) JobProgress: {'identifier': 'local_map_creator', 'progress': 'cmake'}
+[0.053636] (local_map_creator) Command: {'cmd': ['/usr/bin/cmake', '/home/user/ws/src/chibi25_b/local_map_creator', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/local_map_creator'], 'cwd': '/home/user/ws/src/chibi25_b/build/local_map_creator', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/local_map_creator'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[0.061406] (team_local_goal_creator) JobProgress: {'identifier': 'team_local_goal_creator', 'progress': 'cmake'}
+[0.064323] (team_local_goal_creator) Command: {'cmd': ['/usr/bin/cmake', '/home/user/ws/src/chibi25_b/local_goal_creator', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/team_local_goal_creator'], 'cwd': '/home/user/ws/src/chibi25_b/build/team_local_goal_creator', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/team_local_goal_creator'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[0.067077] (team_local_path_planner) JobProgress: {'identifier': 'team_local_path_planner', 'progress': 'cmake'}
+[0.068059] (team_local_path_planner) Command: {'cmd': ['/usr/bin/cmake', '/home/user/ws/src/chibi25_b/local_path_planner', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/team_local_path_planner'], 'cwd': '/home/user/ws/src/chibi25_b/build/team_local_path_planner', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/team_local_path_planner'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[0.072150] (teamb_global_path_planner) JobProgress: {'identifier': 'teamb_global_path_planner', 'progress': 'cmake'}
+[0.072823] (teamb_global_path_planner) Command: {'cmd': ['/usr/bin/cmake', '/home/user/ws/src/chibi25_b/global_path_planner', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_global_path_planner'], 'cwd': '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[0.077266] (teamb_localizer) JobProgress: {'identifier': 'teamb_localizer', 'progress': 'cmake'}
+[0.079871] (teamb_localizer) Command: {'cmd': ['/usr/bin/cmake', '/home/user/ws/src/chibi25_b/localizer', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_localizer'], 'cwd': '/home/user/ws/src/chibi25_b/build/teamb_localizer', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/teamb_localizer'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[0.083172] (teamb_obstacle_detector) JobProgress: {'identifier': 'teamb_obstacle_detector', 'progress': 'cmake'}
+[0.083770] (teamb_obstacle_detector) Command: {'cmd': ['/usr/bin/cmake', '/home/user/ws/src/chibi25_b/obstacle_detector', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_obstacle_detector'], 'cwd': '/home/user/ws/src/chibi25_b/build/teamb_obstacle_detector', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/teamb_obstacle_detector'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[0.107329] (-) TimerEvent: {}
+[0.209865] (-) TimerEvent: {}
+[0.311787] (-) TimerEvent: {}
+[0.412879] (-) TimerEvent: {}
+[0.426238] (teamb_obstacle_detector) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[0.426658] (team_local_path_planner) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[0.427066] (team_local_goal_creator) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[0.427525] (local_map_creator) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[0.429619] (teamb_localizer) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[0.430100] (teamb_global_path_planner) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[0.513164] (-) TimerEvent: {}
+[0.598970] (teamb_global_path_planner) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[0.599459] (teamb_obstacle_detector) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[0.602319] (team_local_path_planner) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[0.602661] (team_local_goal_creator) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[0.602894] (teamb_localizer) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[0.606548] (local_map_creator) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[0.613358] (-) TimerEvent: {}
+[0.618979] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.619319] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.619545] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.619934] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.620533] (teamb_localizer) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.621074] (local_map_creator) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.713717] (-) TimerEvent: {}
+[0.718552] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.719725] (teamb_localizer) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.726939] (local_map_creator) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.728034] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.728602] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.729998] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.730552] (teamb_localizer) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.731345] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.732011] (teamb_localizer) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.732189] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.733257] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.734114] (teamb_localizer) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.737312] (team_local_path_planner) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.737819] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.738222] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.739779] (team_local_goal_creator) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.741054] (local_map_creator) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.741297] (teamb_localizer) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.741680] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.741949] (teamb_global_path_planner) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.742840] (local_map_creator) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.742987] (local_map_creator) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.743105] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.743224] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.743329] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.743442] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.744097] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.745343] (local_map_creator) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.745592] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.747194] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.813890] (-) TimerEvent: {}
+[0.838774] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.843842] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.844258] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.850079] (team_local_goal_creator) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.850797] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.851543] (team_local_goal_creator) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.855596] (team_local_path_planner) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.856213] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.856688] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.856890] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.857064] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.857438] (team_local_path_planner) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.857781] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.858847] (teamb_localizer) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.859868] (local_map_creator) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.868388] (local_map_creator) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.869618] (teamb_global_path_planner) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.870523] (local_map_creator) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.871206] (local_map_creator) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.871901] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.872108] (teamb_global_path_planner) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.872594] (teamb_localizer) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.873110] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found ament_cmake_auto: 1.3.11 (/opt/ros/humble/share/ament_cmake_auto/cmake)\n'}
+[0.873415] (teamb_localizer) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.874068] (team_local_path_planner) StdoutLine: {'line': b'-- Found ament_cmake_auto: 1.3.11 (/opt/ros/humble/share/ament_cmake_auto/cmake)\n'}
+[0.874263] (team_local_goal_creator) StdoutLine: {'line': b'-- Found ament_cmake_auto: 1.3.11 (/opt/ros/humble/share/ament_cmake_auto/cmake)\n'}
+[0.874366] (teamb_localizer) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.874449] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found ament_cmake_auto: 1.3.11 (/opt/ros/humble/share/ament_cmake_auto/cmake)\n'}
+[0.874517] (local_map_creator) StdoutLine: {'line': b'-- Found ament_cmake_auto: 1.3.11 (/opt/ros/humble/share/ament_cmake_auto/cmake)\n'}
+[0.876696] (teamb_localizer) StdoutLine: {'line': b'-- Found ament_cmake_auto: 1.3.11 (/opt/ros/humble/share/ament_cmake_auto/cmake)\n'}
+[0.914040] (-) TimerEvent: {}
+[1.014860] (-) TimerEvent: {}
+[1.100774] (team_local_path_planner) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[1.113524] (teamb_localizer) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[1.114055] (team_local_goal_creator) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[1.115007] (-) TimerEvent: {}
+[1.125039] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[1.125793] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[1.129362] (local_map_creator) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[1.213548] (team_local_goal_creator) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.214325] (teamb_localizer) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.215039] (-) TimerEvent: {}
+[1.217183] (team_local_path_planner) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.224562] (teamb_global_path_planner) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.229156] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.229806] (local_map_creator) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.315293] (-) TimerEvent: {}
+[1.415934] (-) TimerEvent: {}
+[1.505828] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.506402] (team_local_goal_creator) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.506575] (team_local_path_planner) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.506714] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.506846] (teamb_localizer) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.506973] (local_map_creator) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.516119] (-) TimerEvent: {}
+[1.518585] (local_map_creator) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.519473] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.519715] (team_local_goal_creator) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.519928] (team_local_path_planner) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.520110] (teamb_localizer) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.520293] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.538134] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.539450] (teamb_localizer) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.539698] (team_local_goal_creator) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.539873] (local_map_creator) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.540003] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.540125] (team_local_path_planner) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.578497] (local_map_creator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.578989] (team_local_path_planner) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.579145] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.579273] (team_local_goal_creator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.579414] (teamb_localizer) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.579526] (teamb_global_path_planner) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.612588] (team_local_path_planner) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.613346] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.613639] (teamb_global_path_planner) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.613963] (local_map_creator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.614258] (teamb_localizer) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.614477] (team_local_goal_creator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.616248] (-) TimerEvent: {}
+[1.712930] (teamb_localizer) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[1.713743] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[1.713881] (team_local_path_planner) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[1.713969] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[1.714040] (team_local_goal_creator) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[1.714108] (local_map_creator) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[1.716424] (-) TimerEvent: {}
+[1.722017] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.723390] (local_map_creator) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.723556] (team_local_goal_creator) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.723672] (teamb_localizer) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.723775] (team_local_path_planner) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.723871] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.816577] (-) TimerEvent: {}
+[1.894795] (team_local_goal_creator) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  \n'}
+[1.895521] (team_local_path_planner) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  \n'}
+[1.895897] (local_map_creator) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  \n'}
+[1.896139] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  \n'}
+[1.896295] (teamb_localizer) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  \n'}
+[1.896413] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  \n'}
+[1.916759] (-) TimerEvent: {}
+[1.931083] (local_map_creator) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include  \n'}
+[1.931871] (teamb_localizer) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include  \n'}
+[1.932532] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include  \n'}
+[1.934856] (team_local_goal_creator) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include  \n'}
+[1.937220] (team_local_path_planner) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include  \n'}
+[1.938741] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include  \n'}
+[1.991511] (local_map_creator) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.992125] (teamb_localizer) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.994002] (teamb_obstacle_detector) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.995827] (team_local_path_planner) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.996831] (teamb_global_path_planner) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.997559] (team_local_goal_creator) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[2.016971] (-) TimerEvent: {}
+[2.017647] (local_map_creator) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[2.018922] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[2.019584] (teamb_localizer) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[2.020232] (team_local_goal_creator) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[2.020491] (team_local_path_planner) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[2.020770] (teamb_global_path_planner) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[2.117138] (-) TimerEvent: {}
+[2.117665] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[2.118520] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[2.120623] (team_local_goal_creator) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[2.121539] (team_local_goal_creator) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[2.122637] (teamb_global_path_planner) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[2.123054] (teamb_global_path_planner) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[2.126293] (local_map_creator) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[2.128615] (team_local_path_planner) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[2.128922] (local_map_creator) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[2.129434] (team_local_path_planner) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[2.132696] (teamb_localizer) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[2.134242] (teamb_localizer) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[2.211916] (local_map_creator) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[2.212634] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[2.214160] (team_local_goal_creator) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[2.214739] (local_map_creator) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[2.215030] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[2.216518] (team_local_goal_creator) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[2.217288] (-) TimerEvent: {}
+[2.220251] (teamb_global_path_planner) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[2.221256] (teamb_global_path_planner) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[2.224807] (teamb_localizer) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[2.226564] (teamb_localizer) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[2.228668] (team_local_path_planner) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[2.230896] (team_local_path_planner) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[2.317539] (-) TimerEvent: {}
+[2.418179] (-) TimerEvent: {}
+[2.419106] (team_local_goal_creator) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.419584] (local_map_creator) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.432205] (teamb_global_path_planner) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.437290] (local_map_creator) StdoutLine: {'line': b'-- Generating done\n'}
+[2.437914] (team_local_goal_creator) StdoutLine: {'line': b'-- Generating done\n'}
+[2.443283] (local_map_creator) StdoutLine: {'line': b'-- Build files have been written to: /home/user/ws/src/chibi25_b/build/local_map_creator\n'}
+[2.443926] (team_local_goal_creator) StdoutLine: {'line': b'-- Build files have been written to: /home/user/ws/src/chibi25_b/build/team_local_goal_creator\n'}
+[2.447415] (teamb_global_path_planner) StdoutLine: {'line': b'-- Generating done\n'}
+[2.453869] (teamb_global_path_planner) StdoutLine: {'line': b'-- Build files have been written to: /home/user/ws/src/chibi25_b/build/teamb_global_path_planner\n'}
+[2.463431] (local_map_creator) CommandEnded: {'returncode': 0}
+[2.467767] (local_map_creator) JobProgress: {'identifier': 'local_map_creator', 'progress': 'build'}
+[2.468052] (local_map_creator) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/user/ws/src/chibi25_b/build/local_map_creator', '--', '-j12', '-l12'], 'cwd': '/home/user/ws/src/chibi25_b/build/local_map_creator', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/local_map_creator'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[2.473423] (team_local_goal_creator) CommandEnded: {'returncode': 0}
+[2.475169] (team_local_goal_creator) JobProgress: {'identifier': 'team_local_goal_creator', 'progress': 'build'}
+[2.476064] (team_local_goal_creator) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/user/ws/src/chibi25_b/build/team_local_goal_creator', '--', '-j12', '-l12'], 'cwd': '/home/user/ws/src/chibi25_b/build/team_local_goal_creator', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/team_local_goal_creator'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[2.479801] (teamb_global_path_planner) CommandEnded: {'returncode': 0}
+[2.483330] (teamb_global_path_planner) JobProgress: {'identifier': 'teamb_global_path_planner', 'progress': 'build'}
+[2.483692] (teamb_global_path_planner) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner', '--', '-j12', '-l12'], 'cwd': '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner', 'env': OrderedDict([('HOSTNAME', 'docker-desktop'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/user/ws/install/urg_node2/lib:/home/user/ws/install/roomba_500driver_meiji/lib:/home/user/ws/install/realsense2_camera/lib:/home/user/ws/install/realsense2_camera_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/user'), ('OLDPWD', '/home/user/ws'), ('ROS_PYTHON_VERSION', '3'), ('_colcon_cd_root', '/home/user/ws'), ('COLCON_PREFIX_PATH', '/home/user/ws/install'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('PWD', '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner'), ('LC_ALL', 'C.UTF-8'), ('PYTHONPATH', '/home/user/ws/build/turtlesim_controller_py:/home/user/ws/install/turtlesim_controller_py/lib/python3.10/site-packages:/home/user/ws/install/roomba_500driver_meiji/local/lib/python3.10/dist-packages:/home/user/ws/install/realsense2_camera_msgs/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/user/ws/install/urg_node2:/home/user/ws/install/turtlesim_controller:/home/user/ws/install/third_challenge_takesue:/home/user/ws/install/test:/home/user/ws/install/second_challenge_takesue:/home/user/ws/install/roomba_teleop_meiji:/home/user/ws/install/roomba_description:/home/user/ws/install/first_challenge_takesue:/home/user/ws/install/roomba_500driver_meiji:/home/user/ws/install/realsense2_description:/home/user/ws/install/realsense2_camera:/home/user/ws/install/realsense2_camera_msgs:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble')]), 'shell': False}
+[2.518382] (-) TimerEvent: {}
+[2.537871] (local_map_creator) StdoutLine: {'line': b'[ 33%] \x1b[32mBuilding CXX object CMakeFiles/local_map_creator_node.dir/src/local_map_creator_node.cpp.o\x1b[0m\n'}
+[2.538838] (team_local_goal_creator) StdoutLine: {'line': b'[ 33%] \x1b[32mBuilding CXX object CMakeFiles/team_local_goal_creator_node.dir/src/local_goal_creator_node.cpp.o\x1b[0m\n'}
+[2.541748] (local_map_creator) StdoutLine: {'line': b'[ 66%] \x1b[32mBuilding CXX object CMakeFiles/local_map_creator_node.dir/src/local_map_creator.cpp.o\x1b[0m\n'}
+[2.544852] (team_local_goal_creator) StdoutLine: {'line': b'[ 66%] \x1b[32mBuilding CXX object CMakeFiles/team_local_goal_creator_node.dir/src/local_goal_creator.cpp.o\x1b[0m\n'}
+[2.553343] (teamb_global_path_planner) StdoutLine: {'line': b'[ 33%] \x1b[32mBuilding CXX object CMakeFiles/teamb_global_path_planner_node.dir/src/global_path_planner_node.cpp.o\x1b[0m\n'}
+[2.554109] (teamb_global_path_planner) StdoutLine: {'line': b'[ 66%] \x1b[32mBuilding CXX object CMakeFiles/teamb_global_path_planner_node.dir/src/global_path_planner.cpp.o\x1b[0m\n'}
+[2.618566] (-) TimerEvent: {}
+[2.664372] (team_local_path_planner) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)\n'}
+[2.665061] (teamb_localizer) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)\n'}
+[2.665892] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)\n'}
+[2.668478] (teamb_localizer) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[2.669435] (teamb_localizer) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[2.669898] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[2.670098] (team_local_path_planner) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[2.670377] (team_local_path_planner) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[2.670650] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[2.713192] (teamb_obstacle_detector) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.716325] (teamb_localizer) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.718758] (-) TimerEvent: {}
+[2.727067] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[31mCMake Error at /opt/ros/humble/share/ament_cmake_auto/cmake/ament_auto_add_executable.cmake:66 (add_executable):\n'}
+[2.728447] (teamb_obstacle_detector) StderrLine: {'line': b'  Cannot find source file:\n'}
+[2.729467] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.729957] (teamb_obstacle_detector) StderrLine: {'line': b'    src/localizer.cpp\n'}
+[2.730165] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.730663] (teamb_obstacle_detector) StderrLine: {'line': b'  Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h\n'}
+[2.731128] (teamb_obstacle_detector) StderrLine: {'line': b'  .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc\n'}
+[2.731581] (teamb_obstacle_detector) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[2.731825] (teamb_obstacle_detector) StderrLine: {'line': b'  CMakeLists.txt:9 (ament_auto_add_executable)\n'}
+[2.732319] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.732799] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[0m\n'}
+[2.733229] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:24 (add_executable):\n'}
+[2.733382] (teamb_obstacle_detector) StderrLine: {'line': b'  Cannot find source file:\n'}
+[2.733486] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.734100] (teamb_obstacle_detector) StderrLine: {'line': b'    src/turtle_tf_broadcaster.cpp\n'}
+[2.734309] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.734447] (teamb_obstacle_detector) StderrLine: {'line': b'  Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h\n'}
+[2.734968] (teamb_obstacle_detector) StderrLine: {'line': b'  .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc\n'}
+[2.735114] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.735440] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[0m\n'}
+[2.735952] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[31mCMake Error at /opt/ros/humble/share/ament_cmake_auto/cmake/ament_auto_add_executable.cmake:66 (add_executable):\n'}
+[2.736463] (teamb_obstacle_detector) StderrLine: {'line': b'  No SOURCES given to target: teamb_obstacle_detector_node\n'}
+[2.736974] (teamb_obstacle_detector) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[2.737116] (teamb_obstacle_detector) StderrLine: {'line': b'  CMakeLists.txt:9 (ament_auto_add_executable)\n'}
+[2.737254] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.737401] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[0m\n'}
+[2.737828] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:24 (add_executable):\n'}
+[2.738006] (teamb_obstacle_detector) StderrLine: {'line': b'  No SOURCES given to target: turtle_tf_broadcaster\n'}
+[2.738144] (teamb_obstacle_detector) StderrLine: {'line': b'\n'}
+[2.738255] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[0m\n'}
+[2.738346] (teamb_obstacle_detector) StderrLine: {'line': b'\x1b[0mCMake Generate step failed.  Build files cannot be regenerated correctly.\x1b[0m\n'}
+[2.738450] (teamb_localizer) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:24 (add_executable):\n'}
+[2.738959] (teamb_localizer) StderrLine: {'line': b'  Cannot find source file:\n'}
+[2.739104] (teamb_localizer) StderrLine: {'line': b'\n'}
+[2.739425] (teamb_localizer) StderrLine: {'line': b'    src/turtle_tf_broadcaster.cpp\n'}
+[2.739756] (teamb_localizer) StderrLine: {'line': b'\n'}
+[2.739919] (teamb_localizer) StderrLine: {'line': b'  Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h\n'}
+[2.740049] (teamb_localizer) StderrLine: {'line': b'  .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc\n'}
+[2.740166] (teamb_localizer) StderrLine: {'line': b'\n'}
+[2.740376] (teamb_localizer) StderrLine: {'line': b'\x1b[0m\n'}
+[2.740495] (teamb_localizer) StderrLine: {'line': b'\x1b[31mCMake Error at CMakeLists.txt:24 (add_executable):\n'}
+[2.740623] (teamb_localizer) StderrLine: {'line': b'  No SOURCES given to target: turtle_tf_broadcaster\n'}
+[2.740741] (teamb_localizer) StderrLine: {'line': b'\n'}
+[2.740848] (teamb_localizer) StderrLine: {'line': b'\x1b[0m\n'}
+[2.740993] (teamb_localizer) StderrLine: {'line': b'\x1b[0mCMake Generate step failed.  Build files cannot be regenerated correctly.\x1b[0m\n'}
+[2.751967] (teamb_localizer) CommandEnded: {'returncode': 1}
+[2.757782] (teamb_obstacle_detector) CommandEnded: {'returncode': 1}
+[2.796858] (team_local_path_planner) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.799754] (teamb_localizer) JobEnded: {'identifier': 'teamb_localizer', 'rc': 1}
+[2.802027] (teamb_obstacle_detector) JobEnded: {'identifier': 'teamb_obstacle_detector', 'rc': 'SIGINT'}
+[2.818942] (-) TimerEvent: {}
+[2.824464] (team_local_path_planner) StdoutLine: {'line': b'-- Generating done\n'}
+[2.831063] (team_local_path_planner) StdoutLine: {'line': b'-- Build files have been written to: /home/user/ws/src/chibi25_b/build/team_local_path_planner\n'}
+[2.843427] (team_local_path_planner) JobEnded: {'identifier': 'team_local_path_planner', 'rc': 'SIGINT'}
+[2.919179] (-) TimerEvent: {}
+[3.019787] (-) TimerEvent: {}
+[3.120340] (-) TimerEvent: {}
+[3.220840] (-) TimerEvent: {}
+[3.321563] (-) TimerEvent: {}
+[3.422308] (-) TimerEvent: {}
+[3.522990] (-) TimerEvent: {}
+[3.623760] (-) TimerEvent: {}
+[3.724494] (-) TimerEvent: {}
+[3.825249] (-) TimerEvent: {}
+[3.925895] (-) TimerEvent: {}
+[4.026676] (-) TimerEvent: {}
+[4.127440] (-) TimerEvent: {}
+[4.228183] (-) TimerEvent: {}
+[4.328931] (-) TimerEvent: {}
+[4.429698] (-) TimerEvent: {}
+[4.530426] (-) TimerEvent: {}
+[4.631172] (-) TimerEvent: {}
+[4.731884] (-) TimerEvent: {}
+[4.832673] (-) TimerEvent: {}
+[4.933390] (-) TimerEvent: {}
+[5.034398] (-) TimerEvent: {}
+[5.135200] (-) TimerEvent: {}
+[5.235885] (-) TimerEvent: {}
+[5.336512] (-) TimerEvent: {}
+[5.437231] (-) TimerEvent: {}
+[5.537981] (-) TimerEvent: {}
+[5.638711] (-) TimerEvent: {}
+[5.739508] (-) TimerEvent: {}
+[5.840327] (-) TimerEvent: {}
+[5.941126] (-) TimerEvent: {}
+[6.041880] (-) TimerEvent: {}
+[6.142573] (-) TimerEvent: {}
+[6.243324] (-) TimerEvent: {}
+[6.344039] (-) TimerEvent: {}
+[6.444753] (-) TimerEvent: {}
+[6.545476] (-) TimerEvent: {}
+[6.646291] (-) TimerEvent: {}
+[6.747029] (-) TimerEvent: {}
+[6.847726] (-) TimerEvent: {}
+[6.948458] (-) TimerEvent: {}
+[7.049259] (-) TimerEvent: {}
+[7.150072] (-) TimerEvent: {}
+[7.250777] (-) TimerEvent: {}
+[7.351564] (-) TimerEvent: {}
+[7.452331] (-) TimerEvent: {}
+[7.553097] (-) TimerEvent: {}
+[7.653836] (-) TimerEvent: {}
+[7.661216] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In constructor \xe2\x80\x98\x1b[01m\x1b[KAstar::Astar()\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.661985] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:10:5:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Krobot_radius_\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope\n'}
+[7.662200] (teamb_global_path_planner) StderrLine: {'line': b'   10 |     \x1b[01;31m\x1b[Krobot_radius_\x1b[m\x1b[K = this->declare_parameter<double>("robot_radius",0.3);\n'}
+[7.662398] (teamb_global_path_planner) StderrLine: {'line': b'      |     \x1b[01;31m\x1b[K^~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.682903] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K At global scope:\n'}
+[7.683605] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:38:6:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno declaration matches \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::map_callback(nav_msgs::msg::OccupancyGrid)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.683742] (teamb_global_path_planner) StderrLine: {'line': b'   38 | void \x1b[01;31m\x1b[KAstar\x1b[m\x1b[K::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //\xe3\x83\x9e\xe3\x83\x83\xe3\x83\x97\xe3\x81\xae\xe8\xaa\xad\xe3\x81\xbf\xe8\xbe\xbc\xe3\x81\xbf\n'}
+[7.683873] (teamb_global_path_planner) StderrLine: {'line': b'      |      \x1b[01;31m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.684033] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.684183] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:43:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate is: \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::map_callback(nav_msgs::msg::OccupancyGrid_<std::allocator<void> >::SharedPtr)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.684301] (teamb_global_path_planner) StderrLine: {'line': b'   43 |     void \x1b[01;36m\x1b[Kmap_callback\x1b[m\x1b[K(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);  // \xe3\x83\x9e\xe3\x83\x83\xe3\x83\x97\xe3\x83\x87\xe3\x83\xbc\xe3\x82\xbf\xe3\x82\x92\xe5\x8f\x97\xe4\xbf\xa1\xe3\x81\x97\xe5\x87\xa6\xe7\x90\x86\n'}
+[7.684423] (teamb_global_path_planner) StderrLine: {'line': b'      |          \x1b[01;36m\x1b[K^~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.684522] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:37:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kclass Astar\x1b[m\x1b[K\xe2\x80\x99 defined here\n'}
+[7.684625] (teamb_global_path_planner) StderrLine: {'line': b'   37 | class \x1b[01;36m\x1b[KAstar\x1b[m\x1b[K : public rclcpp::Node {\n'}
+[7.684718] (teamb_global_path_planner) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.697882] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::obs_expander()\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.698426] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:53:10:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kmap_received_\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope\n'}
+[7.698686] (teamb_global_path_planner) StderrLine: {'line': b'   53 |     if (!\x1b[01;31m\x1b[Kmap_received_\x1b[m\x1b[K) {\n'}
+[7.699323] (teamb_global_path_planner) StderrLine: {'line': b'      |          \x1b[01;31m\x1b[K^~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.705869] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:12:6:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno declaration matches \xe2\x80\x98\x1b[01m\x1b[Kvoid LocalGoalCreator::poseCallback()\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.706649] (team_local_goal_creator) StderrLine: {'line': b'   12 | void \x1b[01;31m\x1b[KLocalGoalCreator\x1b[m\x1b[K::poseCallback()//sub\xe3\x81\xae\xe3\x82\xb3\xe3\x83\xbc\xe3\x83\xab\xe3\x83\x90\xe3\x83\x83\xe3\x82\xaf\xe9\x96\xa2\xe6\x95\xb0\n'}
+[7.707061] (team_local_goal_creator) StderrLine: {'line': b'      |      \x1b[01;31m\x1b[K^~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.707286] (team_local_goal_creator) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:1\x1b[m\x1b[K:\n'}
+[7.707505] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/include/local_goal_creator/local_goal_creator.hpp:18:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate is: \xe2\x80\x98\x1b[01m\x1b[Kvoid LocalGoalCreator::poseCallback(geometry_msgs::msg::PoseStamped_<std::allocator<void> >::SharedPtr)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.707729] (team_local_goal_creator) StderrLine: {'line': b'   18 |     void \x1b[01;36m\x1b[KposeCallback\x1b[m\x1b[K(const geometry_msgs::msg::PoseStamped::SharedPtr msg);\n'}
+[7.708050] (team_local_goal_creator) StderrLine: {'line': b'      |          \x1b[01;36m\x1b[K^~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.708589] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/include/local_goal_creator/local_goal_creator.hpp:9:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kclass LocalGoalCreator\x1b[m\x1b[K\xe2\x80\x99 defined here\n'}
+[7.708771] (team_local_goal_creator) StderrLine: {'line': b'    9 | class \x1b[01;36m\x1b[KLocalGoalCreator\x1b[m\x1b[K : public rclcpp::Node\n'}
+[7.709057] (team_local_goal_creator) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.709427] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:17:6:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno declaration matches \xe2\x80\x98\x1b[01m\x1b[Kvoid LocalGoalCreator::pathCallback()\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.709611] (team_local_goal_creator) StderrLine: {'line': b'   17 | void \x1b[01;31m\x1b[KLocalGoalCreator\x1b[m\x1b[K::pathCallback()//sub\xe3\x81\xae\xe3\x82\xb3\xe3\x83\xbc\xe3\x83\xab\xe3\x83\x90\xe3\x83\x83\xe3\x82\xaf\xe9\x96\xa2\xe6\x95\xb0\n'}
+[7.709743] (team_local_goal_creator) StderrLine: {'line': b'      |      \x1b[01;31m\x1b[K^~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.709865] (team_local_goal_creator) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:1\x1b[m\x1b[K:\n'}
+[7.710142] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/include/local_goal_creator/local_goal_creator.hpp:17:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate is: \xe2\x80\x98\x1b[01m\x1b[Kvoid LocalGoalCreator::pathCallback(nav_msgs::msg::Path_<std::allocator<void> >::SharedPtr)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.710512] (team_local_goal_creator) StderrLine: {'line': b'   17 |     void \x1b[01;36m\x1b[KpathCallback\x1b[m\x1b[K(const nav_msgs::msg::Path::SharedPtr msg);\n'}
+[7.710674] (team_local_goal_creator) StderrLine: {'line': b'      |          \x1b[01;36m\x1b[K^~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.711138] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/include/local_goal_creator/local_goal_creator.hpp:9:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kclass LocalGoalCreator\x1b[m\x1b[K\xe2\x80\x99 defined here\n'}
+[7.711587] (team_local_goal_creator) StderrLine: {'line': b'    9 | class \x1b[01;36m\x1b[KLocalGoalCreator\x1b[m\x1b[K : public rclcpp::Node\n'}
+[7.711784] (team_local_goal_creator) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.712030] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kint LocalGoalCreator::getOdomFreq()\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.712419] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:25:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.712644] (team_local_goal_creator) StderrLine: {'line': b'   25 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.712897] (team_local_goal_creator) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.713084] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kdouble LocalGoalCreator::getDistance()\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.713320] (team_local_goal_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_goal_creator/src/local_goal_creator.cpp:41:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.713577] (team_local_goal_creator) StderrLine: {'line': b'   41 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.713739] (team_local_goal_creator) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.714027] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:62:48:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Krobot_radius_\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope\n'}
+[7.714236] (teamb_global_path_planner) StderrLine: {'line': b'   62 |     margin_length = static_cast<int>(std::ceil(\x1b[01;31m\x1b[Krobot_radius_\x1b[m\x1b[K / resolution_));  // \xe3\x82\xbb\xe3\x83\xab\xe5\x8d\x98\xe4\xbd\x8d\xe3\x81\xae\xe6\x8b\xa1\xe5\xbc\xb5\xe7\xaf\x84\xe5\x9b\xb2\n'}
+[7.714942] (teamb_global_path_planner) StderrLine: {'line': b'      |                                                \x1b[01;31m\x1b[K^~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.715686] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:66:34:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Koverloaded function with no contextual type information\n'}
+[7.715994] (teamb_global_path_planner) StderrLine: {'line': b'   66 |             index = y * width_ + \x1b[01;31m\x1b[Kx\x1b[m\x1b[K;\n'}
+[7.716428] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[01;31m\x1b[K^\x1b[m\x1b[K\n'}
+[7.716956] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:68:27:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno matching function for call to \xe2\x80\x98\x1b[01m\x1b[KAstar::obs_expand(<unresolved overloaded function type>, std::vector<signed char, std::allocator<signed char> >&)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.717542] (teamb_global_path_planner) StderrLine: {'line': b'   68 |                 \x1b[01;31m\x1b[Kobs_expand(index, new_map_data)\x1b[m\x1b[K;\n'}
+[7.717835] (teamb_global_path_planner) StderrLine: {'line': b'      |                 \x1b[01;31m\x1b[K~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.718467] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.719359] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:46:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::obs_expand(int)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.719870] (teamb_global_path_planner) StderrLine: {'line': b'   46 |     void \x1b[01;36m\x1b[Kobs_expand\x1b[m\x1b[K(const int index);                // \xe6\x8c\x87\xe5\xae\x9a\xe3\x81\x95\xe3\x82\x8c\xe3\x81\x9f\xe3\x82\xa4\xe3\x83\xb3\xe3\x83\x87\xe3\x83\x83\xe3\x82\xaf\xe3\x82\xb9\xe3\x81\xae\xe9\x9a\x9c\xe5\xae\xb3\xe7\x89\xa9\xe3\x82\x92\xe6\x8b\xa1\xe5\xbc\xb5\n'}
+[7.720280] (teamb_global_path_planner) StderrLine: {'line': b'      |          \x1b[01;36m\x1b[K^~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.721227] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:46:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  candidate expects 1 argument, 2 provided\n'}
+[7.721478] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K At global scope:\n'}
+[7.722135] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:82:6:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno declaration matches \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::obs_expand(int, std::vector<signed char, std::allocator<signed char> >)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.722462] (teamb_global_path_planner) StderrLine: {'line': b'   82 | void \x1b[01;31m\x1b[KAstar\x1b[m\x1b[K::obs_expand(const int index,std::vector<int8_t> new_map_data)\n'}
+[7.722668] (teamb_global_path_planner) StderrLine: {'line': b'      |      \x1b[01;31m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.723006] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.723662] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:46:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate is: \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::obs_expand(int)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.724307] (teamb_global_path_planner) StderrLine: {'line': b'   46 |     void \x1b[01;36m\x1b[Kobs_expand\x1b[m\x1b[K(const int index);                // \xe6\x8c\x87\xe5\xae\x9a\xe3\x81\x95\xe3\x82\x8c\xe3\x81\x9f\xe3\x82\xa4\xe3\x83\xb3\xe3\x83\x87\xe3\x83\x83\xe3\x82\xaf\xe3\x82\xb9\xe3\x81\xae\xe9\x9a\x9c\xe5\xae\xb3\xe7\x89\xa9\xe3\x82\x92\xe6\x8b\xa1\xe5\xbc\xb5\n'}
+[7.724533] (teamb_global_path_planner) StderrLine: {'line': b'      |          \x1b[01;36m\x1b[K^~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.725167] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:37:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kclass Astar\x1b[m\x1b[K\xe2\x80\x99 defined here\n'}
+[7.725507] (teamb_global_path_planner) StderrLine: {'line': b'   37 | class \x1b[01;36m\x1b[KAstar\x1b[m\x1b[K : public rclcpp::Node {\n'}
+[7.725658] (teamb_global_path_planner) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.725769] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[KNode_ Astar::set_way_point(int)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.725893] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:130:43:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno matching function for call to \xe2\x80\x98\x1b[01m\x1b[KAstar::create_neighbor_nodes(Node_&)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.726007] (teamb_global_path_planner) StderrLine: {'line': b'  130 |         goal_node_ = \x1b[01;31m\x1b[Kcreate_neighbor_nodes(start_node_)\x1b[m\x1b[K;\n'}
+[7.726145] (teamb_global_path_planner) StderrLine: {'line': b'      |                      \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.726492] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.726600] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:54:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::create_neighbor_nodes(Node_, std::vector<Node_>&)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.726701] (teamb_global_path_planner) StderrLine: {'line': b'   54 |     void \x1b[01;36m\x1b[Kcreate_neighbor_nodes\x1b[m\x1b[K(const Node_ node, std::vector<Node_>& nodes); // \xe6\x8c\x87\xe5\xae\x9a\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x89\xe3\x81\xae\xe9\x9a\xa3\xe6\x8e\xa5\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x89\xe3\x82\x92\xe4\xbd\x9c\xe6\x88\x90\n'}
+[7.726921] (teamb_global_path_planner) StderrLine: {'line': b'      |          \x1b[01;36m\x1b[K^~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.727197] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:54:10:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  candidate expects 2 arguments, 1 provided\n'}
+[7.727330] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:137:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.727604] (teamb_global_path_planner) StderrLine: {'line': b'  137 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.727778] (teamb_global_path_planner) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.728079] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::create_path(Node_)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.728201] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:147:16:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kstruct Node_\x1b[m\x1b[K\xe2\x80\x99 has no member named \xe2\x80\x98\x1b[01m\x1b[Kparent\x1b[m\x1b[K\xe2\x80\x99; did you mean \xe2\x80\x98\x1b[01m\x1b[Kparent_x\x1b[m\x1b[K\xe2\x80\x99?\n'}
+[7.728387] (teamb_global_path_planner) StderrLine: {'line': b'  147 |     while(node.\x1b[01;31m\x1b[Kparent\x1b[m\x1b[K){\n'}
+[7.728574] (teamb_global_path_planner) StderrLine: {'line': b'      |                \x1b[01;31m\x1b[K^~~~~~\x1b[m\x1b[K\n'}
+[7.728782] (teamb_global_path_planner) StderrLine: {'line': b'      |                \x1b[32m\x1b[Kparent_x\x1b[m\x1b[K\n'}
+[7.728976] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[KNode_ Astar::select_min_f()\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.729604] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:188:34:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kcannot convert \xe2\x80\x98\x1b[01m\x1b[K__gnu_cxx::__normal_iterator<Node_*, std::vector<Node_> >\x1b[m\x1b[K\xe2\x80\x99 to \xe2\x80\x98\x1b[01m\x1b[Kdouble\x1b[m\x1b[K\xe2\x80\x99 in assignment\n'}
+[7.729865] (teamb_global_path_planner) StderrLine: {'line': b'  188 |     smallest_f = \x1b[01;31m\x1b[Kstd::min_element(open_list_.begin(),open_list_.end(), [](const Node_& a, const Node_& b){\x1b[m\x1b[K\n'}
+[7.729984] (teamb_global_path_planner) StderrLine: {'line': b'      |                  \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.730172] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[01;31m\x1b[K|\x1b[m\x1b[K\n'}
+[7.730420] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[01;31m\x1b[K__gnu_cxx::__normal_iterator<Node_*, std::vector<Node_> >\x1b[m\x1b[K\n'}
+[7.730631] (teamb_global_path_planner) StderrLine: {'line': b'  189 | \x1b[01;31m\x1b[K        return a.f < b.f;\x1b[m\x1b[K\n'}
+[7.730758] (teamb_global_path_planner) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~\x1b[m\x1b[K         \n'}
+[7.730941] (teamb_global_path_planner) StderrLine: {'line': b'  190 | \x1b[01;31m\x1b[K    })\x1b[m\x1b[K;//min_element\xe3\x81\xaf\xe6\xaf\x94\xe8\xbc\x83\xe3\x81\xab\xe3\x82\x88\xe3\x81\xa3\xe3\x81\xa6\xe6\x9c\x80\xe5\xb0\x8f\xe5\x80\xa4\xe3\x82\x92\xe8\xa6\x8b\xe3\x81\xa4\xe3\x81\x91\xe5\x87\xba\xe3\x81\x99\xe9\x96\xa2\xe6\x95\xb0\n'}
+[7.731162] (teamb_global_path_planner) StderrLine: {'line': b'      |     \x1b[01;31m\x1b[K~~\x1b[m\x1b[K                            \n'}
+[7.731370] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:191:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.731665] (teamb_global_path_planner) StderrLine: {'line': b'  191 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.731851] (teamb_global_path_planner) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.732345] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kint Astar::check_list(Node_, std::vector<Node_>&)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.732896] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:215:32:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Klist\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope\n'}
+[7.733519] (teamb_global_path_planner) StderrLine: {'line': b'  215 |     auto result = std::find_if(\x1b[01;31m\x1b[Klist\x1b[m\x1b[K.begin(),list.end(), [](const Node_& n){\n'}
+[7.733817] (teamb_global_path_planner) StderrLine: {'line': b'      |                                \x1b[01;31m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.734032] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:215:32:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Ksuggested alternatives:\n'}
+[7.734622] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/usr/include/c++/11/list:63\x1b[m\x1b[K,\n'}
+[7.734898] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:23\x1b[m\x1b[K,\n'}
+[7.735319] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[7.735753] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[7.736316] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[7.736961] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:4\x1b[m\x1b[K,\n'}
+[7.737379] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.738007] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_list.h:557:11:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  \xe2\x80\x98\x1b[01m\x1b[Kstd::__cxx11::list\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.738572] (teamb_global_path_planner) StderrLine: {'line': b'  557 |     class \x1b[01;36m\x1b[Klist\x1b[m\x1b[K : protected _List_base<_Tp, _Alloc>\n'}
+[7.738944] (teamb_global_path_planner) StderrLine: {'line': b'      |           \x1b[01;36m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.739168] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:23\x1b[m\x1b[K,\n'}
+[7.739728] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[7.740185] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[7.740467] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[7.740852] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:4\x1b[m\x1b[K,\n'}
+[7.741023] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.741463] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/list:78:13:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  \xe2\x80\x98\x1b[01m\x1b[Kstd::pmr::list\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.741713] (teamb_global_path_planner) StderrLine: {'line': b'   78 |       using \x1b[01;36m\x1b[Klist\x1b[m\x1b[K = std::list<_Tp, polymorphic_allocator<_Tp>>;\n'}
+[7.741977] (teamb_global_path_planner) StderrLine: {'line': b'      |             \x1b[01;36m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.742280] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In lambda function:\n'}
+[7.742790] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:216:34:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Knode\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope; did you mean \xe2\x80\x98\x1b[01m\x1b[KNode\x1b[m\x1b[K\xe2\x80\x99?\n'}
+[7.742977] (teamb_global_path_planner) StderrLine: {'line': b'  216 |         return check_same_node(n,\x1b[01;31m\x1b[Knode\x1b[m\x1b[K);//\xe5\x90\x8c\xe3\x81\x98\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x89\xe3\x82\x92\xe6\x8e\xa2\xe3\x81\x99\n'}
+[7.743329] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[01;31m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.743598] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[32m\x1b[KNode\x1b[m\x1b[K\n'}
+[7.744099] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::swap_node(Node_, std::vector<Node_>&, std::vector<Node_>&)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.744407] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:231:21:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid type argument of unary \xe2\x80\x98\x1b[01m\x1b[K*\x1b[m\x1b[K\xe2\x80\x99 (have \xe2\x80\x98\x1b[01m\x1b[Kint\x1b[m\x1b[K\xe2\x80\x99)\n'}
+[7.744728] (teamb_global_path_planner) StderrLine: {'line': b'  231 |     list2.push_back(\x1b[01;31m\x1b[K*result\x1b[m\x1b[K);//\xe8\xa6\x8b\xe3\x81\xa4\xe3\x81\x91\xe3\x81\x9f\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x89\xe3\x82\x92list2\xe3\x81\xae\xe6\x9c\xab\xe5\xb0\xbe\xe3\x81\xab\xe8\xbf\xbd\xe5\x8a\xa0\n'}
+[7.745112] (teamb_global_path_planner) StderrLine: {'line': b'      |                     \x1b[01;31m\x1b[K^~~~~~~\x1b[m\x1b[K\n'}
+[7.745384] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:232:16:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno matching function for call to \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<Node_>::erase(int&)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.745740] (teamb_global_path_planner) StderrLine: {'line': b'  232 |     \x1b[01;31m\x1b[Klist1.erase(result)\x1b[m\x1b[K;//list2\xe3\x81\x8b\xe3\x82\x89\xe6\x8c\x87\xe5\xae\x9a\xe3\x81\xae\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x89\xe3\x82\x92\xe5\x89\x8a\xe9\x99\xa4\n'}
+[7.745893] (teamb_global_path_planner) StderrLine: {'line': b'      |     \x1b[01;31m\x1b[K~~~~~~~~~~~^~~~~~~~\x1b[m\x1b[K\n'}
+[7.746175] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/usr/include/c++/11/vector:67\x1b[m\x1b[K,\n'}
+[7.746280] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/usr/include/c++/11/functional:62\x1b[m\x1b[K,\n'}
+[7.746529] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/usr/include/c++/11/pstl/glue_algorithm_defs.h:13\x1b[m\x1b[K,\n'}
+[7.746619] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/usr/include/c++/11/algorithm:74\x1b[m\x1b[K,\n'}
+[7.746736] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:18\x1b[m\x1b[K,\n'}
+[7.746885] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[7.746991] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[7.747216] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[7.747309] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:4\x1b[m\x1b[K,\n'}
+[7.747452] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.747590] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1430:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::erase(std::vector<_Tp, _Alloc>::const_iterator) [with _Tp = Node_; _Alloc = std::allocator<Node_>; std::vector<_Tp, _Alloc>::iterator = std::vector<Node_>::iterator; std::vector<_Tp, _Alloc>::const_iterator = std::vector<Node_>::const_iterator]\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.747691] (teamb_global_path_planner) StderrLine: {'line': b' 1430 |       \x1b[01;36m\x1b[Kerase\x1b[m\x1b[K(const_iterator __position)\n'}
+[7.747826] (teamb_global_path_planner) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.747985] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1430:28:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  no known conversion for argument 1 from \xe2\x80\x98\x1b[01m\x1b[Kint\x1b[m\x1b[K\xe2\x80\x99 to \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<Node_>::const_iterator\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.748104] (teamb_global_path_planner) StderrLine: {'line': b' 1430 |       erase(\x1b[01;36m\x1b[Kconst_iterator __position\x1b[m\x1b[K)\n'}
+[7.748219] (teamb_global_path_planner) StderrLine: {'line': b'      |             \x1b[01;36m\x1b[K~~~~~~~~~~~~~~~^~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.749096] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1457:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::erase(std::vector<_Tp, _Alloc>::const_iterator, std::vector<_Tp, _Alloc>::const_iterator) [with _Tp = Node_; _Alloc = std::allocator<Node_>; std::vector<_Tp, _Alloc>::iterator = std::vector<Node_>::iterator; std::vector<_Tp, _Alloc>::const_iterator = std::vector<Node_>::const_iterator]\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.749816] (teamb_global_path_planner) StderrLine: {'line': b' 1457 |       \x1b[01;36m\x1b[Kerase\x1b[m\x1b[K(const_iterator __first, const_iterator __last)\n'}
+[7.750068] (teamb_global_path_planner) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.750377] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1457:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  candidate expects 2 arguments, 1 provided\n'}
+[7.750736] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kbool Astar::check_obs(Node_)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.751095] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:240:36:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Koverloaded function with no contextual type information\n'}
+[7.751379] (teamb_global_path_planner) StderrLine: {'line': b'  240 |     index = node.y * width_ + node.\x1b[01;31m\x1b[Kx\x1b[m\x1b[K;\n'}
+[7.751599] (teamb_global_path_planner) StderrLine: {'line': b'      |                                    \x1b[01;31m\x1b[K^\x1b[m\x1b[K\n'}
+[7.751802] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:243:15:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid operands of types \xe2\x80\x98\x1b[01m\x1b[K<unresolved overloaded function type>\x1b[m\x1b[K\xe2\x80\x99 and \xe2\x80\x98\x1b[01m\x1b[Kint\x1b[m\x1b[K\xe2\x80\x99 to binary \xe2\x80\x98\x1b[01m\x1b[Koperator<\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.752063] (teamb_global_path_planner) StderrLine: {'line': b'  243 |     if (\x1b[01;31m\x1b[Kindex < 0\x1b[m\x1b[K || index >= static_cast<int>(new_map_.data.size())) {\n'}
+[7.752255] (teamb_global_path_planner) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K~~~~~~^~~\x1b[m\x1b[K\n'}
+[7.752449] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:243:28:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kinvalid operands of types \xe2\x80\x98\x1b[01m\x1b[K<unresolved overloaded function type>\x1b[m\x1b[K\xe2\x80\x99 and \xe2\x80\x98\x1b[01m\x1b[Kint\x1b[m\x1b[K\xe2\x80\x99 to binary \xe2\x80\x98\x1b[01m\x1b[Koperator>=\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.752684] (teamb_global_path_planner) StderrLine: {'line': b'  243 |     if (index < 0 || \x1b[01;31m\x1b[Kindex >= static_cast<int>(new_map_.data.size())\x1b[m\x1b[K) {\n'}
+[7.752897] (teamb_global_path_planner) StderrLine: {'line': b'      |                      \x1b[01;31m\x1b[K~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.753115] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:248:38:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno match for \xe2\x80\x98\x1b[01m\x1b[Koperator[]\x1b[m\x1b[K\xe2\x80\x99 (operand types are \xe2\x80\x98\x1b[01m\x1b[Knav_msgs::msg::OccupancyGrid_<std::allocator<void> >::_data_type\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<signed char, std::allocator<signed char> >\x1b[m\x1b[K\xe2\x80\x99} and \xe2\x80\x98\x1b[01m\x1b[K<unresolved overloaded function type>\x1b[m\x1b[K\xe2\x80\x99)\n'}
+[7.753329] (teamb_global_path_planner) StderrLine: {'line': b'  248 |     int8_t cell_value = new_map_.data\x1b[01;31m\x1b[K[\x1b[m\x1b[Kindex];//int8_t\xe3\x81\xaf\xe7\xac\xa6\xe5\x8f\xb7\xe4\xbb\x98\xe6\x95\xb4\xe6\x95\xb0\xe5\x9e\x8b\n'}
+[7.753538] (teamb_global_path_planner) StderrLine: {'line': b'      |                                      \x1b[01;31m\x1b[K^\x1b[m\x1b[K\n'}
+[7.753718] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/usr/include/c++/11/vector:67\x1b[m\x1b[K,\n'}
+[7.753891] (-) TimerEvent: {}
+[7.754223] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/usr/include/c++/11/functional:62\x1b[m\x1b[K,\n'}
+[7.754459] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/usr/include/c++/11/pstl/glue_algorithm_defs.h:13\x1b[m\x1b[K,\n'}
+[7.754660] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/usr/include/c++/11/algorithm:74\x1b[m\x1b[K,\n'}
+[7.754841] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:18\x1b[m\x1b[K,\n'}
+[7.755044] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[7.755213] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[7.755389] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[7.755640] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:4\x1b[m\x1b[K,\n'}
+[7.755842] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.756067] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1043:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) [with _Tp = signed char; _Alloc = std::allocator<signed char>; std::vector<_Tp, _Alloc>::reference = signed char&; std::vector<_Tp, _Alloc>::size_type = long unsigned int]\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.756655] (teamb_global_path_planner) StderrLine: {'line': b' 1043 |       \x1b[01;36m\x1b[Koperator\x1b[m\x1b[K[](size_type __n) _GLIBCXX_NOEXCEPT\n'}
+[7.756836] (teamb_global_path_planner) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~~~~\x1b[m\x1b[K\n'}
+[7.757011] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1043:28:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  no known conversion for argument 1 from \xe2\x80\x98\x1b[01m\x1b[K<unresolved overloaded function type>\x1b[m\x1b[K\xe2\x80\x99 to \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<signed char, std::allocator<signed char> >::size_type\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Klong unsigned int\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[7.757255] (teamb_global_path_planner) StderrLine: {'line': b' 1043 |       operator[](\x1b[01;36m\x1b[Ksize_type __n\x1b[m\x1b[K) _GLIBCXX_NOEXCEPT\n'}
+[7.757497] (teamb_global_path_planner) StderrLine: {'line': b'      |                  \x1b[01;36m\x1b[K~~~~~~~~~~^~~\x1b[m\x1b[K\n'}
+[7.757672] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1061:7:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<_Tp, _Alloc>::const_reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) const [with _Tp = signed char; _Alloc = std::allocator<signed char>; std::vector<_Tp, _Alloc>::const_reference = const signed char&; std::vector<_Tp, _Alloc>::size_type = long unsigned int]\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.757872] (teamb_global_path_planner) StderrLine: {'line': b' 1061 |       \x1b[01;36m\x1b[Koperator\x1b[m\x1b[K[](size_type __n) const _GLIBCXX_NOEXCEPT\n'}
+[7.758096] (teamb_global_path_planner) StderrLine: {'line': b'      |       \x1b[01;36m\x1b[K^~~~~~~~\x1b[m\x1b[K\n'}
+[7.758298] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/usr/include/c++/11/bits/stl_vector.h:1061:28:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  no known conversion for argument 1 from \xe2\x80\x98\x1b[01m\x1b[K<unresolved overloaded function type>\x1b[m\x1b[K\xe2\x80\x99 to \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<signed char, std::allocator<signed char> >::size_type\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Klong unsigned int\x1b[m\x1b[K\xe2\x80\x99}\n'}
+[7.758475] (teamb_global_path_planner) StderrLine: {'line': b' 1061 |       operator[](\x1b[01;36m\x1b[Ksize_type __n\x1b[m\x1b[K) const _GLIBCXX_NOEXCEPT\n'}
+[7.758695] (teamb_global_path_planner) StderrLine: {'line': b'      |                  \x1b[01;36m\x1b[K~~~~~~~~~~^~~\x1b[m\x1b[K\n'}
+[7.758907] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::update_list(Node_)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.759097] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:267:13:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kclose_list\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope; did you mean \xe2\x80\x98\x1b[01m\x1b[Kclose_list_\x1b[m\x1b[K\xe2\x80\x99?\n'}
+[7.759353] (teamb_global_path_planner) StderrLine: {'line': b'  267 |         if (\x1b[01;31m\x1b[Kclose_list\x1b[m\x1b[K(neighbor)||check_obs(neighbor)){\n'}
+[7.759517] (teamb_global_path_planner) StderrLine: {'line': b'      |             \x1b[01;31m\x1b[K^~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.759677] (teamb_global_path_planner) StderrLine: {'line': b'      |             \x1b[32m\x1b[Kclose_list_\x1b[m\x1b[K\n'}
+[7.759887] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[KMotion_ Astar::motion(int, int, int)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.760157] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:316:28:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Knarrowing conversion of \xe2\x80\x98\x1b[01m\x1b[K(int)cost\x1b[m\x1b[K\xe2\x80\x99 from \xe2\x80\x98\x1b[01m\x1b[Kint\x1b[m\x1b[K\xe2\x80\x99 to \xe2\x80\x98\x1b[01m\x1b[Kdouble\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K-Wnarrowing\x1b[m\x1b[K]\n'}
+[7.760365] (teamb_global_path_planner) StderrLine: {'line': b'  316 |     return Motion_{dx, dy, \x1b[01;35m\x1b[Kcost\x1b[m\x1b[K};\n'}
+[7.760539] (teamb_global_path_planner) StderrLine: {'line': b'      |                            \x1b[01;35m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.760722] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[KNode_ Astar::get_neighbor_node(Node_, Motion_)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.761166] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:325:14:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kstruct Node_\x1b[m\x1b[K\xe2\x80\x99 has no member named \xe2\x80\x98\x1b[01m\x1b[Kcost\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.761371] (teamb_global_path_planner) StderrLine: {'line': b'  325 |     neighbor.\x1b[01;31m\x1b[Kcost\x1b[m\x1b[K = motion.cost;\n'}
+[7.761566] (teamb_global_path_planner) StderrLine: {'line': b'      |              \x1b[01;31m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.761801] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kbool Astar::check_parent(int, Node_)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.762163] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:359:18:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kassignment of read-only parameter \xe2\x80\x98\x1b[01m\x1b[Kindex\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.762435] (teamb_global_path_planner) StderrLine: {'line': b'  359 |     return \x1b[01;31m\x1b[Kindex = node.parent_y * width_ + node.parent_x\x1b[m\x1b[K;\n'}
+[7.762779] (teamb_global_path_planner) StderrLine: {'line': b'      |            \x1b[01;31m\x1b[K~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[7.763167] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In lambda function:\n'}
+[7.763403] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:371:30:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Knode\x1b[m\x1b[K\xe2\x80\x99 is not captured\n'}
+[7.763649] (teamb_global_path_planner) StderrLine: {'line': b'  371 |         if(check_same_node(n,\x1b[01;31m\x1b[Knode\x1b[m\x1b[K) == true){\n'}
+[7.764175] (teamb_global_path_planner) StderrLine: {'line': b'      |                              \x1b[01;31m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.764644] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:370:58:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kthe lambda has no capture-default\n'}
+[7.765153] (teamb_global_path_planner) StderrLine: {'line': b'  370 | uto result = std::find_if(list.begin(),list.end(), [\x1b[01;36m\x1b[K]\x1b[m\x1b[K(const Node_& n){\n'}
+[7.765668] (teamb_global_path_planner) StderrLine: {'line': b'      |                                                     \x1b[01;36m\x1b[K^\x1b[m\x1b[K\n'}
+[7.766058] (teamb_global_path_planner) StderrLine: {'line': b'\n'}
+[7.766603] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:368:46:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kconst Node_ node\x1b[m\x1b[K\xe2\x80\x99 declared here\n'}
+[7.766925] (teamb_global_path_planner) StderrLine: {'line': b'  368 | int Astar::search_node_from_list(\x1b[01;36m\x1b[Kconst Node_ node\x1b[m\x1b[K, std::vector<Node_>& list)\n'}
+[7.767234] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[01;36m\x1b[K~~~~~~~~~~~~^~~~\x1b[m\x1b[K\n'}
+[7.767625] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:372:20:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Knode\x1b[m\x1b[K\xe2\x80\x99 is not captured\n'}
+[7.768128] (teamb_global_path_planner) StderrLine: {'line': b'  372 |             return \x1b[01;31m\x1b[Knode\x1b[m\x1b[K.y * width\n'}
+[7.768519] (teamb_global_path_planner) StderrLine: {'line': b'      |                    \x1b[01;31m\x1b[K^~~~\x1b[m\x1b[K\n'}
+[7.768989] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:370:58:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kthe lambda has no capture-default\n'}
+[7.769314] (teamb_global_path_planner) StderrLine: {'line': b'  370 | uto result = std::find_if(list.begin(),list.end(), [\x1b[01;36m\x1b[K]\x1b[m\x1b[K(const Node_& n){\n'}
+[7.769553] (teamb_global_path_planner) StderrLine: {'line': b'      |                                                     \x1b[01;36m\x1b[K^\x1b[m\x1b[K\n'}
+[7.769780] (teamb_global_path_planner) StderrLine: {'line': b'\n'}
+[7.770079] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:368:46:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kconst Node_ node\x1b[m\x1b[K\xe2\x80\x99 declared here\n'}
+[7.770621] (teamb_global_path_planner) StderrLine: {'line': b'  368 | int Astar::search_node_from_list(\x1b[01;36m\x1b[Kconst Node_ node\x1b[m\x1b[K, std::vector<Node_>& list)\n'}
+[7.771328] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[01;36m\x1b[K~~~~~~~~~~~~^~~~\x1b[m\x1b[K\n'}
+[7.771608] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:372:29:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kwidth\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope; did you mean \xe2\x80\x98\x1b[01m\x1b[Kwidth_\x1b[m\x1b[K\xe2\x80\x99?\n'}
+[7.771821] (teamb_global_path_planner) StderrLine: {'line': b'  372 |             return node.y * \x1b[01;31m\x1b[Kwidth\x1b[m\x1b[K\n'}
+[7.771959] (teamb_global_path_planner) StderrLine: {'line': b'      |                             \x1b[01;31m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.772224] (teamb_global_path_planner) StderrLine: {'line': b'      |                             \x1b[32m\x1b[Kwidth_\x1b[m\x1b[K\n'}
+[7.772400] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:372:34:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected \xe2\x80\x98\x1b[01m\x1b[K;\x1b[m\x1b[K\xe2\x80\x99 before \xe2\x80\x98\x1b[01m\x1b[K}\x1b[m\x1b[K\xe2\x80\x99 token\n'}
+[7.772578] (teamb_global_path_planner) StderrLine: {'line': b'  372 |             return node.y * width\n'}
+[7.772697] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[01;31m\x1b[K^\x1b[m\x1b[K\n'}
+[7.772857] (teamb_global_path_planner) StderrLine: {'line': b'      |                                  \x1b[32m\x1b[K;\x1b[m\x1b[K\n'}
+[7.772997] (teamb_global_path_planner) StderrLine: {'line': b'  373 |         \x1b[32m\x1b[K}\x1b[m\x1b[K//\xe5\x90\x8c\xe3\x81\x98\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x89\xe3\x82\x92\xe6\x8e\xa2\xe3\x81\x99\xe3\x80\x80auto\xe3\x81\xa0\xe3\x81\x91\xe5\xbf\x83\xe9\x85\x8d\n'}
+[7.773121] (teamb_global_path_planner) StderrLine: {'line': b'      |         \x1b[32m\x1b[K~\x1b[m\x1b[K                         \n'}
+[7.773408] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::show_node_point(Node_)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.773619] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:389:63:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kconversion from \xe2\x80\x98\x1b[01m\x1b[Kgeometry_msgs::msg::PoseStamped\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kgeometry_msgs::msg::PoseStamped_<std::allocator<void> >\x1b[m\x1b[K\xe2\x80\x99} to non-scalar type \xe2\x80\x98\x1b[01m\x1b[Kgeometry_msgs::msg::PointStamped\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kgeometry_msgs::msg::PointStamped_<std::allocator<void> >\x1b[m\x1b[K\xe2\x80\x99} requested\n'}
+[7.773931] (teamb_global_path_planner) StderrLine: {'line': b'  389 | ometry_msgs::msg::PointStamped node_check = \x1b[01;31m\x1b[Knode_to_pose(node)\x1b[m\x1b[K;\n'}
+[7.774167] (teamb_global_path_planner) StderrLine: {'line': b'      |                                             \x1b[01;31m\x1b[K~~~~~~~~~~~~^~~~~~\x1b[m\x1b[K\n'}
+[7.774324] (teamb_global_path_planner) StderrLine: {'line': b'\n'}
+[7.774424] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid Astar::show_path(nav_msgs::msg::Path&)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.774604] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:403:47:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno match for \xe2\x80\x98\x1b[01m\x1b[Koperator=\x1b[m\x1b[K\xe2\x80\x99 (operand types are \xe2\x80\x98\x1b[01m\x1b[Kstd_msgs::msg::Header_<std::allocator<void> >::_stamp_type\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kbuiltin_interfaces::msg::Time_<std::allocator<void> >\x1b[m\x1b[K\xe2\x80\x99} and \xe2\x80\x98\x1b[01m\x1b[Kvoid\x1b[m\x1b[K\xe2\x80\x99)\n'}
+[7.774855] (teamb_global_path_planner) StderrLine: {'line': b'  403 |     current_path.header.stamp = show_exe_time(\x1b[01;31m\x1b[K)\x1b[m\x1b[K;\n'}
+[7.774991] (teamb_global_path_planner) StderrLine: {'line': b'      |                                               \x1b[01;31m\x1b[K^\x1b[m\x1b[K\n'}
+[7.775466] (teamb_global_path_planner) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/time.hpp:7\x1b[m\x1b[K,\n'}
+[7.775745] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/time.hpp:18\x1b[m\x1b[K,\n'}
+[7.775891] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/clock.hpp:24\x1b[m\x1b[K,\n'}
+[7.776059] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/timer.hpp:27\x1b[m\x1b[K,\n'}
+[7.776422] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:30\x1b[m\x1b[K,\n'}
+[7.776533] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20\x1b[m\x1b[K,\n'}
+[7.776732] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25\x1b[m\x1b[K,\n'}
+[7.776887] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18\x1b[m\x1b[K,\n'}
+[7.777150] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20\x1b[m\x1b[K,\n'}
+[7.777248] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37\x1b[m\x1b[K,\n'}
+[7.777321] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[7.777396] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[7.777466] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[7.777535] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/include/global_path_planner/global_path_planner.hpp:4\x1b[m\x1b[K,\n'}
+[7.777616] (teamb_global_path_planner) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:1\x1b[m\x1b[K:\n'}
+[7.777690] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/detail/time__struct.hpp:32:8:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kconstexpr builtin_interfaces::msg::Time_<std::allocator<void> >& builtin_interfaces::msg::Time_<std::allocator<void> >::operator=(const builtin_interfaces::msg::Time_<std::allocator<void> >&)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.778105] (teamb_global_path_planner) StderrLine: {'line': b'   32 | struct \x1b[01;36m\x1b[KTime_\x1b[m\x1b[K\n'}
+[7.778395] (teamb_global_path_planner) StderrLine: {'line': b'      |        \x1b[01;36m\x1b[K^~~~~\x1b[m\x1b[K\n'}
+[7.778706] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/detail/time__struct.hpp:32:8:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  no known conversion for argument 1 from \xe2\x80\x98\x1b[01m\x1b[Kvoid\x1b[m\x1b[K\xe2\x80\x99 to \xe2\x80\x98\x1b[01m\x1b[Kconst builtin_interfaces::msg::Time_<std::allocator<void> >&\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.779044] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/detail/time__struct.hpp:32:8:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Kconstexpr builtin_interfaces::msg::Time_<std::allocator<void> >& builtin_interfaces::msg::Time_<std::allocator<void> >::operator=(builtin_interfaces::msg::Time_<std::allocator<void> >&&)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.779189] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/builtin_interfaces/builtin_interfaces/msg/detail/time__struct.hpp:32:8:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  no known conversion for argument 1 from \xe2\x80\x98\x1b[01m\x1b[Kvoid\x1b[m\x1b[K\xe2\x80\x99 to \xe2\x80\x98\x1b[01m\x1b[Kbuiltin_interfaces::msg::Time_<std::allocator<void> >&&\x1b[m\x1b[K\xe2\x80\x99\n'}
+[7.779605] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:405:5:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kpath_pub_\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope\n'}
+[7.779784] (teamb_global_path_planner) StderrLine: {'line': b'  405 |     \x1b[01;31m\x1b[Kpath_pub_\x1b[m\x1b[K->publish(current_path);\n'}
+[7.779984] (teamb_global_path_planner) StderrLine: {'line': b'      |     \x1b[01;31m\x1b[K^~~~~~~~~\x1b[m\x1b[K\n'}
+[7.793389] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kint LocalMapCreator::getFreq()\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.794076] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:27:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.794729] (local_map_creator) StderrLine: {'line': b'   27 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.795225] (local_map_creator) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.795752] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kbool LocalMapCreator::in_map(double, double)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.796110] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:53:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.796361] (local_map_creator) StderrLine: {'line': b'   53 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.796600] (local_map_creator) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.797094] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kint LocalMapCreator::get_grid_index(double, double)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.797454] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:58:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.797720] (local_map_creator) StderrLine: {'line': b'   58 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.798237] (local_map_creator) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.798439] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kint LocalMapCreator::xy_to_grid_index(double, double)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[7.798719] (local_map_creator) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:63:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kno return statement in function returning non-void [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[7.798949] (local_map_creator) StderrLine: {'line': b'   63 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[7.799148] (local_map_creator) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[7.854133] (-) TimerEvent: {}
+[7.954965] (-) TimerEvent: {}
+[8.055976] (-) TimerEvent: {}
+[8.156761] (-) TimerEvent: {}
+[8.257524] (-) TimerEvent: {}
+[8.358297] (-) TimerEvent: {}
+[8.459085] (-) TimerEvent: {}
+[8.559923] (-) TimerEvent: {}
+[8.660697] (-) TimerEvent: {}
+[8.761440] (-) TimerEvent: {}
+[8.862228] (-) TimerEvent: {}
+[8.935298] (team_local_goal_creator) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/team_local_goal_creator_node.dir/build.make:76: CMakeFiles/team_local_goal_creator_node.dir/src/local_goal_creator.cpp.o] Error 1\n'}
+[8.935981] (team_local_goal_creator) StderrLine: {'line': b'gmake[2]: *** Waiting for unfinished jobs....\n'}
+[8.962484] (-) TimerEvent: {}
+[9.063260] (-) TimerEvent: {}
+[9.164100] (-) TimerEvent: {}
+[9.264855] (-) TimerEvent: {}
+[9.365584] (-) TimerEvent: {}
+[9.466341] (-) TimerEvent: {}
+[9.567194] (-) TimerEvent: {}
+[9.668018] (-) TimerEvent: {}
+[9.668692] (local_map_creator) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable local_map_creator_node\x1b[0m\n'}
+[9.683117] (team_local_goal_creator) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/team_local_goal_creator_node.dir/all] Error 2\n'}
+[9.683634] (team_local_goal_creator) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[9.686557] (team_local_goal_creator) JobEnded: {'identifier': 'team_local_goal_creator', 'rc': 'SIGINT'}
+[9.768221] (-) TimerEvent: {}
+[9.869002] (-) TimerEvent: {}
+[9.873108] (local_map_creator) StdoutLine: {'line': b'[100%] Built target local_map_creator_node\n'}
+[9.884622] (local_map_creator) JobEnded: {'identifier': 'local_map_creator', 'rc': 'SIGINT'}
+[9.969214] (-) TimerEvent: {}
+[10.069811] (-) TimerEvent: {}
+[10.170400] (-) TimerEvent: {}
+[10.271044] (-) TimerEvent: {}
+[10.371947] (-) TimerEvent: {}
+[10.472533] (-) TimerEvent: {}
+[10.573145] (-) TimerEvent: {}
+[10.673765] (-) TimerEvent: {}
+[10.774403] (-) TimerEvent: {}
+[10.874992] (-) TimerEvent: {}
+[10.975647] (-) TimerEvent: {}
+[11.030130] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kint Astar::check_list(Node_, std::vector<Node_>&)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[11.030493] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:224:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kcontrol reaches end of non-void function [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[11.030588] (teamb_global_path_planner) StderrLine: {'line': b'  224 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[11.030652] (teamb_global_path_planner) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[11.033577] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kint Astar::search_node_from_list(Node_, std::vector<Node_>&)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[11.033877] (teamb_global_path_planner) StderrLine: {'line': b'\x1b[01m\x1b[K/home/user/ws/src/chibi25_b/global_path_planner/src/global_path_planner.cpp:379:1:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kcontrol reaches end of non-void function [\x1b[01;35m\x1b[K-Wreturn-type\x1b[m\x1b[K]\n'}
+[11.033965] (teamb_global_path_planner) StderrLine: {'line': b'  379 | \x1b[01;35m\x1b[K}\x1b[m\x1b[K\n'}
+[11.034049] (teamb_global_path_planner) StderrLine: {'line': b'      | \x1b[01;35m\x1b[K^\x1b[m\x1b[K\n'}
+[11.075911] (-) TimerEvent: {}
+[11.086667] (teamb_global_path_planner) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/teamb_global_path_planner_node.dir/build.make:76: CMakeFiles/teamb_global_path_planner_node.dir/src/global_path_planner.cpp.o] Error 1\n'}
+[11.087282] (teamb_global_path_planner) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/teamb_global_path_planner_node.dir/all] Error 2\n'}
+[11.087734] (teamb_global_path_planner) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[11.090914] (teamb_global_path_planner) JobEnded: {'identifier': 'teamb_global_path_planner', 'rc': 'SIGINT'}
+[11.102077] (-) EventReactorShutdown: {}

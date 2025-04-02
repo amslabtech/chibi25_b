@@ -1,0 +1,16 @@
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:[m[K In member function ‘[01m[Kint LocalMapCreator::getFreq()[m[K’:
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:27:1:[m[K [01;35m[Kwarning: [m[Kno return statement in function returning non-void [[01;35m[K-Wreturn-type[m[K]
+   27 | [01;35m[K}[m[K
+      | [01;35m[K^[m[K
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:[m[K In member function ‘[01m[Kbool LocalMapCreator::in_map(double, double)[m[K’:
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:53:1:[m[K [01;35m[Kwarning: [m[Kno return statement in function returning non-void [[01;35m[K-Wreturn-type[m[K]
+   53 | [01;35m[K}[m[K
+      | [01;35m[K^[m[K
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:[m[K In member function ‘[01m[Kint LocalMapCreator::get_grid_index(double, double)[m[K’:
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:58:1:[m[K [01;35m[Kwarning: [m[Kno return statement in function returning non-void [[01;35m[K-Wreturn-type[m[K]
+   58 | [01;35m[K}[m[K
+      | [01;35m[K^[m[K
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:[m[K In member function ‘[01m[Kint LocalMapCreator::xy_to_grid_index(double, double)[m[K’:
+[01m[K/home/user/ws/src/chibi25_b/local_map_creator/src/local_map_creator.cpp:63:1:[m[K [01;35m[Kwarning: [m[Kno return statement in function returning non-void [[01;35m[K-Wreturn-type[m[K]
+   63 | [01;35m[K}[m[K
+      | [01;35m[K^[m[K

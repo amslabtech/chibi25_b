@@ -1,0 +1,231 @@
+[0.121s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--symlink-install', '--cmake-args', '-DCMAKE_BUILD_TYPE=RelWithDebInfo', '--event-handlers', 'console_direct+']
+[0.122s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=12, event_handlers=['console_direct+'], ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, cmake_args=['-DCMAKE_BUILD_TYPE=RelWithDebInfo'], cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x7ffbccd6c220>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7ffbcced9ab0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7ffbcced9ab0>>, mixin_verb=('build',))
+[0.266s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.266s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.266s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.266s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.266s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.266s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.266s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/user/ws/src/chibi25_b'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.279s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.279s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extensions ['ignore', 'ignore_ament_install']
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extension 'ignore'
+[0.280s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extension 'ignore_ament_install'
+[0.281s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extensions ['colcon_pkg']
+[0.281s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extension 'colcon_pkg'
+[0.281s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extensions ['colcon_meta']
+[0.281s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extension 'colcon_meta'
+[0.281s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extensions ['ros']
+[0.281s] Level 1:colcon.colcon_core.package_identification:_identify(global_path_planner) by extension 'ros'
+[0.284s] DEBUG:colcon.colcon_core.package_identification:Package 'global_path_planner' with type 'ros.ament_cmake' and name 'teamb_global_path_planner'
+[0.284s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extensions ['ignore', 'ignore_ament_install']
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extension 'ignore'
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extension 'ignore_ament_install'
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extensions ['colcon_pkg']
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extension 'colcon_pkg'
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extensions ['colcon_meta']
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extension 'colcon_meta'
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extensions ['ros']
+[0.285s] Level 1:colcon.colcon_core.package_identification:_identify(local_goal_creator) by extension 'ros'
+[0.286s] DEBUG:colcon.colcon_core.package_identification:Package 'local_goal_creator' with type 'ros.ament_cmake' and name 'team_local_goal_creator'
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extensions ['ignore', 'ignore_ament_install']
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extension 'ignore'
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extension 'ignore_ament_install'
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extensions ['colcon_pkg']
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extension 'colcon_pkg'
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extensions ['colcon_meta']
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extension 'colcon_meta'
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extensions ['ros']
+[0.287s] Level 1:colcon.colcon_core.package_identification:_identify(local_map_creator) by extension 'ros'
+[0.288s] DEBUG:colcon.colcon_core.package_identification:Package 'local_map_creator' with type 'ros.ament_cmake' and name 'local_map_creator'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extensions ['ignore', 'ignore_ament_install']
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extension 'ignore'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extension 'ignore_ament_install'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extensions ['colcon_pkg']
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extension 'colcon_pkg'
+[0.289s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extensions ['colcon_meta']
+[0.289s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extension 'colcon_meta'
+[0.289s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extensions ['ros']
+[0.289s] Level 1:colcon.colcon_core.package_identification:_identify(local_path_planner) by extension 'ros'
+[0.290s] DEBUG:colcon.colcon_core.package_identification:Package 'local_path_planner' with type 'ros.ament_cmake' and name 'team_local_path_planner'
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extensions ['ignore', 'ignore_ament_install']
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extension 'ignore'
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extension 'ignore_ament_install'
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extensions ['colcon_pkg']
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extension 'colcon_pkg'
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extensions ['colcon_meta']
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extension 'colcon_meta'
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extensions ['ros']
+[0.290s] Level 1:colcon.colcon_core.package_identification:_identify(localizer) by extension 'ros'
+[0.292s] DEBUG:colcon.colcon_core.package_identification:Package 'localizer' with type 'ros.ament_cmake' and name 'teamb_localizer'
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extensions ['ignore', 'ignore_ament_install']
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extension 'ignore'
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extension 'ignore_ament_install'
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extensions ['colcon_pkg']
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extension 'colcon_pkg'
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extensions ['colcon_meta']
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extension 'colcon_meta'
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extensions ['ros']
+[0.292s] Level 1:colcon.colcon_core.package_identification:_identify(obstacle_detector) by extension 'ros'
+[0.294s] DEBUG:colcon.colcon_core.package_identification:Package 'obstacle_detector' with type 'ros.ament_cmake' and name 'teamb_obstacle_detector'
+[0.294s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.294s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.294s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.294s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.294s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=RelWithDebInfo']'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'cmake_target' from command line to 'None'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'cmake_clean_cache' from command line to 'False'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'cmake_clean_first' from command line to 'False'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'cmake_force_configure' from command line to 'False'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'ament_cmake_args' from command line to 'None'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'catkin_cmake_args' from command line to 'None'
+[0.316s] Level 5:colcon.colcon_core.verb:set package 'local_map_creator' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.316s] DEBUG:colcon.colcon_core.verb:Building package 'local_map_creator' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/user/ws/src/chibi25_b/build/local_map_creator', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=RelWithDebInfo'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/user/ws/src/chibi25_b/install/local_map_creator', 'merge_install': False, 'path': '/home/user/ws/src/chibi25_b/local_map_creator', 'symlink_install': True, 'test_result_base': None}
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=RelWithDebInfo']'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'cmake_target' from command line to 'None'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'cmake_clean_cache' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'cmake_clean_first' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'cmake_force_configure' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'ament_cmake_args' from command line to 'None'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'catkin_cmake_args' from command line to 'None'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_goal_creator' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.317s] DEBUG:colcon.colcon_core.verb:Building package 'team_local_goal_creator' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/user/ws/src/chibi25_b/build/team_local_goal_creator', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=RelWithDebInfo'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/user/ws/src/chibi25_b/install/team_local_goal_creator', 'merge_install': False, 'path': '/home/user/ws/src/chibi25_b/local_goal_creator', 'symlink_install': True, 'test_result_base': None}
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=RelWithDebInfo']'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'cmake_target' from command line to 'None'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'cmake_clean_cache' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'cmake_clean_first' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'cmake_force_configure' from command line to 'False'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'ament_cmake_args' from command line to 'None'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'catkin_cmake_args' from command line to 'None'
+[0.317s] Level 5:colcon.colcon_core.verb:set package 'team_local_path_planner' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.317s] DEBUG:colcon.colcon_core.verb:Building package 'team_local_path_planner' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/user/ws/src/chibi25_b/build/team_local_path_planner', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=RelWithDebInfo'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/user/ws/src/chibi25_b/install/team_local_path_planner', 'merge_install': False, 'path': '/home/user/ws/src/chibi25_b/local_path_planner', 'symlink_install': True, 'test_result_base': None}
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=RelWithDebInfo']'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'cmake_target' from command line to 'None'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'cmake_clean_cache' from command line to 'False'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'cmake_clean_first' from command line to 'False'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'cmake_force_configure' from command line to 'False'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'ament_cmake_args' from command line to 'None'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'catkin_cmake_args' from command line to 'None'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_global_path_planner' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.318s] DEBUG:colcon.colcon_core.verb:Building package 'teamb_global_path_planner' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=RelWithDebInfo'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/user/ws/src/chibi25_b/install/teamb_global_path_planner', 'merge_install': False, 'path': '/home/user/ws/src/chibi25_b/global_path_planner', 'symlink_install': True, 'test_result_base': None}
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=RelWithDebInfo']'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'cmake_target' from command line to 'None'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.318s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'cmake_clean_cache' from command line to 'False'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'cmake_clean_first' from command line to 'False'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'cmake_force_configure' from command line to 'False'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'ament_cmake_args' from command line to 'None'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'catkin_cmake_args' from command line to 'None'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_localizer' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.319s] DEBUG:colcon.colcon_core.verb:Building package 'teamb_localizer' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/user/ws/src/chibi25_b/build/teamb_localizer', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=RelWithDebInfo'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/user/ws/src/chibi25_b/install/teamb_localizer', 'merge_install': False, 'path': '/home/user/ws/src/chibi25_b/localizer', 'symlink_install': True, 'test_result_base': None}
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=RelWithDebInfo']'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'cmake_target' from command line to 'None'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'cmake_clean_cache' from command line to 'False'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'cmake_clean_first' from command line to 'False'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'cmake_force_configure' from command line to 'False'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'ament_cmake_args' from command line to 'None'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'catkin_cmake_args' from command line to 'None'
+[0.319s] Level 5:colcon.colcon_core.verb:set package 'teamb_obstacle_detector' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.319s] DEBUG:colcon.colcon_core.verb:Building package 'teamb_obstacle_detector' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/user/ws/src/chibi25_b/build/teamb_obstacle_detector', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=RelWithDebInfo'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/user/ws/src/chibi25_b/install/teamb_obstacle_detector', 'merge_install': False, 'path': '/home/user/ws/src/chibi25_b/obstacle_detector', 'symlink_install': True, 'test_result_base': None}
+[0.319s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.321s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.322s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/user/ws/src/chibi25_b/local_map_creator' with build type 'ament_cmake'
+[0.323s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/user/ws/src/chibi25_b/local_map_creator'
+[0.326s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.326s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.327s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.338s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/user/ws/src/chibi25_b/local_goal_creator' with build type 'ament_cmake'
+[0.339s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/user/ws/src/chibi25_b/local_goal_creator'
+[0.339s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.339s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.344s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/user/ws/src/chibi25_b/local_path_planner' with build type 'ament_cmake'
+[0.345s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/user/ws/src/chibi25_b/local_path_planner'
+[0.346s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.346s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.351s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/user/ws/src/chibi25_b/global_path_planner' with build type 'ament_cmake'
+[0.351s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/user/ws/src/chibi25_b/global_path_planner'
+[0.351s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.352s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.357s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/user/ws/src/chibi25_b/localizer' with build type 'ament_cmake'
+[0.357s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/user/ws/src/chibi25_b/localizer'
+[0.358s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.358s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.362s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/user/ws/src/chibi25_b/obstacle_detector' with build type 'ament_cmake'
+[0.363s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/user/ws/src/chibi25_b/obstacle_detector'
+[0.363s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.364s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.376s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/local_map_creator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/local_map_creator -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/local_map_creator
+[0.388s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/team_local_goal_creator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/local_goal_creator -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/team_local_goal_creator
+[0.393s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/team_local_path_planner': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/local_path_planner -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/team_local_path_planner
+[0.398s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/global_path_planner -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_global_path_planner
+[0.404s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/teamb_localizer': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/localizer -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_localizer
+[0.428s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/teamb_obstacle_detector': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/obstacle_detector -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_obstacle_detector
+[2.788s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/user/ws/src/chibi25_b/build/local_map_creator' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/local_map_creator -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/local_map_creator
+[2.793s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/local_map_creator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake --build /home/user/ws/src/chibi25_b/build/local_map_creator -- -j12 -l12
+[2.796s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/user/ws/src/chibi25_b/build/team_local_goal_creator' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/local_goal_creator -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/team_local_goal_creator
+[2.799s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/team_local_goal_creator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake --build /home/user/ws/src/chibi25_b/build/team_local_goal_creator -- -j12 -l12
+[2.804s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/global_path_planner -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_global_path_planner
+[2.806s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/user/ws/src/chibi25_b/build/teamb_global_path_planner': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake --build /home/user/ws/src/chibi25_b/build/teamb_global_path_planner -- -j12 -l12
+[3.075s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/user/ws/src/chibi25_b/build/teamb_localizer' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/localizer -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_localizer
+[3.082s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/user/ws/src/chibi25_b/build/teamb_obstacle_detector' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user/ws/install/turtlesim_controller_py:/opt/ros/humble /usr/bin/cmake /home/user/ws/src/chibi25_b/obstacle_detector -DCMAKE_BUILD_TYPE=RelWithDebInfo -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user/ws/src/chibi25_b/install/teamb_obstacle_detector
+[3.091s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(teamb_localizer)
+[3.104s] Level 1:colcon.colcon_core.environment:checking '/home/user/ws/src/chibi25_b/install/teamb_localizer' for CMake module files
+[3.105s] Level 1:colcon.colcon_core.environment:checking '/home/user/ws/src/chibi25_b/install/teamb_localizer' for CMake config files
+[3.106s] Level 1:colcon.colcon_core.environment:checking '/home/user/ws/src/chibi25_b/install/teamb_localizer/bin'
+[3.106s] Level 1:colcon.colcon_core.environment:checking '/home/user/ws/src/chibi25_b/install/teamb_localizer/lib/pkgconfig/teamb_localizer.pc'
+[3.109s] Level 1:colcon.colcon_core.environment:checking '/home/user/ws/src/chibi25_b/install/teamb_localizer/lib/python3.10/site-packages'
+[3.109s] Level 1:colcon.colcon_core.environment:checking '/home/user/ws/src/chibi25_b/install/teamb_localizer/bin'
+[3.110s] INFO:colcon.colcon_core.shell:Creating package script '/home/user/ws/src/chibi25_b/install/teamb_localizer/share/teamb_localizer/package.ps1'
+[3.113s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/user/ws/src/chibi25_b/install/teamb_localizer/share/teamb_localizer/package.dsv'
+[3.114s] INFO:colcon.colcon_core.shell:Creating package script '/home/user/ws/src/chibi25_b/install/teamb_localizer/share/teamb_localizer/package.sh'
+[3.116s] INFO:colcon.colcon_core.shell:Creating package script '/home/user/ws/src/chibi25_b/install/teamb_localizer/share/teamb_localizer/package.bash'
+[3.118s] INFO:colcon.colcon_core.shell:Creating package script '/home/user/ws/src/chibi25_b/install/teamb_localizer/share/teamb_localizer/package.zsh'
+[3.120s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/user/ws/src/chibi25_b/install/teamb_localizer/share/colcon-core/packages/teamb_localizer)
+[11.422s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[11.423s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[11.423s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '1'
+[11.423s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[11.433s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[11.433s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[11.433s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[11.433s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[11.437s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.Spawn.ExecFailed: /usr/bin/dbus-launch terminated abnormally without any error message
+[11.437s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[11.438s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/user/ws/src/chibi25_b/install/local_setup.ps1'
+[11.440s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/user/ws/src/chibi25_b/install/_local_setup_util_ps1.py'
+[11.442s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/user/ws/src/chibi25_b/install/setup.ps1'
+[11.443s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/user/ws/src/chibi25_b/install/local_setup.sh'
+[11.444s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/user/ws/src/chibi25_b/install/_local_setup_util_sh.py'
+[11.445s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/user/ws/src/chibi25_b/install/setup.sh'
+[11.447s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/user/ws/src/chibi25_b/install/local_setup.bash'
+[11.449s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/user/ws/src/chibi25_b/install/setup.bash'
+[11.451s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/user/ws/src/chibi25_b/install/local_setup.zsh'
+[11.452s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/user/ws/src/chibi25_b/install/setup.zsh'
