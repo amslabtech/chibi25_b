@@ -21,7 +21,10 @@ struct Node_ {
     int    y = 0;
     int    parent_x = -1;
     int    parent_y = -1;
-    double f = 0.0;
+    double g = 0.0;//g値
+    // double pre_g = 0.0;//ひとつ前のg値
+    double h = 0.0;//ヒューリスティック関数
+    double f = 0.0;//f値
 };
 
 // モーション構造体（移動方向とコストを定義）

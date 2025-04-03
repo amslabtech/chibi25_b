@@ -8,9 +8,11 @@ Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
 {
     // ###### パラメータの宣言 ######
     robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
-    // grid_x_goal = this->declare_parameter<double>("grid_x_goal",0.0);
-    // grid_y_goal = this->declare_parameter<double>("grid_y_goal",0.0);
-
+    // 経由地（waypoints）をパラメータとして宣言
+    std::vector<std::vector<double>> waypoints = this->declare_parameter<std::vector<std::vector<double>>>(
+        "waypoints",
+        {{}, {}, {}} // デフォルトの経由地
+    );
 
     // ###### パラメータの取得 ######
 
@@ -45,13 +47,16 @@ void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの
     width_ = map_.info.width;//マップの幅
     height_ = map_.info.height;//マップの高さ
     
-    // マップの原点を取得//
+    // マップの原点を取得//ここ違う
     current_node_.point.x = map_.info.origin.position.x;
     current_node_.point.y = map_.info.origin.position.y;
     current_node_.point.z = 0.0;
     
     
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", resolution_);
+    RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", width_);
+    RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", height_);
+
 }
 
 // マップ全体の障害物を拡張処理（new_map_をpublishする）
@@ -123,27 +128,41 @@ double Astar::make_heuristic(const Node_ node)
 Node_ Astar::set_way_point(int phase)
 {
     if(phase == 0){//スタート地点の格納にはphase=0
-        double grid_x = 0.0,grid_y = 0.0;
-        
-        start_node_.parent_x = start_node_.x;//親ノードもスタート位置なら
-        start_node_.parent_y = start_node_.y;
-        
-        // 初期化
-        start_node_.x = 0;
-        start_node_.y = 0;
+        double grid_x = 0.0,grid_y = 0.0,grid_parent_x = 0.0,grid_parent_y = 0.0;
 
         grid_x = current_node_.point.x / resolution_;
         grid_y = current_node_.point.y / resolution_;
+        grid_parent_x = current_node_.point.x / resolution_;
+        grid_parent_y = current_node_.point.y / resolution_;
 
-        start_node_.x = grid_x;//スタート地点格納
+        //スタート地点格納
+        start_node_.x = grid_x;
         start_node_.y = grid_y;
+        start_node_.parent_x = grid_parent_x;
+        start_node_.parent_y = grid_parent_y;
         // 毎回更新していくのか区間ごとに変化させていくのか？
-        goal_node_ = create_neighbor_nodes(start_node_);
-        //スタートノードをもとに隣のノードをゴールとして設定する
+        // なわけねえだろ後者や！
+        const auto& wp : waypoints;
+        Node_ waypoint(wp[0], wp[1]); // 1つの経由地を取得
+
+        if (path.empty()) {
+            RCLCPP_WARN(this->get_logger(), "経由地 (%f, %f) までの経路が見つかりませんでした。", wp[0], wp[1]);
+            return;
+        }
+
+        // すでにある最後のノードを重複しないように除外
+        if (!final_path.empty()) {
+            path.erase(path.begin());
+        }
+        final_path.insert(final_path.end(), path.begin(), path.end());
+
+        start = waypoint; // 次の経由地のために更新
+
+        // waypointとしてgoal_node_を格納
     }
-    if(phase == 1){//最終ゴール地点の格納にはphase=1
+    // if(phase == 1){//最終ゴール地点の格納にはphase=1
         
-    }
+    // }
 
 }
 
@@ -155,9 +174,9 @@ void Astar::create_path(Node_ node)
     partial_path.poses.push_back(node_to_pose(node));
 
     // ###### パスの作成 ######
-        while (node.parent_x != node.x || node.parent_y != node.y) {
-        node = get_parent_node(node); // 親ノードを取得
-        partial_path.poses.push_back(node_to_pose(node));
+    while (node->parent != nullptr) {  // 親が存在する限り遡る
+        node = node->parent; // 親ノードを取得
+        partial_path.poses.push_back(node_to_pose(*node));
     }
 
     // 逆順になっているので順番を反転
@@ -200,10 +219,10 @@ geometry_msgs::msg::PoseStamped Astar::node_to_pose(const Node_ node)
 // openリスト内で最もf値が小さいノードを取得する関数
 Node_ Astar::select_min_f()
 {
-    double smallest_f = 0.0;//整数でも対応できるように変数設定　autoは？
-    smallest_f = std::min_element(open_list_.begin(),open_list_.end(), [](const Node_& a, const Node_& b){
+    auto smallest_f = std::min_element(open_list_.begin(),open_list_.end(), [](const Node_& a, const Node_& b){
         return a.f < b.f;
     });//min_elementは比較によって最小値を見つけ出す関数
+    return *smallest_f;
 }
 
 // スタートノードの場合，trueを返す
@@ -271,7 +290,7 @@ bool Astar::check_obs(const Node_ node)
 // 隣接ノードを基にOpenリスト・Closeリストを更新
 // 隣接ノードを計算し，障害物を避けつつ，リスト内のノードを適切に追加・更新
 // 複数の変数への代入はstd::tie(...)を使用すると便利 https://minus9d.hatenablog.com/entry/2015/05/24/133253
-void Astar::update_list(const Node_ node)
+void Astar::update_list(Node_ node)
 {
     // 隣接ノードを宣言
     std::vector<Node_> neighbor_nodes;
@@ -280,24 +299,29 @@ void Astar::update_list(const Node_ node)
 
     // ###### 隣接ノード ######
 
-
     for (auto& neighbor : neighbor_nodes){
         
         //close_list__の中身と同じものが入っていたらclose_list_へ
+        // 障害物であったらclose_list_へ
         if (close_list_(neighbor)||check_obs(neighbor)){
             swap_node(neighbor,open_list_,close_list__);   
         }
-
-        // コスト計算
-        double g_cost = node.f + motion.cost; // g値（実コスト）
-        double h_cost = make_heuristic({new_x, new_y}); // h値（ゴールへの推定コスト）
-        double f_cost = g_cost + h_cost; // f = g + h
+        //open_listに格納
+        open_list_.push(neighbor);
     }
-
+    //現在のノードをclose_list_に移動
+    swap_node(node,open_list_,close_list_);
+    //open_listに格納したf値のなかで最も小さいものを選択
+        // open_list_ 内の f値が最小のノードを取得し、新しい current_node_ に更新
+    if (!open_list_.empty()) {
+        node = select_min_f();
+    } else {
+        throw std::runtime_error("Error: open_list_ is empty, no next node available.");
+    }
 }
 
 // 現在のノードを基に隣接ノードを作成
-void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbor_nodes)
+void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbor_nodes,double pre_g_value)
 {
     // 動作モデルの作成
     std::vector<Motion_> motion_list;
@@ -307,7 +331,8 @@ void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbo
 
     // ###### 隣接ノードの作成 ######
     for (const auto& motion : motion_list) {
-        Node_ neighbor = get_neighbor_node(node,motion);
+        Node_ neighbor = get_neighbor_node(node,motion,pre_g_value);
+        neighbor.h = make_heuristic(node);
         neighbor_nodes.push_back(neighbor);
         // if (is_valid_node(neighbor)) {
         //     neighbor_nodes.push_back(neighbor);
@@ -345,7 +370,9 @@ Node_ Astar::get_neighbor_node(const Node_ node, const Motion_ motion)
     Node_ neighbor;
     neighbor.x = node.x + motion.dx;
     neighbor.y = node.y + motion.dy;
-    neighbor.cost = motion.cost;
+    neighbor.parent_x = node.x;
+    neighbor.parent_y = node.y;
+    neighbor.g += motion.cost;
     return neighbor;
 }
 
@@ -439,14 +466,14 @@ void Astar::planning()
     const int total_phase = way_points_x_.size();
 
     // ###### ウェイポイント間の経路探索 ######
-    set_way_point(0);//とりあえずphase1のみ
+    set_way_point(0);//とりあえずphase1のみ、後ほど条件文
     
     start_node_.cost = 0;
     open_list_.push(start_node_);
 
     while (!open_list_.empty()) {
         Node_ current = open_list_.top();
-        open_list.pop();
+        open_list_.pop();
 
         // ゴールに到達した場合、経路を作成
         if (current.x == goal_node_.x && current.y == goal_node_.y) {
@@ -457,20 +484,22 @@ void Astar::planning()
         // 探索済みリストに追加
         close_list_.insert(current);
 
-        // 隣接ノードを探索
-        std::vector<Node_> neighbors = create_neighbor_nodes(current);
-        for (auto& neighbor : neighbors) {
-            if (close_list_.find(neighbor) != close_list_.end()) {
-                continue; // すでに探索済みならスキップ
-            }
+        update_list(current_node_);
 
-            double new_cost = current.cost + calculate_cost(current, neighbor);
-            if (new_cost < neighbor.cost || !is_in_open_list(open_list, neighbor)) {
-                neighbor.cost = new_cost;
-                neighbor.parent = std::make_shared<Node_>(current);
-                open_list_.push(neighbor);
-            }
-        }
+        // // 隣接ノードを探索
+        // std::vector<Node_> neighbors = create_neighbor_nodes(current);
+        // for (auto& neighbor : neighbors) {
+        //     if (close_list_.find(neighbor) != close_list_.end()) {
+        //         continue; // すでに探索済みならスキップ
+        //     }
+
+        //     double new_cost = current.cost + calculate_cost(current, neighbor);
+        //     if (new_cost < neighbor.cost || !search_node_from_list(neighbor, open_list_)) {
+        //         neighbor.cost = new_cost;
+        //         neighbor.parent = std::make_shared<Node_>(current);
+        //         open_list_.push(neighbor);
+        //     }
+        // }
     }
 
     show_exe_time();
