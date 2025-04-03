@@ -17,9 +17,7 @@ install(DIRECTORY
   launch
   param
   DESTINATION share/${PROJECT_NAME}/
+  OPTIONAL # launchのフォルダなくてもエラーにならない
 )
 # ヘッダーのインストールや共有ライブラリのエクスポート等を自動で行ってくれる
 ament_auto_package()
-# ブロードキャストを実行するため
-add_executable(turtle_tf_broadcaster src/turtle_tf_broadcaster.cpp)
-target_link_libraries(turtle_tf_broadcaster ${catkin_LIBRARIES})

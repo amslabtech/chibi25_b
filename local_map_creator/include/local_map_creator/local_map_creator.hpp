@@ -32,7 +32,7 @@ class LocalMapCreator : public rclcpp::Node
         // ----- 変数 -----
         int    hz_;       // ループ周波数 [Hz]
         double map_size_; // マップの一辺の長さ [m]
-        double map_reso_; // マップの解像度 [m/cell]
+        double map_reso_; // マップの解像度 [m/cell]、1つのセル(グリッド)の一辺の長さ
 
         // msg受け取りフラグ
         bool flag_obs_poses_ = false;
