@@ -103,6 +103,7 @@ private:
     // ノード情報
     Node_ start_node_;  // 開始ノード
     Node_ goal_node_;   // 目標ノード
+    Node_ current_;
     std::vector<Node_> open_list_;  // openリスト
     std::vector<Node_> close_list_; // closeリスト
 

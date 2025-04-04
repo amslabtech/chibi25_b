@@ -7,18 +7,30 @@ using namespace std::chrono_literals;
 Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
 {
     // ###### パラメータの宣言 ######
-    robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
+    const robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
+    pre_g_value_ = this->declare_parameter<double>("pre_g_value",0.0);
     // 経由地（waypoints）をパラメータとして宣言
     std::vector<std::vector<double>> waypoints = this->declare_parameter<std::vector<std::vector<double>>>(
         "waypoints",
-        {{}, {}, {}} // デフォルトの経由地
+        {{1.0,1.0}, {2.0,2.0}, {3.0,3.0}} // デフォルトの経由地
     );
 
+    double start_point_world_x_ = this->declare_parameter<double>("start_point_world_x",1.0);;
+    double start_point_world_y_ = this->declare_parameter<double>("start_point_world_y",1.0);
     // ###### パラメータの取得 ######
 
 
     // ###### global_path_とcurrent_node_のframe_id設定 ######
+    global_path_.header.frame_id = "map";
+    global_path_.header.stamp = rclcpp::Clock().now();
 
+    for (auto &pose : global_path_.poses) {
+        pose.header.frame_id = "map";
+        pose.header.stamp = rclcpp::Clock().now();
+    }
+
+    current_node_.header.frame_id = "map";
+    current_node_.header.stamp = rclcpp::Clock().now();
 
     // dataサイズの確保
     global_path_.poses.reserve(2000);
@@ -43,15 +55,7 @@ void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの
     //https://docs.ros.org/en/lunar/api/nav_msgs/html/msg/OccupancyGrid.html
     //ChatGPTでは-1(未知)、0(空き)、100(障害物)を示す
 
-    resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
-    width_ = map_.info.width;//マップの幅
-    height_ = map_.info.height;//マップの高さ
-    
-    // マップの原点を取得//ここ違う
-    current_node_.point.x = map_.info.origin.position.x;
-    current_node_.point.y = map_.info.origin.position.y;
-    current_node_.point.z = 0.0;
-    
+    process();
     
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", resolution_);
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", width_);
@@ -70,6 +74,11 @@ void Astar::obs_expander()
     // 新しいマップデータ（拡張後）を作成
     new_map_ = map_;  // 元のマップをコピー
     std::vector<int8_t> new_map_data = map_.data;  // 1Dのデータをコピー
+
+    
+    resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
+    width_ = map_.info.width;//マップの幅
+    height_ = map_.info.height;//マップの高さ
 
     margin_length = static_cast<int>(std::ceil(robot_radius_ / resolution_));  // セル単位の拡張範囲
 
@@ -94,7 +103,7 @@ void Astar::obs_expander()
 void Astar::obs_expand(const int index,std::vector<int8_t> new_map_data)
 {
     int x = index % width_;
-    int y = index / width_ + 1;
+    int y = index / width_;
 
     for (int dy = -margin_length; dy <= margin_length; dy++) {
         for (int dx = -margin_length; dx <= margin_length; dx++) {
@@ -130,16 +139,15 @@ Node_ Astar::set_way_point(int phase)
     if(phase == 0){//スタート地点の格納にはphase=0
         double grid_x = 0.0,grid_y = 0.0,grid_parent_x = 0.0,grid_parent_y = 0.0;
 
-        grid_x = current_node_.point.x / resolution_;
-        grid_y = current_node_.point.y / resolution_;
-        grid_parent_x = current_node_.point.x / resolution_;
-        grid_parent_y = current_node_.point.y / resolution_;
-
+        grid_x = start_point_world_x_ / resolution_;
+        grid_y = start_point_world_y / resolution_;
+        grid_parent_x = start_point_world_x / resolution_;
+        grid_parent_y = start_point_world_y / resolution_;
         //スタート地点格納
-        start_node_.x = grid_x;
-        start_node_.y = grid_y;
-        start_node_.parent_x = grid_parent_x;
-        start_node_.parent_y = grid_parent_y;
+        start_node_.x = static_cast<int>(grid_x);
+        start_node_.y = static_cast<int>(grid_y);
+        start_node_.parent_x = static_cast<int>(grid_parent_x);
+        start_node_.parent_y = static_cast<int>(grid_parent_y);
         // 毎回更新していくのか区間ごとに変化させていくのか？
         // なわけねえだろ後者や！
         const auto& wp : waypoints;
@@ -156,21 +164,17 @@ Node_ Astar::set_way_point(int phase)
         }
         final_path.insert(final_path.end(), path.begin(), path.end());
 
-        start = waypoint; // 次の経由地のために更新
-
-        // waypointとしてgoal_node_を格納
+        //ここで経由地を改めてスタートに格納
+        start_point_world_x_ = wp[phase+1];
+        start_point_world_y_ = wp[phase+2];
     }
-    // if(phase == 1){//最終ゴール地点の格納にはphase=1
-        
-    // }
 
 }
 
 // ノードをたどり，waypoint間のパスを作成．その後グローバルパスに追加
 // 参考：push_back(...) https://cpprefjp.github.io/reference/vector/vector/push_back.html
-void Astar::create_path(Node_ node)
+void Astar::create_path(Node_ node,nav_msgs::msg::Path partial_path)
 {
-    nav_msgs::msg::Path partial_path;
     partial_path.poses.push_back(node_to_pose(node));
 
     // ###### パスの作成 ######
@@ -315,13 +319,15 @@ void Astar::update_list(Node_ node)
         // open_list_ 内の f値が最小のノードを取得し、新しい current_node_ に更新
     if (!open_list_.empty()) {
         node = select_min_f();
+        //ここにpub_node_point？？
+        pre_g_value_ = node.g;
     } else {
         throw std::runtime_error("Error: open_list_ is empty, no next node available.");
     }
 }
 
 // 現在のノードを基に隣接ノードを作成
-void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbor_nodes,double pre_g_value)
+void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbor_nodes)
 {
     // 動作モデルの作成
     std::vector<Motion_> motion_list;
@@ -331,8 +337,10 @@ void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbo
 
     // ###### 隣接ノードの作成 ######
     for (const auto& motion : motion_list) {
-        Node_ neighbor = get_neighbor_node(node,motion,pre_g_value);
+        Node_ neighbor = get_neighbor_node(node,motion);
         neighbor.h = make_heuristic(node);
+        neighbor.g += pre_g_value_;
+        neighbor.f = neighbor.g + neighbor.h;
         neighbor_nodes.push_back(neighbor);
         // if (is_valid_node(neighbor)) {
         //     neighbor_nodes.push_back(neighbor);
@@ -372,7 +380,7 @@ Node_ Astar::get_neighbor_node(const Node_ node, const Motion_ motion)
     neighbor.y = node.y + motion.dy;
     neighbor.parent_x = node.x;
     neighbor.parent_y = node.y;
-    neighbor.g += motion.cost;
+    neighbor.g = motion.cost;
     return neighbor;
 }
 
@@ -466,40 +474,36 @@ void Astar::planning()
     const int total_phase = way_points_x_.size();
 
     // ###### ウェイポイント間の経路探索 ######
-    set_way_point(0);//とりあえずphase1のみ、後ほど条件文
+    //とりあえずphase1のみ、後ほど条件文
+    set_way_point(0);
     
     start_node_.cost = 0;
     open_list_.push(start_node_);
 
+    nav_msgs::msg::Path partial_path;
+    nav_msgs::msg::Path perfect_path;
+    current_ = open_list_.top();
+
     while (!open_list_.empty()) {
-        Node_ current = open_list_.top();
         open_list_.pop();
 
         // ゴールに到達した場合、経路を作成
-        if (current.x == goal_node_.x && current.y == goal_node_.y) {
-            create_path(current);
+        if (current_.x == goal_node_.x && current_.y == goal_node_.y) {
+            create_path(current_,partial_path);
+            //ここはperfect_pathに蓄積させるようなコードに変更
+            pub_current_path_ -> publish(partial_path);
             break;
         }
 
         // 探索済みリストに追加
         close_list_.insert(current);
 
-        update_list(current_node_);
+        update_list(current_);
 
-        // // 隣接ノードを探索
-        // std::vector<Node_> neighbors = create_neighbor_nodes(current);
-        // for (auto& neighbor : neighbors) {
-        //     if (close_list_.find(neighbor) != close_list_.end()) {
-        //         continue; // すでに探索済みならスキップ
-        //     }
-
-        //     double new_cost = current.cost + calculate_cost(current, neighbor);
-        //     if (new_cost < neighbor.cost || !search_node_from_list(neighbor, open_list_)) {
-        //         neighbor.cost = new_cost;
-        //         neighbor.parent = std::make_shared<Node_>(current);
-        //         open_list_.push(neighbor);
-        //     }
-        // }
+    }
+    //とりあえず
+    if(current_.x ==  && current_.y == ){
+        pub_path_ -> publish(partial_path);
     }
 
     show_exe_time();
