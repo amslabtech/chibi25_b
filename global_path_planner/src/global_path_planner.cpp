@@ -9,14 +9,15 @@ Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
     // ###### パラメータの宣言 ######
     const robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
     pre_g_value_ = this->declare_parameter<double>("pre_g_value",0.0);
-    // 経由地（waypoints）をパラメータとして宣言
-    std::vector<std::vector<double>> waypoints = this->declare_parameter<std::vector<std::vector<double>>>(
-        "waypoints",
-        {{1.0,1.0}, {2.0,2.0}, {3.0,3.0}} // デフォルトの経由地
-    );
 
-    double start_point_world_x_ = this->declare_parameter<double>("start_point_world_x",1.0);;
-    double start_point_world_y_ = this->declare_parameter<double>("start_point_world_y",1.0);
+    const int phase = 10;
+    //スタート地点を格納 数字はとりあえず適当
+    double start_point_x_[phase] = {1.0,0.0,0.0,0.0,0.0};
+    double start_point_y_[phase] = {1.0,0.0,0.0,0.0,0.0};
+    //経由地点を配列として格納　数字はとりあえず適当
+    double way_points_x_[phase] = {1.0,2.0,3.0,4.0,5.0};
+    double way_points_y_[phase] = {1.0,2.0,3.0,4.0,5.0};
+
     // ###### パラメータの取得 ######
 
 
@@ -49,6 +50,7 @@ Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
 // mapのコールバック関数
 // msgを受け取り，map_に代入，その情報をそれぞれ取得
 // process()を実行
+// 読み込みをすべてここで行うように修正
 void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの読み込み
 {
     map_ = *msg;
@@ -57,13 +59,24 @@ void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの
 
     process();
     
+    resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
+    width_ = map_.info.width;//マップの幅
+    height_ = map_.info.height;//マップの高さ
+    origin_x_ = map_.info.origin_x//原点x座標
+    origin_y_ = map_.info.origin_y//原点y座標
+
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", resolution_);
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", width_);
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", height_);
 
+    // マップがからではなかったらtrueを返す
+    if(!map_.empty()){
+        map_checker_ = true;
+    }
 }
 
 // マップ全体の障害物を拡張処理（new_map_をpublishする）
+// 一次配列用の障害物拡張に変更
 void Astar::obs_expander()
 {
     if (!map_received_) {
@@ -73,34 +86,23 @@ void Astar::obs_expander()
 
     // 新しいマップデータ（拡張後）を作成
     new_map_ = map_;  // 元のマップをコピー
-    std::vector<int8_t> new_map_data = map_.data;  // 1Dのデータをコピー
-
     
-    resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
-    width_ = map_.info.width;//マップの幅
-    height_ = map_.info.height;//マップの高さ
-
     margin_length = static_cast<int>(std::ceil(robot_radius_ / resolution_));  // セル単位の拡張範囲
 
-    for (int y = 0; y < height_; y++) {
-        for (int x = 0; x < width_; x++) {
-            index = y * width_ + x;
-            if (map_grid_[y][x] == 100) {  // 障害物セルを拡張
-                obs_expand(index, new_map_data);
-            }
+    // 一次配列だからindex分だけ回して障害物を探索する
+    for(int i=0;i<index;i++){
+        if(new_map_.data[i] == 100) {  // 障害物セルを拡張
+            obs_expand(index, new_map_);
         }
     }
-
-    // 新しいデータを `new_map_` に適用
-    new_map_.data = new_map_data;
-
     // 拡張後のマップをPublish
     pub_new_map_->publish(new_map_);
     RCLCPP_INFO(this->get_logger(), "Published expanded obstacle map.");
 }
 
 // 指定されたインデックスの障害物を拡張（margin_length分）
-void Astar::obs_expand(const int index,std::vector<int8_t> new_map_data)
+// 既にほかの関数にある条件文を削除
+void Astar::obs_expand(const int index,nav_msgs::msg::OccupancyGrid new_map_)
 {
     int x = index % width_;
     int y = index / width_;
@@ -111,9 +113,8 @@ void Astar::obs_expand(const int index,std::vector<int8_t> new_map_data)
             int ny = y + dy;
             if (nx >= 0 && nx < width_ && ny >= 0 && ny < height_) {  // 範囲チェック
                 int n_index = ny * width_ + nx;
-                if (new_map_data[n_index] != 100) {
-                    new_map_data[n_index] = 50;  // 拡張エリア（50 = 半障害物）
-                }
+                new_map_.data[n_index] = 100;//100まで拡張してしまう
+
             }
         }
     }
@@ -134,51 +135,37 @@ double Astar::make_heuristic(const Node_ node)
 }
 
 // スタートとゴールの取得（mからグリッド単位への変換も行う）
-Node_ Astar::set_way_point(int phase)
+Node_ Astar::set_way_point(int phase,int which)
 {
-    if(phase == 0){//スタート地点の格納にはphase=0
-        double grid_x = 0.0,grid_y = 0.0,grid_parent_x = 0.0,grid_parent_y = 0.0;
-
-        grid_x = start_point_world_x_ / resolution_;
-        grid_y = start_point_world_y / resolution_;
-        grid_parent_x = start_point_world_x / resolution_;
-        grid_parent_y = start_point_world_y / resolution_;
-        //スタート地点格納
-        start_node_.x = static_cast<int>(grid_x);
-        start_node_.y = static_cast<int>(grid_y);
-        start_node_.parent_x = static_cast<int>(grid_parent_x);
-        start_node_.parent_y = static_cast<int>(grid_parent_y);
-        // 毎回更新していくのか区間ごとに変化させていくのか？
-        // なわけねえだろ後者や！
-        const auto& wp : waypoints;
-        Node_ waypoint(wp[0], wp[1]); // 1つの経由地を取得
-
-        if (path.empty()) {
-            RCLCPP_WARN(this->get_logger(), "経由地 (%f, %f) までの経路が見つかりませんでした。", wp[0], wp[1]);
-            return;
+    // スタート地点
+    if(which == 0){
+        if(phase != 0){
+            start_point_x_[phase] = way_points_x_[phase-1];
+            start_point_y_[phase] = way_points_y_[phase-1];
         }
-
-        // すでにある最後のノードを重複しないように除外
-        if (!final_path.empty()) {
-            path.erase(path.begin());
-        }
-        final_path.insert(final_path.end(), path.begin(), path.end());
-
-        //ここで経由地を改めてスタートに格納
-        start_point_world_x_ = wp[phase+1];
-        start_point_world_y_ = wp[phase+2];
+        // スタートノードに格納
+        start_node_.x = round((start_point_x_[phase] - origin_x_) / resolution_);
+        start_node_.y = round((start_point_y_[phase] - origin_y_) / resolution_);
+        return start_node_;
     }
-
+    // ゴール地点
+    if(which == 1){
+        //経由地・ゴールを格納するノードを作成
+        goal_node_.x = round((way_points_x_[phase] - origin_x_) / resolution_);
+        goal_node_.y = round((way_points_y_[phase] - origin_y_) / resolution_);
+        return goal_node_;
+    }
 }
 
 // ノードをたどり，waypoint間のパスを作成．その後グローバルパスに追加
 // 参考：push_back(...) https://cpprefjp.github.io/reference/vector/vector/push_back.html
-void Astar::create_path(Node_ node,nav_msgs::msg::Path partial_path)
+void Astar::create_path(Node_ node)
 {
+    nav_msgs::msg::Path partial_path;
     partial_path.poses.push_back(node_to_pose(node));
 
     // ###### パスの作成 ######
-    while (node->parent != nullptr) {  // 親が存在する限り遡る
+    while(!check_same_node(node,start_node_)) {  // 親が存在する限り遡る
         node = node->parent; // 親ノードを取得
         partial_path.poses.push_back(node_to_pose(*node));
     }
@@ -192,41 +179,29 @@ void Astar::create_path(Node_ node,nav_msgs::msg::Path partial_path)
 
 
 // ノード座標（グリッド）をgeometry_msgs::msg::PoseStamped（m単位のワールド座標系）に変換
+// コードを簡略化
 geometry_msgs::msg::PoseStamped Astar::node_to_pose(const Node_ node)
 {
-    double world_x = 0.0,world_y = 0.0;//ワールド座標系格納用
-    world_x = node.x * resolution_;//m単位に変換
-    world_y = node.y * resolution_;//m単位に変換
+    geometry_msgs::msg::PoseStamped pose_stamped;
+    pose_stamped.pose.position.x = node.x * resolution_ + origin_x_;
+    pose_stamped.pose.position.y = node.y * resolution_ + origin_y_;
 
-    geometry_msgs::msg::PoseStamped world_node;
-    //ワールド座標系のノードを作成
-    
-    // ヘッダー情報（ROSのタイムスタンプやフレームIDが必要な場合は適宜設定）
-    world_node.header.frame_id = "map"; // マップ座標系（適宜変更）
-    world_node.header.stamp = rclcpp::Clock().now(); // 現在の時間を設定
-    
-    // 位置情報の設定
-    world_node.pose.position.x = world_x;
-    world_node.pose.position.y = world_y;
-    world_node.pose.position.z = 0.0; // 2DなのでZは0
-
-    // 姿勢（オリエンテーション）はとりあえず無回転のまま（単位クォータニオンを設定）
-    world_node.pose.orientation.w = 1.0;
-    world_node.pose.orientation.x = 0.0;
-    world_node.pose.orientation.y = 0.0;
-    world_node.pose.orientation.z = 0.0;
-
-    return world_node;
+    return pose_stamped;
 }
 
 
 // openリスト内で最もf値が小さいノードを取得する関数
+// 搭載されてる関数を使用しない方向に変更
 Node_ Astar::select_min_f()
 {
-    auto smallest_f = std::min_element(open_list_.begin(),open_list_.end(), [](const Node_& a, const Node_& b){
-        return a.f < b.f;
-    });//min_elementは比較によって最小値を見つけ出す関数
-    return *smallest_f;
+    Node_ tmp_;
+    tmp_ = open_list_[0];
+    for(size_t i=0; i<open_list_.size();i++){
+        if(tmp_.f > open_list_[i].f){
+            tmp_ = open_list_[i];
+        }
+    }
+    return tmp_;
 }
 
 // スタートノードの場合，trueを返す
@@ -248,27 +223,31 @@ bool Astar::check_same_node(const Node_ n1, const Node_ n2)
 }
 
 // 指定したリストに指定のノードが含まれるか検索
-//（含まれる場合はインデックス番号を返し，含まれない場合は-1を返す）
-int Astar::check_list(const Node_ target_node, std::vector<Node_>& set)
+//（含まれる場合はリストの何番目にそのノードが含まれているか調べる，含まれない場合は-1を返す）
+int Astar::check_list(const Node_ node, std::vector<Node_>& list)
 {
-    auto result = std::find_if(list.begin(),list.end(), [](const Node_& n){
-        return check_same_node(n,node);//同じノードを探す
-        //autoで大丈夫？それからインデックス番号って？
-    });
-
-    if(result == list.end()){
-        return -1;
+    // search_node_from_listと同じ
+    int check = -1;
+    int number = 0;
+    for(size_t i=0; i<list.size();i++){
+        if(check_same_node(node,list)){
+            // return node.y * width + node.x;
+            check = 0;
+            return number = i;
+        }
     }
-    //下にも同じような関数が一つあるけどどう違うの？
+    if(check == -1){
+        return check;
+    }
 }
 
 // list1から指定されたノードを探し，リスト1から削除してリスト2に移動する関数
 void Astar::swap_node(const Node_ node, std::vector<Node_>& list1, std::vector<Node_>& list2)
 {
-    auto result = search_node_from_list(node,list1);//autoだけ心配
+    int result = search_node_from_list(node,list1);
 
-    list2.push_back(*result);//見つけたノードをlist2の末尾に追加
-    list1.erase(result);//list2から指定のノードを削除   
+    list2.push_back(node);//見つけたノードをlist2の末尾に追加
+    list1.erase(list1.begin() + result);//list2から指定のノードを削除   
 
 }
 
@@ -287,7 +266,7 @@ bool Astar::check_obs(const Node_ node)
     int8_t cell_value = new_map_.data[index];//int8_tは符号付整数型
 
     // 100（障害物）なら true を返す
-    return (cell_value >= 50);
+    return (cell_value == 100);
 
 }
 
@@ -304,7 +283,10 @@ void Astar::update_list(Node_ node)
     // ###### 隣接ノード ######
 
     for (auto& neighbor : neighbor_nodes){
-        
+        if(check_obs(neighbor_nodes)){
+            continue;
+        }
+        std::tie = search_node(); 
         //close_list__の中身と同じものが入っていたらclose_list_へ
         // 障害物であったらclose_list_へ
         if (close_list_(neighbor)||check_obs(neighbor)){
@@ -389,26 +371,33 @@ Node_ Astar::get_neighbor_node(const Node_ node, const Motion_ motion)
 // -1はどちらのリストにもノードが含まれていないことを示す
 std::tuple<int, int> Astar::search_node(const Node_ node)
 {
-    //Openリストの検索
-    int index = 0;
-    for (const auto& n : open_list_) {
-        search_node_from_list(node,open_list_);
+    // index用
+    int open = 0;
+    int close = 0;
+    // 1はOpenリスト，2はCloseリスト
+    int which = 0;
+    // index格納
+    open = search_node_from_list(node,open_list_);
+    close = search_node_from_list(node,close_list__);
+    // どっちのリストに入っているか 
+    if(open == -1){
+        which = 2;
+        return std::tuple(which,close);
+    }
+    if(close == -1){
+        which = 1;
+        return std::tuple(which,open);
+    }else{
+        return std::tuple(open,close);
     }
 
-    // Closeリストの検索
-    index = 0;
-    for (const auto& n : close_list__) {
-        search_node_from_list(node,close_list__);
-    }
-        // どちらにも存在しない場合
-    return std::make_tuple(-1, -1);
 }
 
 
 // 親ノードかの確認し、親ノードであればtrue
 bool Astar::check_parent(const int index, const Node_ node)
 {
-    return index = node.parent_y * width_ + node.parent_x;
+    return (index == node.parent_y * width_ + node.parent_x);
     //インデックスが親ノードである場合
 }
 
@@ -419,15 +408,17 @@ bool Astar::check_parent(const int index, const Node_ node)
 // 見つからなければ-1を返す
 int Astar::search_node_from_list(const Node_ node, std::vector<Node_>& list)
 {
-    auto result = std::find_if(list.begin(),list.end(), [](const Node_& n){
-        if(check_same_node(n,node) == true){
+    int check = -1;
+    for(size_t i=0; i<list.size();i++){
+        if(check_same_node(node,list)){
             return node.y * width + node.x;
-        }//同じノードを探す　autoだけ心配
-    });
-
-    if(result == list.end()){
-        return -1;
+            check = 0;
+        }
     }
+    if(check == -1){
+        return check;
+    }
+
 }
 
 
@@ -505,6 +496,18 @@ void Astar::planning()
     if(current_.x ==  && current_.y == ){
         pub_path_ -> publish(partial_path);
     }
+
+    for(int i=0; i<phase; i++){
+        // リストを初期化
+        open_list_.clear();
+        close_list_.clear();
+        // スタートとゴールのノード格納する
+        start_node_ = set_way_point(i,0);
+        goal_node_ = set_way_point(i,1);
+        
+    }
+
+
 
     show_exe_time();
     RCLCPP_INFO_STREAM(get_logger(), "COMPLITE ASTAR PROGLAM");
