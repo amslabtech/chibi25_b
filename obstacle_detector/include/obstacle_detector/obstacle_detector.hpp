@@ -7,8 +7,7 @@
 #include <memory>
 #include <optional>
 #include <sensor_msgs/msg/laser_scan.hpp>
-// #include <geometry_msgs/msg/point32.hpp>
-#include <sensor_msgs/msg/point_cloud.hpp>
+#include <geometry_msgs/msg/pose_array.hpp>
 #include <math.h>
 
 using namespace std::chrono_literals;
@@ -42,7 +41,7 @@ class ObstacleDetector : public rclcpp::Node
     std::optional<sensor_msgs::msg::LaserScan> scan_;
 
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;                 // scan SharedPtrは1stに倣って入れた
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr o_points_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::PoseArray>::SharedPtr o_points_pub_;
     rclcpp::TimerBase::SharedPtr timer_;
 
   private:

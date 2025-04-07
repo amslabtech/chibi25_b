@@ -13,7 +13,7 @@ ObstacleDetector::ObstacleDetector() : Node("obstacle_detector"){
         "/scan", rclcpp::QoS(1).reliable(), std::bind(&ObstacleDetector::scan_callback, this, std::placeholders::_1));
 
     // publisher
-    o_points_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud>(
+    o_points_pub_ = this->create_publisher<geometry_msgs::msg::PoseArray>(
         "/o_points", rclcpp::QoS(1).reliable());
 
 }
@@ -64,22 +64,24 @@ void ObstacleDetector::scan_obstacle(){
     }
 
     // ROS2メッセージに変換してpublish
-    auto msg = sensor_msgs::msg::PointCloud();
+    auto msg = geometry_msgs::msg::PoseArray();
     msg.header.stamp = this->get_clock()->now();
-    msg.header.frame_id = "laser_frame";
-
+    msg.header.frame_id = "laser_frame";        // laser_frame 座標系に基づいた表記であることの明示
+    
     for (const auto &p : o_points_) {
         if (p.exist) {
-            geometry_msgs::msg::Point32 point;
-            point.x = p.x;
-            point.y = p.y;
-            point.z = 0.0;
-            msg.points.push_back(point);
+            geometry_msgs::msg::Pose pose;
+            pose.position.x = p.x;
+            pose.position.y = p.y;
+            pose.position.z = 0.0;
+            // orientation は使わないのでデフォルト（0）でも良い
+            msg.poses.push_back(pose);
         }
     }
     o_points_pub_->publish(msg);
-
+    
     points_print();     // デバッグ用
+
 
     /*
     障害物の座標を格納するmsgについて
