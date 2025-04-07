@@ -67,6 +67,9 @@ class Localizer : public rclcpp::Node
         rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr sub_map_;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
         rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr sub_laser_;
+            // Nodeで定義したsub_odom_はmsgでなくSubscriptionなので,直接poseにアクセスできない
+            // → コールバック関数でodomのmsgデータ取得した後、他の関数からsub_odom_でそのデータを使えposeにアクセスできるように設定する
+
 
         // Publisher
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pub_estimated_pose_;

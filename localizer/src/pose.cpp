@@ -43,21 +43,23 @@ void Pose::set(const double x, const double y, const double yaw)
    this->yaw_ = yaw; 
 }
 
+// localizer.cppでも使用
 // パーティクルの移動(位置と向きの更新)
 // ノイズを加えて，移動させる
-void Pose::move(Pose &pose, double length, double direction, double rotation, const double fw_noise, const double rot_noise) // lengthは直進距離
+void Pose::move(double length, double direction, double rotation, const double fw_noise, const double rot_noise) // lengthは直進距離
 {
     // ノイズを加えるc
     double noisy_length = length + fw_noise * std::sqrt(std::abs(length));
     double noisy_rotation = rotation + rot_noise * std::sqrt(std::abs(rotation));
 
     // 移動させる
-    pose.x_ += noisy_length * std::cos(pose.yaw_ + direction); // 進行方向は現在の向き+移動方向
-    pose.y_ += noisy_length * std::sin(pose.yaw_ + direction);
-    pose.yaw_ += noisy_rotation; // この関数は他のcppでも使えるstatic関数(クラスをクラス名::で指定して使える)なためx_等のメンバ変数を使えないしthis->x_もできない、引数にPose追加
+    // Pose poseを引数にしてpose.x()にするのではなく自身のメンバ変数を移動させるようにする(static関数でなければできる)
+    x_ += noisy_length * std::cos(yaw_ + direction); // 進行方向は現在の向き+移動方向
+    y_ += noisy_length * std::sin(yaw_ + direction);
+    yaw_ += noisy_rotation; // この関数は他のcppでも使えるstatic関数(クラスをクラス名::で指定して使える)なためx_等のメンバ変数を使えないしthis->x_もできない、引数にPose追加
 
     // 角度を適切化
-    normalize_angle(pose.yaw_); // この関数内で使えるようにstatic関数に合わせた
+    normalize_angle(yaw_); // この関数内で使えるようにstatic関数に合わせた
 }
 
 // 適切な角度(-M_PI ~ M_PI)に変更

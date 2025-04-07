@@ -1,10 +1,12 @@
 #include "localizer/localizer.hpp"
 #include <tf2/LinearMath/Quaternion.h> // tf2::Quaternion用
 // #include <tf2/LinearMath/Matrix3x3.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 // デフォルトコンストラクタ
 // パラメータの宣言と取得
+// configのyamlファイルから値を取得するため
+// ☆これよりデバッグの際に毎回ビルドしなくてもyamlファイルの値を書き換えるだけでよくなる
 // Subscriber，Publisherの設定
 // frame idの設定
 // パーティクルクラウドのメモリの確保
@@ -13,9 +15,51 @@ Localizer::Localizer() : Node("teamb_localizer")
 { 
     // パラメータの宣言
     this->declare_parameter("hz", 10);
+    this->declare_parameter("particle_num", 100);
+    this->declare_parameter("max_particle_num", 200);
+    this->declare_parameter("min_particle_num", 50);
+    this->declare_parameter("move_dist_th", 0.1);
+    this->declare_parameter("init_x", 0.0);
+    this->declare_parameter("init_y", 0.0);
+    this->declare_parameter("init_yaw", 0.0);
+    this->declare_parameter("init_x_dev", 1.0);
+    this->declare_parameter("init_y_dev", 1.0);
+    this->declare_parameter("init_yaw_dev", 0.5);
+    this->declare_parameter("alpha_th", 0.01);
+    this->declare_parameter("reset_count_limit", 5);
+    this->declare_parameter("expansion_x_dev", 1.0);
+    this->declare_parameter("expansion_y_dev", 1.0);
+    this->declare_parameter("expansion_yaw_dev", 0.5);
+    this->declare_parameter("laser_step", 5);
+    this->declare_parameter("sensor_noise_ratio", 0.1);
+    this->declare_parameter("ff_", 0.0);
+    this->declare_parameter("fr_", 0.0);
+    this->declare_parameter("rf_", 0.0);
+    this->declare_parameter("rr_", 0.0);
 
     // パラメータの取得
     this->get_parameter("hz", hz_);
+    this->get_parameter("particle_num", particle_num_);
+    this->get_parameter("max_particle_num", max_particle_num_);
+    this->get_parameter("min_particle_num", min_particle_num_);
+    this->get_parameter("move_dist_th", move_dist_th_);
+    this->get_parameter("init_x", init_x_);
+    this->get_parameter("init_y", init_y_);
+    this->get_parameter("init_yaw", init_yaw_);
+    this->get_parameter("init_x_dev", init_x_dev_);
+    this->get_parameter("init_y_dev", init_y_dev_);
+    this->get_parameter("init_yaw_dev", init_yaw_dev_);
+    this->get_parameter("alpha_th", alpha_th_);
+    this->get_parameter("reset_count_limit", reset_count_limit_);
+    this->get_parameter("expansion_x_dev", expansion_x_dev_);
+    this->get_parameter("expansion_y_dev", expansion_y_dev_);
+    this->get_parameter("expansion_yaw_dev", expansion_yaw_dev_);
+    this->get_parameter("laser_step", laser_step_);
+    this->get_parameter("sensor_noise_ratio", sensor_noise_ratio_);
+    this->get_parameter("ff_", ff_);
+    this->get_parameter("fr_", fr_);
+    this->get_parameter("rf_", rf_);
+    this->get_parameter("rr_", rr_);
 
     // Subscriberの設定
     // <subscriber名> = this->create_subscription<<msg型>>("<topic名>", rclcpp::QoS(<確保するtopicサイズ>).reliable(), std::bind(&<class名>::<コールバック関数名>, this, std::placeholders::_1));
@@ -37,8 +81,8 @@ Localizer::Localizer() : Node("teamb_localizer")
     // パーティクルクラウドのメモリの確保
     particle_cloud_msg_.poses.reserve(max_particle_num_);
 
-    // ！odometryのモデルの初期化
-    OdomModel odom_model_(0.0, 0.0, 0.0, 0.0);
+    // odometryのモデルの初期化
+    OdomModel odom_model_(ff_, fr_, rf_, rr_);
 
     // fw_var_per_fw_ = 0.0;
     // fw_var_per_rot_ = 0.0;
@@ -56,6 +100,8 @@ void Localizer::map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)
 {
     map_ = *msg;
     flag_odom_ = true; // マップのmsg受け取りフラグ
+    printf("%d\n", flag_odom_);
+    std::cout << std::boolalpha << flag_odom_ << std::endl;
 }
 
 // odometryのコールバック関数
@@ -73,11 +119,6 @@ void Localizer::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg)
         flag_move_ = true; // 機体動いた
     }
 
-    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
-    // ！Nodeで定義したsub_odom_はmsgでなくSubscriptionなので,直接poseにアクセスできない
-    // → コールバック関数でodomのmsgデータ取得した後、他の関数からsub_odom_でそのデータを使えposeにアクセスできるように設定する
-
-
     // (オドメトリのノイズを考慮した補正)
 }
 
@@ -89,7 +130,7 @@ void Localizer::laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg)
 }
 
 // hz_を返す関数
-int Localizer::getOdomFreq() // (constを付けることでhz_の変更がないことを保証出来る)
+int Localizer::getOdomFreq() // (constを付けることでhz_が外部から書き換えられないようにすることを保証出来る)
 {
     return hz_;
 }
@@ -98,7 +139,7 @@ int Localizer::getOdomFreq() // (constを付けることでhz_の変更がない
 void Localizer::initialize()
 {
     // 推定位置の初期化
-    Pose estimated_pose_(init_x_, init_y_, init_yaw_);
+    estimated_pose_.set(init_x_, init_y_, init_yaw_);
 
     // estimated_pose_.x_ = init_x_;
     // estimated_pose_.y_ = init_y_;
@@ -110,15 +151,21 @@ void Localizer::initialize()
     particles_.clear();
 
     for (int i = 0; i < particle_num_; i++) {
-        // 初期位置近傍に標準偏差を誤差としたパーティクルを配置
-        double particle_weight;
-        Particle particle(init_x_ + norm_rv(0, init_x_dev_), init_y_ + norm_rv(0, init_y_dev_), init_yaw_ + norm_rv(0, init_yaw_dev_), particle_weight); // Particleとは一つのパーティクル作成のための構造体(x, y, yaw, weight入り)
-        
-        // particle.x = init_x_ + norm_rv(0, init_x_dev_);
-        // particle.y = init_y_ + norm_rv(0, init_y_dev_);
-        // particle.yaw = init_yaw_ + norm_rv(0, init_yaw_dev_);
+        // particleのローカル変数を定義して，初期値を初期位置にノイズを加えてparticleをセット
+        double particle_x = init_x_ + norm_rv(0, init_x_dev_);
+        double particle_y = init_y_ + norm_rv(0, init_y_dev_);
+        double particle_yaw = init_yaw_ + norm_rv(0, init_yaw_dev_);
+        double particle_weight = 1.0;
 
-        // パーティクルの重みの初期化とリストに追加
+        // Particle particle(init_x_ + norm_rv(0, init_x_dev_), init_y_ + norm_rv(0, init_y_dev_), init_yaw_ + norm_rv(0, init_yaw_dev_), particle_weight); // Particleとは一つのパーティクル作成のための構造体(x, y, yaw, weight入り)
+        // ↑ではなくparticleのローカル変数自体を定義
+
+        // 角度yawの正規化，メンバ変数のparticles_にpush_back
+        normalize_angle(particle_yaw);
+        Particle particle(particle_x, particle_y, particle_yaw, particle_weight);
+        particles_.push_back(particle);
+
+        // パーティクルの重みの初期化
         reset_weight();
     }
 }
@@ -137,8 +184,6 @@ void Localizer::process()
         // q.setRPY(0, 0, estimated_pose_.yaw); // 回転情報を入力(Roll, Pitch, Yaw)の順
         // transform.setRotation(q); // 回転を設定
         // br.sendTransform(tf2_ros::StampedTransform(std::transform, ros::Time::now(), "world", "robot")); // (座標系, タイムスタンプとして使う時刻, 親座標系の名前, 今使っている座標系の名前)  
-
-        flag_broadcast_ = true; // tfブロードキャストした
 
         // 初回のみ TransformBroadcaster を初期化
         if (!flag_broadcast_) {
@@ -163,11 +208,15 @@ void Localizer::process()
         transform.transform.rotation.z = q.z();
         transform.transform.rotation.w = q.w();
 
-        // 座標変換tfをブロードキャスト
+        // 推定位置の座標変換tfをブロードキャスト
         tf_broadcaster_->sendTransform(transform); // ？hppに足したけどtf_broadcaster_の使用先
 
         // 位置推定
         localize();
+
+        // ロボットの移動後のmap座標系から見たodom座標系のtfをブロードキャスト
+        broadcast_odom_state();
+        flag_broadcast_ = true; // tfブロードキャストした
         
         // パブリッシュ
         publish_estimated_pose(); // 推定位置
@@ -175,15 +224,19 @@ void Localizer::process()
     }
 }
 
-// 適切な角度(-M_PI ~ M_PI)を返す
+// 適切な角度(-M_PI ~ M_PI)を返す＝正規化
 double Localizer::normalize_angle(double angle)
 {
-    while (angle < -M_PI && M_PI < angle) { // 適切な範囲外のとき
-        if (angle < -M_PI) {
-            angle += 2 * M_PI;
-        } else 
-            angle -= 2 * M_PI;
-    }
+    angle = std::atan2(std::sin(angle), std::cos(angle));
+
+    // ↑ whileより計算速い
+    // while (angle < -M_PI && M_PI < angle) { // 適切な範囲外のとき
+    //     if (angle < -M_PI) {
+    //         angle += 2 * M_PI;
+    //     } else 
+    //         angle -= 2 * M_PI;
+    // }
+
     return angle;
 }
 
@@ -196,13 +249,20 @@ double Localizer::norm_rv(const double mean, const double stddev) // 平均と�
     return distribution(generator);
 }
 
-// 〇パーティクルの重みの初期化しリストに追加(正規分布に基づいて初期値設定、正規化→初期化？)
+// particles_リストのパーティクルの重みの初期化(正規分布に基づいて初期値設定、正規化→初期化？)
 void Localizer::reset_weight()
 {
     double another_weight = 1.0 / particle_num_; // 初期重み1.0を均等配分
     // particles_.push_back(another_weight); // hppで定義済みのリストに追加
     for (auto& particle : particles_) {
         particle.set_weight(another_weight);
+        // particle.cppの
+            // setter
+            // void Particle::set_weight(double weight)
+            // {
+            //     weight_ = weight;
+            // }
+        // 使用
     }
 }
 
@@ -253,10 +313,16 @@ void Localizer::broadcast_odom_state()
         odom_state.child_frame_id  = last_odom_.header.frame_id; // 子フレーム
 
         // map座標系からみたodom座標系の原点位置と方向の格納
+        // 格納対象は位置情報（x, y）と回転情報（x, y, z, w）
         odom_state.transform.translation.x = dx;
         odom_state.transform.translation.y = dy;
-        odom_state.transform.translation.z = 0.0;
-        odom_state.transform.rotation = tf2::toMsg(map_to_odom_quat);
+        // odom_state.transform.translation.z = 0.0;
+        // odom_state.transform.rotation = tf2::toMsg(map_to_odom_quat);
+        map_to_odom_quat.normalize(); // クォータニオンの正規化
+        odom_state.transform.rotation.x = map_to_odom_quat.x(); // 回転(単位クォータニオン)
+        odom_state.transform.rotation.y = map_to_odom_quat.y();
+        odom_state.transform.rotation.z = map_to_odom_quat.z();
+        odom_state.transform.rotation.w = map_to_odom_quat.w();
 
         // tf情報をbroadcast(座標系の設定)
         odom_state_broadcaster->sendTransform(odom_state);
@@ -281,30 +347,34 @@ void Localizer::motion_update()
         // ロボットの微小移動量計算
         double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
         double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
-        double dyaw = last_odom_.pose.pose.position.z - prev_odom_.pose.pose.position.z; // 回転角度yawの差ってこの回転方向成分z?
+        double dyaw = last_odom_.pose.pose.orientation.z - prev_odom_.pose.pose.orientation.z; // ?回転角度yawの差ってこの回転方向成分z
 
         // オドメトリの標準座標
         odom_model_.set_dev(std::sqrt(dx * dx + dy * dy), std::abs(dyaw));
 
         // ノイズ取得
-        double fx_noise = odom_model_.get_fw_noise();
+        double fw_noise = odom_model_.get_fw_noise();
         double rot_noise = odom_model_.get_rot_noise();
 
         // パーティクルの位置を更新
         for (auto& particle : particles_)
         {
-            // ノイズを加える#hiraiwa
-            double dx_add_noise = dx + norm_rv(0, fx_noise);
-            double dy_add_noise = dy + norm_rv(0, fx_noise);
-            double dyaw_add_noize = dyaw + norm_rv(0, rot_noise);
-            double ddx,ddy,ddyaw;
-             ddx += dx_add_noise;
-             ddy += dy_add_noise;
-             ddyaw += dyaw_add_noize;
+            // パーティクルにノイズを加えて移動、位置更新
+            double length = std::sqrt(dx * dx + dy * dy);
+            double direction = std::atan2(dy, dx);
+            double rotation = dyaw;
+            particle.getPose().move(length, direction, rotation, fw_noise, rot_noise); // lengthは直進距離
 
-            // 位置更新
-            particle = Particle(ddx, ddy, ddyaw, particle.weight());//#hiraiwa#
+            // double dx_add_noise = dx + norm_rv(0, fx_noise);
+            // double dy_add_noise = dy + norm_rv(0, fx_noise);
+            // double dyaw_add_noize = dyaw + norm_rv(0, rot_noise);
+            // double ddx,ddy,ddyaw;
+            //  ddx += dx_add_noise;
+            //  ddy += dy_add_noise;
+            //  ddyaw += dyaw_add_noize;
 
+            // // 位置更新
+            // particle = Particle(ddx, ddy, ddyaw, particle.weight());
         }
     }
 }
@@ -316,46 +386,77 @@ void Localizer::observation_update()
 {
     if (flag_laser_)
     {
+        double sum_particle_alpha = 1.0; 
         for(auto& particle : particles_)
         {
-            // パーティクル1つのレ(ーザ(1本?)における平均尤度を算出、重みを更新
-            double yudo = calc_marginal_likelihood(); // 周辺尤度を算出
+            // パーティクル1つのレーザ1本における平均尤度(alpha)を算出、重みを更新
+            double yudo = particle.likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_); // パーティクル一つの尤度を算出
+            double laser_num = ((laser_.angle_max - laser_.angle_min) / laser_.angle_increment) + 1; // パーティクル1つにおけるレーザの本数
+            double particle_alpha = yudo / laser_num; // このforで回してるparticleのレーザ1本における平均尤度
+            sum_particle_alpha += particle_alpha; // particles_内のparticleのレーザ1本における平均尤度の合計
+
             // particle.weight() *= yudo; //！重みに尤度をかける
-            particle.set_weight(particle.weight() * yudo);
+            particle.set_weight(particle.weight() * yudo); // 重みを更新
         }
+        // 全体の平均alpha算出
+        double alpha = sum_particle_alpha / particle_num_; // particles_内の1つのparticleのレーザ1本における平均尤度
 
         // ここからはそれぞれの関数内でforでparticles_回す
         // 正規化
-        normalize_belief(); // 正規化 
+        normalize_belief(); // ？これの位置
 
         // 位置推定
         estimate_pose();
 
-        // リサンプリング
-        resampling(alpha_th_);
+        // 周辺尤度(全パーティクルの平均尤度)の計算
+        double marginal_likelihood = calc_marginal_likelihood();
+
+        if (alpha < alpha_th_ && marginal_likelihood < marginal_likelihood_th_) // ？閾値
+        {
+            // 膨張リセット
+            expansion_resetting(); // ？これの中身
+        }
+        else
+        {
+            // リサンプリング
+            resampling(alpha); // ？これの中身
+        }
     }
 }
 
-// 周辺尤度の算出
+// 周辺尤度の算出、観測更新のために使う
+// EMCLの場合は尤度が小さすぎる場合は膨張リセットを行うため
 double Localizer::calc_marginal_likelihood()
 {
-    double marginal_likelihood = 0.0; //周辺尤度の平均
-    double yudo_ = 0.0; // likelihood()関数の戻り値として得られる各レーザの尤度
-    double sum_yudo_ = 0.0; //上記の合計
-    int laser_number = 0; // センサの本数
+    // double marginal_likelihood = 0.0; //周辺尤度の平均
+    // double yudo_ = 0.0; // likelihood()関数の戻り値として得られる各レーザの尤度
+    // double sum_yudo_ = 0.0; //上記の合計
+    // int laser_number = 0; // センサの本数
 
-    for (int i=0; i<laser_.ranges.size(); i+=laser_step_)
-    {
-        yudo_ = Particle::likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_);
-        sum_yudo_ += yudo_; 
-        laser_number++;
-    }
+    // for (int i=0; i<laser_.ranges.size(); i+=laser_step_)
+    // {
+    //     yudo_ = particle.likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_);
+    //     sum_yudo_ += yudo_;
+    //     laser_number++;
+    // }
     
-    marginal_likelihood = sum_yudo_ / laser_number; // 全レーザの合計尤度をレーザで割って平均化
+    // marginal_likelihood = sum_yudo_ / laser_number; // 全レーザの合計尤度をレーザで割って平均化
+    // return marginal_likelihood;
+
+    double marginal_likelihood = 0.0;
+    double sum_yudo_ = 0.0;
+
+    for (auto& particle : particles_)  // 全パーティクルを走査
+    {
+        double yudo = particle.likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_);
+        sum_yudo_ += yudo;
+    }
+
+    marginal_likelihood = sum_yudo_ / particles_.size();
     return marginal_likelihood;
 }
 
-// 推定位置の決定☆
+// 推定位置の決定
 // 算出方法は複数ある（平均，加重平均，中央値など...）
 // 加重平均
 void Localizer::estimate_pose()
@@ -398,14 +499,20 @@ void Localizer::normalize_belief()
 // 膨張リセット（EMCLの場合）
 void Localizer::expansion_resetting()
 {
+    for (auto& particle : particles_)
+    {
+        particle.getPose().set(random_x_in_map(), random_y_in_map(), random_angle());
+        particle.set_weight(1.0);
+    }
 
+    normalize_belief();
 }
 
 // リサンプリング（系統サンプリング）☆
 // 周辺尤度に応じてパーティクルをリサンプリング
 void Localizer::resampling(const double alpha)
 {
-    // パーティクルの重みを積み上げたリストを作成
+    // パーティクルの重みを積み上げたリストを作成(リサンプリングのため)
     std::vector<double> accum;
 
     // サンプリングのスタート位置とステップを設定
@@ -434,7 +541,13 @@ void Localizer::resampling(const double alpha)
 
     // リサンプリング
     next_particles_.reserve(particle_num_); // パーティクル数の保持
-    std::move(next_particles_); // パーティクルを移動、☆Pose::moveもstatic関数にしているためここで使いたい
+    Pose pose;
+    double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
+    double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
+    double dyaw = last_odom_.pose.pose.position.z - prev_odom_.pose.pose.position.z;
+    double distance_moved = std::sqrt(dx * dx + dy * dy); // ロボットが動いた距離
+    double direction = std::atan2(dy, dx); // ロボットの進んだ角度
+    pose.move(distance_moved, direction, dyaw, odom_model_.get_fw_noise(), odom_model_.get_rot_noise()); // パーティクルを移動(pose, 移動距離, 進行方向角度, 回転量, 移動ノイズ, 回転ノイズ)
 
     // 重みを初期化しhppで定義済みのリストに追加
     for (auto& particle : next_particles_) { // next_patricles_の中身のparticleごとにfor回す
@@ -481,7 +594,7 @@ void Localizer::publish_particles()
         pose.orientation = tf2::toMsg(q); // tf2を使ってROSのQuaternionに変換
         // pose.yaw() = tf2::toMsg(tf2::Quaternion(0, 0, particle.getPose().yaw()));
 
-        particle_cloud_msg_.poses.push_back(pose); // ☆hppで定義済みのリストに追加、particle_cloud_msg_の型より.poses.push_back(geometry_msgs::msg::～)にする
+        particle_cloud_msg_.poses.push_back(pose); // hppで定義済みのリストに追加、particle_cloud_msg_の型より.poses.push_back(geometry_msgs::msg::～)にする
     }
 
     // <publisher名>->publish(<変数名>);
@@ -491,6 +604,10 @@ void Localizer::publish_particles()
     // for (auto& particle : particles_) {
     //     // particles_の中のparticle一つごとにfor文回せる
     // }
+
+    // OdomModel(const double ff, const double fr, const double rf, const double rr);  // コンストラクタ
+    // を使って初期化
+    // - OdomModel odom_model_(0.0, 0.0, 0.0, 0.0);
 
     // Pose 変数名;はPose.cppに、Particle 変数名;はparticle.cppを見て内部の構造知る
 

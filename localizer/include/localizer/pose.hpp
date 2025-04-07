@@ -18,10 +18,10 @@ class Pose
         double yaw() const { return yaw_; }
 
         // パーティクルの移動
-        static void move(Pose &pose, double length, double direction, double rotation, const double fw_noise, const double rot_noise);
+        void move(double length, double direction, double rotation, const double fw_noise, const double rot_noise);
 
         // 適切な角度(-M_PI ~ M_PI)に変更
-        static void normalize_angle(double &angle);
+        void normalize_angle(double &angle);
 
     private:
         double x_;   // [m]
