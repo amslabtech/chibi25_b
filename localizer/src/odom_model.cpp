@@ -12,8 +12,8 @@ OdomModel::OdomModel(const double ff, const double fr, const double rf, const do
     rot_var_per_fw_ = rf * rf; // rfの分散、回転方向に走行中の前進方向の分散
     rot_var_per_rot_ = rr * rr; // rrの分散、回転方向に走行中の回転方向の分散
 
-    // fw_dev_ = ;
-    // rot_dev_ = ; // 要らない?
+    fw_dev_ = ff;
+    rot_dev_ = rr; // 要らない?
 }
 
 // 代入演算子
