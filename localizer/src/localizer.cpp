@@ -290,9 +290,23 @@ void Localizer::broadcast_odom_state()
         odom_to_base.pose = last_odom_.pose.pose; // 最新のオドメトリをコピー
 
         // map座標系(地図の静的な絶対座標)からみたodom座標系(ロボットの動きを元にした相対座標)の位置と姿勢を計算（回転行列を使った単純な座標変換）
-        double dx = map_to_base.pose.position.x - odom_to_base.pose.position.x;
-        double dy = map_to_base.pose.position.y - odom_to_base.pose.position.y;
-        double dyaw = map_to_base.pose.orientation.z - odom_to_base.pose.orientation.z;
+        // map座標系とodom座標系のx軸は同じではない（ロボットが回転するとodom座標系も回転する）ので，それを考慮して算出する
+        // double dx = map_to_base.pose.position.x - odom_to_base.pose.position.x;
+        // double dy = map_to_base.pose.position.y - odom_to_base.pose.position.y;
+        // double dyaw = map_to_base.pose.orientation.z - odom_to_base.pose.orientation.z;
+        // odom→baseの位置ベクトルを取得（ロボット相対位置）
+        double ox = odom_to_base.pose.position.x;
+        double oy = odom_to_base.pose.position.y;
+        // map→baseの位置ベクトルを取得（絶対位置）
+        double mx = map_to_base.pose.position.x;
+        double my = map_to_base.pose.position.y;
+        // base→odomの相対位置をmap座標系に変換（回転を考慮）
+        double theta = tf2::getYaw(map_to_base.pose.orientation); // map座標系から見たbaseの向き
+        double dx = mx - (ox * cos(theta) - oy * sin(theta));
+        double dy = my - (ox * sin(theta) + oy * cos(theta));
+        // yaw差分（回転の向き）を取得
+        double yaw_odom = tf2::getYaw(odom_to_base.pose.orientation);
+        double dyaw = theta - yaw_odom;
 
         // (サンプルコードに記述済み)
         tf2::Quaternion map_to_odom_quat;
@@ -508,16 +522,34 @@ void Localizer::expansion_resetting()
     normalize_belief();
 }
 
-// リサンプリング（系統サンプリング）☆
+// リサンプリング（系統サンプリング）
 // 周辺尤度に応じてパーティクルをリサンプリング
+// パーティクルの重みを積み上げたリストを作成
+// 1/Nずつリストを選んだパーティクルN個コピー(最初の位置だけ乱数で選ぶ)
+// コピーの重みを1/Nにして新たなパーティクルの集合とする
 void Localizer::resampling(const double alpha)
 {
     // パーティクルの重みを積み上げたリストを作成(リサンプリングのため)
-    std::vector<double> accum;
+    std::vector<double> cumulative; // 累積重みリスト
+    cumulative.reserve(particles_.size());
+    double total_weight = 0.0;
+    for (const auto& p : particles_) {
+        total_weight += p.weight;
+        cumulative.push_back(total_weight);
+    }
+
+    if (total_weight <= 0.0) {
+        std::cerr << "Warning: Total particle weight is zero. Skipping resampling.\n";
+        return;
+    }
+    // std::vector<double> accum;
 
     // サンプリングのスタート位置とステップを設定
-    const std::vector<Particle> old(particles_);
-    int size = particles_.size();
+    double step = total_weight / particle_num_;
+    double start = ((double)rand() / RAND_MAX) * step; // [0, step) のランダム値
+    double target = start;
+    // const std::vector<Particle> old(particles_);
+    // int size = particles_.size();
 
     // particle数の動的変更(AMCL特有のサンプリング、尤度が高い時は粒子減らし尤度が低い時は粒子増やす)
     if (alpha > 0.80) // alpha(尤度)高い
@@ -531,28 +563,46 @@ void Localizer::resampling(const double alpha)
     }
 
     // サンプリングするパーティクルのインデックスを保持
-    indexes.reserve(particle_num_); // インデックスの数をパーティクルの数に合わせる
+    indexes.clear();
+    indexes.reserve(particle_num_);
     int index = 0;
-    for (int i=0; i<particle_num_; i++)
-    {
-        index++;
-        indexes.push_back(index); // indexをhppで定義済みのリストに追加
+    for (int i = 0; i < particle_num_; ++i) {
+        while (target > cumulative[index] && index < cumulative.size() - 1) {
+            ++index;
+        }
+        indexes.push_back(index); // 選ばれたパーティクルのインデックスを記録
+        target += step;
     }
+    // indexes.reserve(particle_num_); // インデックスの数をパーティクルの数に合わせる
+    // int index = 0;
+    // for (int i=0; i<particle_num_; i++)
+    // {
+    //     index++;
+    //     indexes.push_back(index); // indexをhppで定義済みのリストに追加
+    // }
 
     // リサンプリング
-    next_particles_.reserve(particle_num_); // パーティクル数の保持
-    Pose pose;
-    double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
-    double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
-    double dyaw = last_odom_.pose.pose.position.z - prev_odom_.pose.pose.position.z;
-    double distance_moved = std::sqrt(dx * dx + dy * dy); // ロボットが動いた距離
-    double direction = std::atan2(dy, dx); // ロボットの進んだ角度
-    pose.move(distance_moved, direction, dyaw, odom_model_.get_fw_noise(), odom_model_.get_rot_noise()); // パーティクルを移動(pose, 移動距離, 進行方向角度, 回転量, 移動ノイズ, 回転ノイズ)
+    next_particles_.clear();
+    next_particles_.reserve(particle_num_);
+    for (int i = 0; i < particle_num_; ++i) {
+        Particle sampled = particles_[indexes[i]]; // インデックスに対応する粒子を取得
+        sampled.weight = 1.0 / particle_num_;      // 重みは後で初期化するがここでも仮で設定
+        next_particles_.push_back(sampled);
+    }
+    // next_particles_.reserve(particle_num_); // パーティクル数の保持
+    // Pose pose;
+    // double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
+    // double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
+    // double dyaw = last_odom_.pose.pose.position.z - prev_odom_.pose.pose.position.z;
+    // double distance_moved = std::sqrt(dx * dx + dy * dy); // ロボットが動いた距離
+    // double direction = std::atan2(dy, dx); // ロボットの進んだ角度
+    // pose.move(distance_moved, direction, dyaw, odom_model_.get_fw_noise(), odom_model_.get_rot_noise()); // パーティクルを移動(pose, 移動距離, 進行方向角度, 回転量, 移動ノイズ, 回転ノイズ)
 
     // 重みを初期化しhppで定義済みのリストに追加
     for (auto& particle : next_particles_) { // next_patricles_の中身のparticleごとにfor回す
-        reset_weight(); // ！この関数の引数にnext_particles_のようなリストは来れない ↑
+        reset_weight();
     }
+    particles_ = std::move(next_particles_);
 }
 
 // 推定位置のパブリッシュ
