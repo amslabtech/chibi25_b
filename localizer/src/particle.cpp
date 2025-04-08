@@ -74,7 +74,6 @@ bool Particle::is_ignore_angle(double angle, const std::vector<double>& ignore_a
         }
     }
 }
-// ?
 // 左右対称であるので，0 < angle < 1, 2 < angle < 3のように設定しても良い．
 // リストのサイズを変更しないのであれば，for文を使わずにif文を使ったほうが簡単かも
 

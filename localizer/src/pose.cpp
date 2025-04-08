@@ -56,7 +56,7 @@ void Pose::move(double length, double direction, double rotation, const double f
     // Pose poseを引数にしてpose.x()にするのではなく自身のメンバ変数を移動させるようにする(static関数でなければできる)
     x_ += noisy_length * std::cos(yaw_ + direction); // 進行方向は現在の向き+移動方向
     y_ += noisy_length * std::sin(yaw_ + direction);
-    yaw_ += noisy_rotation; // この関数は他のcppでも使えるstatic関数(クラスをクラス名::で指定して使える)なためx_等のメンバ変数を使えないしthis->x_もできない、引数にPose追加
+    yaw_ += noisy_rotation; // static関数(クラスをクラス名::で指定して使える)にしてしまうとx_等のメンバ変数を使えないしthis->x_もできないため引数にPose追加していた
 
     // 角度を適切化
     normalize_angle(yaw_); // この関数内で使えるようにstatic関数に合わせた

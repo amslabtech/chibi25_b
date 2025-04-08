@@ -1,7 +1,7 @@
 #include "localizer/localizer.hpp"
 #include <tf2/LinearMath/Quaternion.h> // tf2::Quaternion用
-// #include <tf2/LinearMath/Matrix3x3.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+#include <tf2/LinearMath/Matrix3x3.h> // getRPY用
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp> // fromMsg用
 
 // デフォルトコンストラクタ
 // パラメータの宣言と取得
@@ -26,6 +26,7 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->declare_parameter("init_y_dev", 1.0);
     this->declare_parameter("init_yaw_dev", 0.5);
     this->declare_parameter("alpha_th", 0.01);
+    this->declare_parameter("marginal_likelihood_th_", 0.05);
     this->declare_parameter("reset_count_limit", 5);
     this->declare_parameter("expansion_x_dev", 1.0);
     this->declare_parameter("expansion_y_dev", 1.0);
@@ -50,6 +51,7 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->get_parameter("init_y_dev", init_y_dev_);
     this->get_parameter("init_yaw_dev", init_yaw_dev_);
     this->get_parameter("alpha_th", alpha_th_);
+    this->get_parameter("marginal_likelihood_th_", marginal_likelihood_th_);
     this->get_parameter("reset_count_limit", reset_count_limit_);
     this->get_parameter("expansion_x_dev", expansion_x_dev_);
     this->get_parameter("expansion_y_dev", expansion_y_dev_);
@@ -361,7 +363,22 @@ void Localizer::motion_update()
         // ロボットの微小移動量計算
         double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
         double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
-        double dyaw = last_odom_.pose.pose.orientation.z - prev_odom_.pose.pose.orientation.z; // ?回転角度yawの差ってこの回転方向成分z
+        // double dyaw = last_odom_.pose.pose.orientation.z - prev_odom_.pose.pose.orientation.z;
+        // 回転角度yawの差は.pose.pose.orientationの回転方向成分から求める
+        double yaw_now, yaw_prev;
+        // 現在
+        tf2::Quaternion q_now(last_odom_.pose.pose.orientation.x,
+                            last_odom_.pose.pose.orientation.y,
+                            last_odom_.pose.pose.orientation.z,
+                            last_odom_.pose.pose.orientation.w);
+        tf2::getRPY(q_now, std::ignore, std::ignore, yaw_now);
+        // 前回
+        tf2::Quaternion q_prev(prev_odom_.pose.pose.orientation.x,
+                            prev_odom_.pose.pose.orientation.y,
+                            prev_odom_.pose.pose.orientation.z,
+                            prev_odom_.pose.pose.orientation.w);
+        tf2::getRPY(q_prev, std::ignore, std::ignore, yaw_prev);
+        double dyaw = yaw_now - yaw_prev;
 
         // オドメトリの標準座標
         odom_model_.set_dev(std::sqrt(dx * dx + dy * dy), std::abs(dyaw));
@@ -416,8 +433,8 @@ void Localizer::observation_update()
         double alpha = sum_particle_alpha / particle_num_; // particles_内の1つのparticleのレーザ1本における平均尤度
 
         // ここからはそれぞれの関数内でforでparticles_回す
-        // 正規化
-        normalize_belief(); // ？これの位置
+        // 重みの正規化は重みに尤度をかけて重みセットした後と、膨張リセットを行なったときにリサンプリングをする前
+        normalize_belief();
 
         // 位置推定
         estimate_pose();
@@ -425,15 +442,16 @@ void Localizer::observation_update()
         // 周辺尤度(全パーティクルの平均尤度)の計算
         double marginal_likelihood = calc_marginal_likelihood();
 
-        if (alpha < alpha_th_ && marginal_likelihood < marginal_likelihood_th_) // ？閾値
+        if (alpha < alpha_th_ && marginal_likelihood < marginal_likelihood_th_) // 閾値勝手に増やした
         {
             // 膨張リセット
-            expansion_resetting(); // ？これの中身
+            expansion_resetting();
+            resampling(alpha);
         }
         else
         {
             // リサンプリング
-            resampling(alpha); // ？これの中身
+            resampling(alpha);
         }
     }
 }
@@ -534,7 +552,7 @@ void Localizer::resampling(const double alpha)
     cumulative.reserve(particles_.size());
     double total_weight = 0.0;
     for (const auto& p : particles_) {
-        total_weight += p.weight;
+        total_weight += p.weight();
         cumulative.push_back(total_weight);
     }
 
@@ -542,7 +560,6 @@ void Localizer::resampling(const double alpha)
         std::cerr << "Warning: Total particle weight is zero. Skipping resampling.\n";
         return;
     }
-    // std::vector<double> accum;
 
     // サンプリングのスタート位置とステップを設定
     double step = total_weight / particle_num_;
@@ -564,17 +581,15 @@ void Localizer::resampling(const double alpha)
 
     // サンプリングするパーティクルのインデックスを保持
     indexes.clear();
-    indexes.reserve(particle_num_);
+    indexes.reserve(particle_num_); // インデックスの数をパーティクルの数に合わせる
     int index = 0;
     for (int i = 0; i < particle_num_; ++i) {
         while (target > cumulative[index] && index < cumulative.size() - 1) {
-            ++index;
+            index++;
         }
         indexes.push_back(index); // 選ばれたパーティクルのインデックスを記録
         target += step;
     }
-    // indexes.reserve(particle_num_); // インデックスの数をパーティクルの数に合わせる
-    // int index = 0;
     // for (int i=0; i<particle_num_; i++)
     // {
     //     index++;
@@ -583,13 +598,12 @@ void Localizer::resampling(const double alpha)
 
     // リサンプリング
     next_particles_.clear();
-    next_particles_.reserve(particle_num_);
+    next_particles_.reserve(particle_num_); // パーティクル数の保持
     for (int i = 0; i < particle_num_; ++i) {
         Particle sampled = particles_[indexes[i]]; // インデックスに対応する粒子を取得
-        sampled.weight = 1.0 / particle_num_;      // 重みは後で初期化するがここでも仮で設定
+        sampled.set_weight(1.0 / particle_num_);      // 重みは後で初期化するがここでも仮で設定
         next_particles_.push_back(sampled);
     }
-    // next_particles_.reserve(particle_num_); // パーティクル数の保持
     // Pose pose;
     // double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
     // double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
