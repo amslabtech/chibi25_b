@@ -91,7 +91,7 @@ class Localizer : public rclcpp::Node
         double    init_yaw_dev_;       // 初期姿勢の標準偏差 [rad]
         // リセット関連
         double    alpha_th_;           // リセットに関する平均尤度の閾値 [-]
-        double    marginal_likelihood_th_;
+        // double    marginal_likelihood_th_;
         int       reset_counter = 0;   // 連続リセットの回数 [-]
         int       reset_count_limit_;  // 連続リセットの回数の上限 [-]
         double    expansion_x_dev_;    // 膨張リセットの位置xの標準偏差 [m]
@@ -106,7 +106,7 @@ class Localizer : public rclcpp::Node
 
         // リスト
         std::vector<Particle> particles_;             // パーティクルクラウド（計算用）
-        std::vector<Particle> next_particles_;             // パーティクルクラウド（計算用）
+        // std::vector<Particle> next_particles_;             // リサンプリング用に足したけど使わなかった
         std::vector<double> ignore_angle_range_list_; // 柱に関する角度範囲の配列 [rad]
         std::vector<int> indexes; // インデックスのリスト
 
