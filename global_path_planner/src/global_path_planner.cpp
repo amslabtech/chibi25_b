@@ -4,19 +4,20 @@ using namespace std::chrono_literals;
 
 // デフォルトコンストラクタ
 // パラメータの宣言と取得
-Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
+Astar::Astar() : Node("teamb_global_path_planner"), clock_(RCL_ROS_TIME)
 {
     // ###### パラメータの宣言 ######
-    const robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
-    pre_g_value_ = this->declare_parameter<double>("pre_g_value",0.0);
+    robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
 
-    const int phase = 10;
+    const int phase = 6;
+    test_show_ = true;
+
     //スタート地点を格納 数字はとりあえず適当
-    double start_point_x_[phase] = {1.0,0.0,0.0,0.0,0.0};
-    double start_point_y_[phase] = {1.0,0.0,0.0,0.0,0.0};
+    double start_point_x_[6] = {1.0,0.0,0.0,0.0,0.0};
+    double start_point_y_[6] = {1.0,0.0,0.0,0.0,0.0};
     //経由地点を配列として格納　数字はとりあえず適当
-    double way_points_x_[phase] = {1.0,2.0,3.0,4.0,5.0};
-    double way_points_y_[phase] = {1.0,2.0,3.0,4.0,5.0};
+    double way_points_x_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
+    double way_points_y_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
 
     // ###### パラメータの取得 ######
 
@@ -51,48 +52,43 @@ Astar::Astar() : Node("teamb_path_planner"), clock_(RCL_ROS_TIME)
 // msgを受け取り，map_に代入，その情報をそれぞれ取得
 // process()を実行
 // 読み込みをすべてここで行うように修正
-void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの読み込み
+void Astar::map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)  //マップの読み込み
 {
     map_ = *msg;
     //https://docs.ros.org/en/lunar/api/nav_msgs/html/msg/OccupancyGrid.html
     //ChatGPTでは-1(未知)、0(空き)、100(障害物)を示す
-
-    process();
     
+    // マップがからではなかったらtrueを返す
+    if(!map_.data.empty()){
+        map_checker_ = true;
+    }
+
     resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
     width_ = map_.info.width;//マップの幅
     height_ = map_.info.height;//マップの高さ
-    origin_x_ = map_.info.origin_x//原点x座標
-    origin_y_ = map_.info.origin_y//原点y座標
+    origin_x_ = map_.info.origin.position.x;//原点x座標
+    origin_y_ = map_.info.origin.position.y;//原点y座標
 
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", resolution_);
-    RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", width_);
-    RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", height_);
+    RCLCPP_INFO(this->get_logger(), "Grid size: %d meters per cell", width_);
+    RCLCPP_INFO(this->get_logger(), "Grid size: %d meters per cell", height_);
 
-    // マップがからではなかったらtrueを返す
-    if(!map_.empty()){
-        map_checker_ = true;
-    }
+    process();
 }
 
 // マップ全体の障害物を拡張処理（new_map_をpublishする）
 // 一次配列用の障害物拡張に変更
 void Astar::obs_expander()
 {
-    if (!map_received_) {
-        RCLCPP_WARN(this->get_logger(), "Map not received yet, cannot expand obstacles.");
-        return;
-    }
-
     // 新しいマップデータ（拡張後）を作成
     new_map_ = map_;  // 元のマップをコピー
     
     margin_length = static_cast<int>(std::ceil(robot_radius_ / resolution_));  // セル単位の拡張範囲
 
     // 一次配列だからindex分だけ回して障害物を探索する
-    for(int i=0;i<index;i++){
+    for(int i=0;i<new_map_.data.size();i++){
         if(new_map_.data[i] == 100) {  // 障害物セルを拡張
-            obs_expand(index, new_map_);
+            obs_expand(i, new_map_);
         }
     }
     // 拡張後のマップをPublish
@@ -123,19 +119,17 @@ void Astar::obs_expand(const int index,nav_msgs::msg::OccupancyGrid new_map_)
 // ヒューリスティック関数の計算
 double Astar::make_heuristic(const Node_ node)
 {
-
     int vertical = 0;//縦マス
     int side = 0;//横マス
-    double heuristic = 0.0;//ヒューリスティック関数
     vertical = abs(node.y -goal_node_.y);//目標とゴールまでの差
     side = abs(node.x - goal_node_.x); //目標とゴールまでの差
-    return heuristic = sqrt(vertical * vertical + side *side);
+    return sqrt(vertical * vertical + side *side);
     //ピタゴラスの定理を用いて障害物除いた距離を算出
 
 }
 
 // スタートとゴールの取得（mからグリッド単位への変換も行う）
-Node_ Astar::set_way_point(int phase,int which)
+Node_ Astar::set_way_point(const int phase,int which)
 {
     // スタート地点
     if(which == 0){
@@ -162,17 +156,22 @@ Node_ Astar::set_way_point(int phase,int which)
 void Astar::create_path(Node_ node)
 {
     nav_msgs::msg::Path partial_path;
-    partial_path.poses.push_back(node_to_pose(node));
 
     // ###### パスの作成 ######
-    while(!check_same_node(node,start_node_)) {  // 親が存在する限り遡る
-        node = node->parent; // 親ノードを取得
-        partial_path.poses.push_back(node_to_pose(*node));
+
+    partial_path.poses.push_back(node_to_pose(node));
+    for(int i=close_list_.size()-1; i>=0; i--){
+        if(!check_same_node(close_list_[i],start_node_)){
+            // 特定のノードを特定のリストから探し出す関数で親ノードをたどりスタートまで格納し続ける
+            if(check_parent(i-1,close_list_[i])){
+                partial_path.poses.push_back(node_to_pose(close_list_[i-1]));
+            }
+            // デバック用
+            show_path(partial_path);
+        }
     }
 
-    // 逆順になっているので順番を反転
-    std::reverse(partial_path.poses.begin(), partial_path.poses.end());
-
+    std::reverse(partial_path.poses.begin(),partial_path.poses.end());
     // ###### パスの追加 ######
     global_path_.poses.insert(global_path_.poses.end(), partial_path.poses.begin(), partial_path.poses.end());
 }
@@ -196,7 +195,7 @@ Node_ Astar::select_min_f()
 {
     Node_ tmp_;
     tmp_ = open_list_[0];
-    for(size_t i=0; i<open_list_.size();i++){
+    for(int i=0; i<open_list_.size();i++){
         if(tmp_.f > open_list_[i].f){
             tmp_ = open_list_[i];
         }
@@ -229,8 +228,8 @@ int Astar::check_list(const Node_ node, std::vector<Node_>& list)
     // search_node_from_listと同じ
     int check = -1;
     int number = 0;
-    for(size_t i=0; i<list.size();i++){
-        if(check_same_node(node,list)){
+    for(int i=0; i<list.size();i++){
+        if(check_same_node(node,list[i])){
             // return node.y * width + node.x;
             check = 0;
             return number = i;
@@ -255,15 +254,15 @@ void Astar::swap_node(const Node_ node, std::vector<Node_>& list1, std::vector<N
 bool Astar::check_obs(const Node_ node)
 {
     // (x, y) の座標を 1次元インデックスに変換
-    index = node.y * width_ + node.x;
+    int index = node.y * width_ + node.x;
 
     // インデックスが範囲外でないかチェック
-    if (index < 0 || index >= static_cast<int>(new_map_.data.size())) {
+    if (index < 0 || index >= round(new_map_.data.size())) {
         return true;  // 範囲外なら障害物とみなす
     }
 
     // OccupancyGridのdata配列から値を取得
-    int8_t cell_value = new_map_.data[index];//int8_tは符号付整数型
+    int cell_value = new_map_.data[index];//int8_tは符号付整数型
 
     // 100（障害物）なら true を返す
     return (cell_value == 100);
@@ -283,28 +282,32 @@ void Astar::update_list(Node_ node)
     // ###### 隣接ノード ######
 
     for (auto& neighbor : neighbor_nodes){
-        if(check_obs(neighbor_nodes)){
+        if(check_obs(neighbor)){
             continue;
         }
-        std::tie = search_node(); 
-        //close_list__の中身と同じものが入っていたらclose_list_へ
-        // 障害物であったらclose_list_へ
-        if (close_list_(neighbor)||check_obs(neighbor)){
-            swap_node(neighbor,open_list_,close_list__);   
+        int which = 0;
+        int index = 0;
+        std::tie(which,index) = search_node(neighbor); 
+        // どっちもない
+        if(which == -1){
+            open_list_.push_back(neighbor);
         }
-        //open_listに格納
-        open_list_.push(neighbor);
-    }
-    //現在のノードをclose_list_に移動
-    swap_node(node,open_list_,close_list_);
-    //open_listに格納したf値のなかで最も小さいものを選択
-        // open_list_ 内の f値が最小のノードを取得し、新しい current_node_ に更新
-    if (!open_list_.empty()) {
-        node = select_min_f();
-        //ここにpub_node_point？？
-        pre_g_value_ = node.g;
-    } else {
-        throw std::runtime_error("Error: open_list_ is empty, no next node available.");
+        // openにある
+        if(which == 1){
+            if(neighbor.f < open_list_[index].f){
+                open_list_[index].f = neighbor.f;
+                open_list_[index].parent_x = neighbor.parent_x;
+                open_list_[index].parent_y = neighbor.parent_y;
+            }
+        }
+        // closeにある
+        if(which == 2){
+            if(neighbor.f < close_list_[index].f){
+                close_list_.erase(close_list_.begin() + index);
+                open_list_.push_back(neighbor);
+
+            }
+        }
     }
 }
 
@@ -320,13 +323,7 @@ void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbo
     // ###### 隣接ノードの作成 ######
     for (const auto& motion : motion_list) {
         Node_ neighbor = get_neighbor_node(node,motion);
-        neighbor.h = make_heuristic(node);
-        neighbor.g += pre_g_value_;
-        neighbor.f = neighbor.g + neighbor.h;
         neighbor_nodes.push_back(neighbor);
-        // if (is_valid_node(neighbor)) {
-        //     neighbor_nodes.push_back(neighbor);
-        // }
     }
 }
 
@@ -345,7 +342,7 @@ void Astar::get_motion(std::vector<Motion_>& list)
 
 // 与えられたdx, dy, costを基にモーション（移動）を作成
 // 隣接したグリッドに移動しない場合はエラーメッセージを出力して終了
-Motion_ Astar::motion(const int dx,const int dy,const int cost)
+Motion_ Astar::motion(const int dx,const int dy,const double cost)
 {
     if (abs(dx) > 1 || abs(dy) > 1) {
         std::cerr << "Error: Invalid motion (" << dx << ", " << dy << ")" << std::endl;
@@ -362,7 +359,9 @@ Node_ Astar::get_neighbor_node(const Node_ node, const Motion_ motion)
     neighbor.y = node.y + motion.dy;
     neighbor.parent_x = node.x;
     neighbor.parent_y = node.y;
-    neighbor.g = motion.cost;
+    neighbor.g = node.g + motion.cost;
+    neighbor.h = make_heuristic(neighbor);
+    neighbor.f = neighbor.g + neighbor.h;
     return neighbor;
 }
 
@@ -375,16 +374,18 @@ std::tuple<int, int> Astar::search_node(const Node_ node)
     int open = 0;
     int close = 0;
     // 1はOpenリスト，2はCloseリスト
-    int which = 0;
+    int which = -1;
     // index格納
     open = search_node_from_list(node,open_list_);
-    close = search_node_from_list(node,close_list__);
+    close = search_node_from_list(node,close_list_);
     // どっちのリストに入っているか 
     if(open == -1){
+        // closeにある
         which = 2;
         return std::tuple(which,close);
     }
     if(close == -1){
+        // openにある
         which = 1;
         return std::tuple(which,open);
     }else{
@@ -397,7 +398,7 @@ std::tuple<int, int> Astar::search_node(const Node_ node)
 // 親ノードかの確認し、親ノードであればtrue
 bool Astar::check_parent(const int index, const Node_ node)
 {
-    return (index == node.parent_y * width_ + node.parent_x);
+    return (close_list_[index].x == node.parent_x && close_list_[index].y == node.parent_y);
     //インデックスが親ノードである場合
 }
 
@@ -405,20 +406,20 @@ bool Astar::check_parent(const int index, const Node_ node)
 
 // 指定リスト内のノード検索
 // 同一のノードが見つかればそのインデックスを返す
+// リストの初めから何番目かをindexで返す
 // 見つからなければ-1を返す
 int Astar::search_node_from_list(const Node_ node, std::vector<Node_>& list)
 {
     int check = -1;
-    for(size_t i=0; i<list.size();i++){
-        if(check_same_node(node,list)){
-            return node.y * width + node.x;
+    for(int i=0; i<list.size();i++){
+        if(check_same_node(node,list[i])){
+            return i;
             check = 0;
         }
     }
     if(check == -1){
         return check;
     }
-
 }
 
 
@@ -427,12 +428,17 @@ int Astar::search_node_from_list(const Node_ node, std::vector<Node_>& list)
 // そのノードの情報をRvizにパブリッシュ
 void Astar::show_node_point(const Node_ node)
 {
-    if(!test_show_) return;
-    //ワールド座標系に変換
-    geometry_msgs::msg::PointStamped node_check = node_to_pose(node);
-    //座標返還後のノードを格納
-    pub_node_point_ -> publish(node_check);
-    //node_checkにパブリッシュ
+    if(test_show_)
+   	{
+        // 座標変換
+        current_node_.point.x = node.x * resolution_ + origin_x_;
+        current_node_.point.y = node.y * resolution_ + origin_y_;
+        // パブリッシュ
+        pub_node_point_->publish(current_node_);
+        rclcpp::sleep_for(std::chrono::nanoseconds(
+        static_cast<int>(sleep_time_ * 1e9)));
+     
+    }
 }
 
 
@@ -441,11 +447,15 @@ void Astar::show_node_point(const Node_ node)
 // パス情報をRvizにパブリッシュ
 void Astar::show_path(nav_msgs::msg::Path& current_path)
 {
-    if(!test_show_) return;
-    current_path.header.frame_id = "map";
-    current_path.header.stamp = show_exe_time();
-    //経路情報がいつ作成されたものなのか記録
-    path_pub_->publish(current_path);
+    if(test_show_)
+    {
+        // パスのframe設定
+        current_path.header.frame_id = "map";
+        pub_current_path_->publish(current_path);
+        rclcpp::sleep_for(std::chrono::nanoseconds(
+        static_cast<int>(sleep_time_ * 1e9)));
+    }
+
 }
 
 // 実行時間を表示（スタート時間beginを予め設定する）
@@ -462,40 +472,9 @@ void Astar::show_exe_time()
 void Astar::planning()
 {
     begin_ = clock_.now();
-    const int total_phase = way_points_x_.size();
+    // const int total_phase = way_points_x_.size();
 
     // ###### ウェイポイント間の経路探索 ######
-    //とりあえずphase1のみ、後ほど条件文
-    set_way_point(0);
-    
-    start_node_.cost = 0;
-    open_list_.push(start_node_);
-
-    nav_msgs::msg::Path partial_path;
-    nav_msgs::msg::Path perfect_path;
-    current_ = open_list_.top();
-
-    while (!open_list_.empty()) {
-        open_list_.pop();
-
-        // ゴールに到達した場合、経路を作成
-        if (current_.x == goal_node_.x && current_.y == goal_node_.y) {
-            create_path(current_,partial_path);
-            //ここはperfect_pathに蓄積させるようなコードに変更
-            pub_current_path_ -> publish(partial_path);
-            break;
-        }
-
-        // 探索済みリストに追加
-        close_list_.insert(current);
-
-        update_list(current_);
-
-    }
-    //とりあえず
-    if(current_.x ==  && current_.y == ){
-        pub_path_ -> publish(partial_path);
-    }
 
     for(int i=0; i<phase; i++){
         // リストを初期化
@@ -504,10 +483,24 @@ void Astar::planning()
         // スタートとゴールのノード格納する
         start_node_ = set_way_point(i,0);
         goal_node_ = set_way_point(i,1);
-        
+        open_list_[0] = start_node_;
+
+        while(rclcpp::ok()){
+            current_ = select_min_f();
+            show_node_point(current_);
+            if(check_same_node(current_,goal_node_)){
+                create_path(current_);
+                pub_current_path_ -> publish(global_path_);
+                break;
+            }
+            if(!check_same_node(current_,goal_node_)){
+                swap_node(current_,open_list_,close_list_);
+                update_list(current_);
+            }
+        }
+
+        pub_path_ -> publish(global_path_);
     }
-
-
 
     show_exe_time();
     RCLCPP_INFO_STREAM(get_logger(), "COMPLITE ASTAR PROGLAM");
