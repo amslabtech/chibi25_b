@@ -40,9 +40,13 @@ void Astar::map_callback(const nav_msgs::msg::OccupancyGrid msg)  //マップの
     //https://docs.ros.org/en/lunar/api/nav_msgs/html/msg/OccupancyGrid.html
     //ChatGPTでは-1(未知)、0(空き)、100(障害物)を示す
 
+
     resolution_ = map_.info.resolution;//単位格子当たりの大きさを格納
     width_ = map_.info.width;//マップの幅
     height_ = map_.info.height;//マップの高さ
+
+    resolution_ = msg -> info.resolution;//単位格子当たりの大きさを格納
+
     RCLCPP_INFO(this->get_logger(), "Grid size: %f meters per cell", resolution_);
 }
 
@@ -114,6 +118,7 @@ double Astar::make_heuristic(const Node_ node)
 // スタートとゴールの取得（mからグリッド単位への変換も行う）
 Node_ Astar::set_way_point(int phase)
 {
+
     double grid_x,grid_y = 0.0;
 
     grid_x = node.x / resolution_;
@@ -127,6 +132,15 @@ Node_ Astar::set_way_point(int phase)
     }
     if(phase == 1){//ゴール地点の格納にはphase=1
         goal_node_ = node;//目標地点格納
+
+    if(phase == 0){//スタート地点の格納にはphase=0
+        start_node_.x = node.x;//スタート地点のｘ座標を格納
+        start_node_.y = node.y;//スタート地点のｙ座標を格納
+    }
+    if(phase == 1){//ゴール地点の格納にはphase=1
+        goal_node_.x = node.x;//目標のｘ座標を格納
+        goal_node_.y = node.y;//目標のｙ座標を格納
+
     }
 
 }
@@ -230,7 +244,7 @@ int Astar::check_list(const Node_ target_node, std::vector<Node_>& set)
 {
     auto result = std::find_if(list.begin(),list.end(), [](const Node_& n){
         return check_same_node(n,node);//同じノードを探す
-        //autoで大丈夫？それからインデックス番号って？
+
     });
 
     if(result == list.end()){
@@ -252,6 +266,7 @@ void Astar::swap_node(const Node_ node, std::vector<Node_>& list1, std::vector<N
 // 指定のノードが障害物である場合，trueを返す
 bool Astar::check_obs(const Node_ node)
 {
+
     // (x, y) の座標を 1次元インデックスに変換
     index = node.y * width + node.x;
 
@@ -265,6 +280,9 @@ bool Astar::check_obs(const Node_ node)
 
     // 100（障害物）なら true を返す
     return (cell_value == 100);
+
+
+    return  >= 50;//mapデータから障害物であるかどうかの判定をするが。果たしてNodeの情報を使用するのか
 
 }
 
@@ -347,6 +365,7 @@ void Astar::create_neighbor_nodes(const Node_ node, std::vector<Node_>&  neighbo
 
 // 動作モデルを作成（前後左右，斜めの8方向）
 
+
 void Astar::get_motion(std::vector<Motion_>& list)//元のよりこっちの方がいい？
 {
     list = {
@@ -359,6 +378,18 @@ void Astar::get_motion(std::vector<Motion_>& list)//元のよりこっちの方�
         { 1, -1, 1.414}, // 左前（斜め）
         {-1, -1, 1.414}  // 左後（斜め）
     };
+
+void Astar::get_motion(std::vector<Motion_>& list)
+{
+    list.push_back(motion( 1, 0, 1.0));// 前
+    list.push_back(motion(-1, 0, 1.0));// 後
+    list.push_back(motion( 0,-1, 1.0));// 左 
+    list.push_back(motion( 0, 1, 1.0));// 右
+    list.push_back(motion( 1, 1, 1.414));// 右前
+    list.push_back(motion(-1, 1, 1.414));// 右後
+    list.push_back(motion( 1,-1, 1.414));// 左前
+    list.push_back(motion(-1,-1, 1.414));// 左後
+
 }
 
 
