@@ -13,11 +13,11 @@ Astar::Astar() : Node("teamb_global_path_planner"), clock_(RCL_ROS_TIME)
     test_show_ = true;
 
     //スタート地点を格納 数字はとりあえず適当
-    double start_point_x_[6] = {1.0,0.0,0.0,0.0,0.0};
-    double start_point_y_[6] = {1.0,0.0,0.0,0.0,0.0};
+    double start_point_x_[6] = {571.0,0.0,0.0,0.0,0.0,0.0};
+    double start_point_y_[6] = {573.5,0.0,0.0,0.0,0.0,0.0};
     //経由地点を配列として格納　数字はとりあえず適当
-    double way_points_x_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
-    double way_points_y_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
+    double way_points_x_[5] = {936.0,938.0,263.0,268.0,591.0};
+    double way_points_y_[5] = {572.0,293.0,292.0,573.0,570.0};
 
     // ###### パラメータの取得 ######
 
