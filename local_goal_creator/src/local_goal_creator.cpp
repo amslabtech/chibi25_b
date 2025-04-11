@@ -8,11 +8,14 @@ LocalGoalCreator::LocalGoalCreator() : Node("LocalGoalCreator")
     //pubやsubの定義，tfの統合
     local_goal_pub_ = this->create_publisher<geometry_msgs::msg::PointStamped>("/roomba/goal",rclcpp::QoS(1).reliable());//#########
     //初期値の設定
-    hz_= this->declare_parameter<int>("hz", 500);// ループ周期 [Hz]
+    hz_= this->declare_parameter<int>("hz", 100);// ループ周期 [Hz]
     goal_index_ = this->declare_parameter<int>("goal", 1);// グローバルパス内におけるローカルゴールのインデックス
     index_step_ = this->declare_parameter<int>("index", 1); // １回で更新するインデックス数
-    target_distance_ = this->declare_parameter<float>("distance", 0.0);// 現在位置-ゴール間の距離 [m]
-    
+    target_distance_ = this->declare_parameter<float>("distance", 1.0);// 現在位置-ゴール間の距離 [m]
+    //初期設定
+    geometry_msgs::msg::PointStamped path_msg;
+        path_msg.header.stamp = this->now();
+        path_msg.header.frame_id = "map";
 }
 
 void LocalGoalCreator::poseCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)//subのコールバック関数
@@ -49,7 +52,7 @@ void LocalGoalCreator::publishGoal()
 
     // ゴールまでの距離を取得
     target_distance_ = getDistance();
-    double threshold_distance_ = 1.0;
+    // double threshold_distance_ = 1.0;
     
     // ゴールに近づいたら次のゴールを選択
     if (target_distance_ < threshold_distance_) {
@@ -62,9 +65,7 @@ void LocalGoalCreator::publishGoal()
     }
 
     if (goal_index_ < static_cast<int>(path_.poses.size())) {
-        geometry_msgs::msg::PointStamped path_msg;
-        path_msg.header.stamp = this->now();
-        path_msg.header.frame_id = "map";
+        
         path_msg.point = path_.poses[goal_index_].pose.position;
 
         local_goal_pub_->publish(path_msg);

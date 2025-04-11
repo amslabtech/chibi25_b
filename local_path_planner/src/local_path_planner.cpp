@@ -106,7 +106,7 @@ void DWAPlanner::local_goal_callback(const geometry_msgs::msg::PointStamped::Sha
 
     printf("local_goal_callback\n");
     geometry_msgs::msg::TransformStamped transform;
-    try
+    try//try-catchで失敗しそうなコードを安全に処理できる
     {
         // tf を取得（source_frame -> target_frame）
         transform = tf_buffer_->lookupTransform(
@@ -291,7 +291,7 @@ void DWAPlanner::calc_dynamic_window()
     // ####### 運動モデルによるWindow #######
     // ロボットの加減速によって実現可能な速度範囲
     double Vd[] = {
-        std::max(min_vel_, vel - max_accel_ * dt_), // 最小速度
+        std::max(min_vel_, vel - max_accel_ * dt_), // 最小速度　std::maxで二つを比較できる
         std::min(max_vel_, vel + max_accel_ * dt_), // 最大速度
         std::max(-max_yawrate_, yawrate - max_dyawrate_ * dt_), // 最小旋回速度
         std::min(max_yawrate_, yawrate + max_dyawrate_ * dt_)  // 最大旋回速度

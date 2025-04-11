@@ -21,7 +21,10 @@ struct Node_ {
     int    y = 0;
     int    parent_x = -1;
     int    parent_y = -1;
-    double f = 0.0;
+    double g = 0.0;//g値
+    // double pre_g = 0.0;//ひとつ前のg値
+    double h = 0.0;//ヒューリスティック関数
+    double f = 0.0;//f値
 };
 
 // モーション構造体（移動方向とコストを定義）
@@ -43,9 +46,9 @@ private:
     void map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);  // マップデータを受信し処理
 
     // ----- 経路探索関連関数 -----
-    void obs_expand(const int index);                // 指定されたインデックスの障害物を拡張
+    void obs_expand(const int index,nav_msgs::msg::OccupancyGrid new_map_);                // 指定されたインデックスの障害物を拡張
     double make_heuristic(const Node_ node);         // ノードのヒューリスティック値を計算
-    Node_ set_way_point(const int phase);            // スタート・ゴールノードの設定
+    Node_ set_way_point(const int phase,int which);            // スタート・ゴールノードの設定
     void create_path(Node_ node);                    // ノードをたどり，パスを作成
     geometry_msgs::msg::PoseStamped node_to_pose(const Node_ node);  // ノード情報を座標へ変換
     void swap_node(const Node_ node, std::vector<Node_>& list1, std::vector<Node_>& list2); // ノードをリスト間で移動
@@ -53,7 +56,7 @@ private:
     void update_list(const Node_ node);              // 隣接ノードを探索しリストを更新
     void create_neighbor_nodes(const Node_ node, std::vector<Node_>& nodes); // 指定ノードの隣接ノードを作成
     void get_motion(std::vector<Motion_>& motion);   // 動作モデル（移動方向とコスト）を定義
-    Motion_ motion(const int dx, const int dy, const int cost);  // モーション構造体を作成
+    Motion_ motion(const int dx, const int dy, const double cost);  // モーション構造体を作成
     Node_ get_neighbor_node(const Node_ node, const Motion_ motion); // 指定モーションを適用したノードを取得
     std::tuple<int, int> search_node(const Node_ node);  // 指定ノードの検索（座標取得）
     int search_node_from_list(const Node_ node, std::vector<Node_>& list);  // 指定リスト内のノード検索
@@ -95,11 +98,19 @@ private:
 
     // 基本設定
     double sleep_time_; // デバッグ用スリープ時間 [s]
-    double margin_; // 障害物拡張マージン [m]
+    double margin_length; // 障害物拡張マージン [m]
+    double robot_radius_;//ロボット半径
 
     // ノード情報
     Node_ start_node_;  // 開始ノード
     Node_ goal_node_;   // 目標ノード
+
+    Node_ current_;     // 現在ノード
+    const int phase = 6;//経由地の識別用phase
+    int start_point_x_[6] = {550,0,0,0,0,0};
+    int start_point_y_[6] = {400,0,0,0,0,0};
+    // double way_points_x_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};//経由地点の格納
+    // double way_points_y_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
     std::vector<Node_> open_list_;  // openリスト
     std::vector<Node_> close_list_; // closeリスト
 
@@ -116,7 +127,7 @@ private:
     int width_;   // マップの幅
     double resolution_; // マップ解像度
     Node_ origin_;  // マップ原点
-    std::vector<std::vector<int>> map_grid_; // グリッドマップ
+    std::vector<std::vector<int>> map_grid_; // グリッドマップ、可変長の二次元配列
 
     // 時間計測
     rclcpp::Clock clock_; // 時間計測用
@@ -130,3 +141,4 @@ private:
 };
 
 #endif
+
