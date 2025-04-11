@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	while(rclcpp::ok())
 	{
 		node->process();
-		rclcpp::spin_some(node);
+		rclcpp::spin_some(node); // call_backのため
 	    loop_rate.sleep();
 	}
 	rclcpp::shutdown();

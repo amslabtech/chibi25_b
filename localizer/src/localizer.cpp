@@ -67,7 +67,8 @@ Localizer::Localizer() : Node("teamb_localizer")
     // <subscriber名> = this->create_subscription<<msg型>>("<topic名>", rclcpp::QoS(<確保するtopicサイズ>).reliable(), std::bind(&<class名>::<コールバック関数名>, this, std::placeholders::_1));
     // std::bindを使ってsubするコールバック関数，std::placeholdersを使ってその関数内での引数を指定する
     // std::placeholdersで指定する引数は大体1番目のもの（コールバック関数の引数が1つであるため）
-    sub_map_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>("/map", rclcpp::QoS(1).reliable(), std::bind(&Localizer::map_callback, this, std::placeholders::_1));
+    // sub_map_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>("/map", rclcpp::QoS(1).reliable(), std::bind(&Localizer::map_callback, this, std::placeholders::_1));
+    sub_map_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>("/map", rclcpp::QoS(rclcpp::KeepLast(1)).reliable().transient_local(), std::bind(&Localizer::map_callback, this, std::placeholders::_1)); // サブスクライバーが処理できなくても1個前のmsgを残し常に一件保持、新しいサブスクライバーが来たら古いmsgも渡し後から来ても直前のを再送してくれる
     sub_odom_ = this->create_subscription<nav_msgs::msg::Odometry>("/odom", rclcpp::QoS(1).reliable(), std::bind(&Localizer::odom_callback, this, std::placeholders::_1));
     sub_laser_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", rclcpp::QoS(1).reliable(), std::bind(&Localizer::laser_callback, this, std::placeholders::_1));
 
@@ -84,7 +85,8 @@ Localizer::Localizer() : Node("teamb_localizer")
     particle_cloud_msg_.poses.reserve(max_particle_num_);
 
     // odometryのモデルの初期化
-    OdomModel odom_model_(ff_, fr_, rf_, rr_);
+    // OdomModel odom_model_(ff_, fr_, rf_, rr_);
+    odom_model_ = {ff_, fr_, rf_, rr_}; // クラスメンバのodom_model_に代入するにはこのOdomModelクラスの代入用コンストラクタを使った
 
     // fw_var_per_fw_ = 0.0;
     // fw_var_per_rot_ = 0.0;
@@ -101,9 +103,9 @@ Localizer::Localizer() : Node("teamb_localizer")
 void Localizer::map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)
 {
     map_ = *msg;
-    flag_odom_ = true; // マップのmsg受け取りフラグ
-    printf("%d\n", flag_odom_);
-    std::cout << std::boolalpha << flag_odom_ << std::endl;
+    flag_map_ = true; // マップのmsg受け取りフラグ
+    printf("%d\n", flag_map_); // 1って出力出た
+    // std::cout << std::boolalpha << flag_map_ << std::endl; // trueって出力出た
 }
 
 // odometryのコールバック関数
@@ -111,7 +113,8 @@ void Localizer::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg)
 {   
     prev_odom_ = last_odom_; // 1つ前のオドメトリを保存
     last_odom_ = *msg;       // 最新のオドメトリを保存
-    flag_map_ = true; // オドメトリのmsg受け取りフラグ
+    flag_odom_ = true; // オドメトリのmsg受け取りフラグ
+    // printf("flag_odom_ = %d\n", flag_odom_);
 
     double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
     double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
@@ -119,6 +122,7 @@ void Localizer::odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg)
     
     if (distance_moved > 0.01) { // 1cm以上
         flag_move_ = true; // 機体動いた
+        // printf("flag_move_ = %d\n", flag_move_);
     }
 
     // (オドメトリのノイズを考慮した補正)
@@ -129,11 +133,13 @@ void Localizer::laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg)
 {
     laser_ = *msg;
     flag_laser_ = true; // レーザーのmsg受け取りフラグ
+    // printf("flag_laser_ = %d\n", flag_laser_);
 }
 
 // hz_を返す関数
 int Localizer::getOdomFreq() // (constを付けることでhz_が外部から書き換えられないようにすることを保証出来る)
 {
+    // printf("hz_ = %d\n", hz_);
     return hz_;
 }
 
@@ -272,7 +278,7 @@ void Localizer::reset_weight()
 // map座標系からみたbase_link座標系の位置と姿勢，odom座標系からみたbase_link座標系の位置と姿勢から計算
 void Localizer::broadcast_odom_state()
 {
-    if(flag_broadcast_) // tfをブロードキャストしたとき
+    if(flag_odom_ && flag_broadcast_) // tfをブロードキャストしたときも
     {
         // TF Broadcasterの実体化
         static std::shared_ptr<tf2_ros::TransformBroadcaster> odom_state_broadcaster;
@@ -426,7 +432,7 @@ void Localizer::motion_update()
 // 位置推定，リサンプリングなどを行う
 void Localizer::observation_update()
 {
-    if (flag_laser_)
+    if (flag_map_ && flag_laser_)
     {
         double sum_particle_alpha = 1.0; 
         for(auto& particle : particles_)
