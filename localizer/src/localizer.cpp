@@ -62,6 +62,7 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->get_parameter("fr_", fr_);
     this->get_parameter("rf_", rf_);
     this->get_parameter("rr_", rr_);
+    ignore_angle_range_list_.reserve(100); // リサイズ回数の制限
 
     // Subscriberの設定
     // <subscriber名> = this->create_subscription<<msg型>>("<topic名>", rclcpp::QoS(<確保するtopicサイズ>).reliable(), std::bind(&<class名>::<コールバック関数名>, this, std::placeholders::_1));
@@ -104,7 +105,7 @@ void Localizer::map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)
 {
     map_ = *msg;
     flag_map_ = true; // マップのmsg受け取りフラグ
-    printf("%d\n", flag_map_); // 1って出力出た
+    // printf("%d\n", flag_map_); // 1って出力出た
     // std::cout << std::boolalpha << flag_map_ << std::endl; // trueって出力出た
 }
 
@@ -194,37 +195,39 @@ void Localizer::process()
         // br.sendTransform(tf2_ros::StampedTransform(std::transform, ros::Time::now(), "world", "robot")); // (座標系, タイムスタンプとして使う時刻, 親座標系の名前, 今使っている座標系の名前)  
 
         // 初回のみ TransformBroadcaster を初期化
-        if (!flag_broadcast_) {
-            tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
-        }
+        // if (!flag_broadcast_) {
+        //     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
+        // }
 
-        // 変換情報を格納する TransformStamped メッセージ
-        geometry_msgs::msg::TransformStamped transform;
+        // // 変換情報を格納する TransformStamped メッセージ
+        // geometry_msgs::msg::TransformStamped transform;
 
-        // ここで transform の座標情報を設定
-        transform.header.stamp = this->now();
-        transform.header.frame_id = "world"; // 親フレーム
-        transform.child_frame_id = "robot"; // 子フレーム
-        transform.transform.translation.x = estimated_pose_.x(); // カメラの推定位置
-        transform.transform.translation.y = estimated_pose_.y();
-        transform.transform.translation.z = 0.0;
-        tf2::Quaternion q;
-        q.setRPY(0, 0, estimated_pose_.yaw()); // 回転情報を入力(Roll, Pitch, Yaw)の順
-        q.normalize(); // クォータニオンの正規化
-        transform.transform.rotation.x = q.x(); // 回転(単位クォータニオン)
-        transform.transform.rotation.y = q.y();
-        transform.transform.rotation.z = q.z();
-        transform.transform.rotation.w = q.w();
+        // // ここで transform の座標情報を設定
+        // transform.header.stamp = this->now();
+        // transform.header.frame_id = "world"; // 親フレーム
+        // transform.child_frame_id = "robot"; // 子フレーム
+        // transform.transform.translation.x = estimated_pose_.x(); // カメラの推定位置
+        // transform.transform.translation.y = estimated_pose_.y();
+        // transform.transform.translation.z = 0.0;
+        // tf2::Quaternion q;
+        // q.setRPY(0, 0, estimated_pose_.yaw()); // 回転情報を入力(Roll, Pitch, Yaw)の順
+        // q.normalize(); // クォータニオンの正規化
+        // transform.transform.rotation.x = q.x(); // 回転(単位クォータニオン)
+        // transform.transform.rotation.y = q.y();
+        // transform.transform.rotation.z = q.z();
+        // transform.transform.rotation.w = q.w();
 
-        // 推定位置の座標変換tfをブロードキャスト
-        tf_broadcaster_->sendTransform(transform); // ？hppに足したけどtf_broadcaster_の使用先
-
-        // 位置推定
-        localize();
+        // // 推定位置の座標変換tfをブロードキャスト
+        // tf_broadcaster_->sendTransform(transform); // ？hppに足したけどtf_broadcaster_の使用先
 
         // ロボットの移動後のmap座標系から見たodom座標系のtfをブロードキャスト
         broadcast_odom_state();
-        flag_broadcast_ = true; // tfブロードキャストした
+        // flag_broadcast_ = true; // tfブロードキャストした
+        // RCLCPP_INFO(this->get_logger(), "%d", flag_broadcast_); // 何も出力されなかった
+        // printf("%d\n", flag_broadcast_);
+
+        // 位置推定
+        localize();
         
         // パブリッシュ
         publish_estimated_pose(); // 推定位置
@@ -235,15 +238,19 @@ void Localizer::process()
 // 適切な角度(-M_PI ~ M_PI)を返す＝正規化
 double Localizer::normalize_angle(double angle)
 {
-    angle = std::atan2(std::sin(angle), std::cos(angle));
+    // angle = 5; // デバッグ用
+    // double angle = std::atan2(std::sin(angle), std::cos(angle));
 
+    // printf("M_PI=%lf\n", M_PI);
     // ↑ whileより計算速い
-    // while (angle < -M_PI && M_PI < angle) { // 適切な範囲外のとき
-    //     if (angle < -M_PI) {
-    //         angle += 2 * M_PI;
-    //     } else 
-    //         angle -= 2 * M_PI;
-    // }
+    while (angle < -M_PI || M_PI < angle) { // 適切な範囲外のとき、&&のかつじゃなくて||のまたは
+        // printf("ang=%lf\n", angle); 
+        if (angle < -M_PI) {
+            angle += 2 * M_PI;
+        } else 
+            angle -= 2 * M_PI;
+    }
+    // printf("angle=%lf\n", angle);
 
     return angle;
 }
@@ -278,7 +285,7 @@ void Localizer::reset_weight()
 // map座標系からみたbase_link座標系の位置と姿勢，odom座標系からみたbase_link座標系の位置と姿勢から計算
 void Localizer::broadcast_odom_state()
 {
-    if(flag_odom_ && flag_broadcast_) // tfをブロードキャストしたときも
+    if(flag_odom_)
     {
         // TF Broadcasterの実体化
         static std::shared_ptr<tf2_ros::TransformBroadcaster> odom_state_broadcaster;
@@ -331,7 +338,7 @@ void Localizer::broadcast_odom_state()
 
         // 現在の時間の格納
         odom_state.header.stamp = this->now();
-        RCLCPP_INFO(this->get_logger(), "Current time: %ld", this->now().nanoseconds()); // デバック用
+        // RCLCPP_INFO(this->get_logger(), "Current time: %ld", this->now().nanoseconds()); // デバック用
 
         // 親フレーム・子フレームの指定(サンプルコードに記述済み)
         odom_state.header.frame_id = map_.header.frame_id; // 親フレーム
@@ -367,11 +374,13 @@ void Localizer::localize()
 // ロボットの微小移動量を計算し，パーティクルの位置をノイズを加えて更新
 void Localizer::motion_update()
 {
+    // printf("before_motion\n");
     if(flag_odom_)
     {   
         // ロボットの微小移動量計算
         double dx = last_odom_.pose.pose.position.x - prev_odom_.pose.pose.position.x;
         double dy = last_odom_.pose.pose.position.y - prev_odom_.pose.pose.position.y;
+        // printf("dx=%lf\n", dx);
         // double dyaw = last_odom_.pose.pose.orientation.z - prev_odom_.pose.pose.orientation.z;
         // 回転角度yawの差は.pose.pose.orientationの回転方向成分から求める
         // double tf2::getYaw(const A & a) ： Quaternionから直接yawを取得する関数
@@ -379,9 +388,11 @@ void Localizer::motion_update()
         double yaw_now = tf2::getYaw(last_odom_.pose.pose.orientation);
         // 前回
         double yaw_prev = tf2::getYaw(prev_odom_.pose.pose.orientation);
+        // printf("yaw_now=%lf\n", yaw_now);
         // Yawの差分を計算
         double dyaw = yaw_now - yaw_prev;
         dyaw = normalize_angle(dyaw); // 角度は適切な範囲にする
+        // printf("dyaw=%lf\n", dyaw);
         
         // // 現在
         // tf2::Quaternion q_now(last_odom_.pose.pose.orientation.x,
@@ -403,6 +414,7 @@ void Localizer::motion_update()
         // ノイズ取得
         double fw_noise = odom_model_.get_fw_noise();
         double rot_noise = odom_model_.get_rot_noise();
+        // printf("fw_noise_=%lf\n", fw_noise);
 
         // パーティクルの位置を更新
         for (auto& particle : particles_)
@@ -411,6 +423,7 @@ void Localizer::motion_update()
             double length = std::sqrt(dx * dx + dy * dy);
             double direction = std::atan2(dy, dx);
             double rotation = dyaw;
+            // printf("rotation=%lf\n", rotation);
             particle.getPose().move(length, direction, rotation, fw_noise, rot_noise); // lengthは直進距離
 
             // double dx_add_noise = dx + norm_rv(0, fx_noise);
@@ -434,11 +447,14 @@ void Localizer::observation_update()
 {
     if (flag_map_ && flag_laser_)
     {
+        // printf("if\n");
         double sum_particle_alpha = 1.0; 
         for(auto& particle : particles_)
         {
+            // printf("for\n");
             // パーティクル1つの尤度算出
             double yudo = particle.likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_); // パーティクル一つの尤度を算出
+            printf("yudo=%lf\n", yudo);
             double laser_num = ((laser_.angle_max - laser_.angle_min) / laser_.angle_increment) + 1; // パーティクル1つにおけるレーザの本数
             double particle_alpha = yudo / laser_num; // このforで回してるparticleのレーザ1本における平均尤度
             sum_particle_alpha += particle_alpha; // particles_内のparticleのレーザ1本における平均尤度の合計

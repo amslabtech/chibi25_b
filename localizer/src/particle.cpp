@@ -37,19 +37,26 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
 {
     double L = 1.0; // 尤度
     // センサ情報からパーティクルの姿勢を評価
+    // printf("before_for\n");
     for(double i = 0; i < laser.angle_max - laser.angle_min; i += laser.angle_increment) // laser_step使わなくていいのか?
     {
+        // printf("before_if\n");
+        // bool flag_; // 違う書き方用
+        // flag_ = is_ignore_angle(i,ignore_angle_range_list);
+        // if(flag_) // 柱有り
         if(is_ignore_angle(i,ignore_angle_range_list)) // 柱有り
         {
             L *= 1.0; // そのまま
+            printf("L=%lf\n", L);
         }
         else // 柱無し
         {
             // pose_とlaserの角度を使って壁までの距離を推定calc_dist_to_wall
             double estimated_dist_ = calc_dist_to_wall(pose_.x(), pose_.y(), pose_.yaw()+(laser.angle_max-laser.angle_min), map, laser.angle_max-laser.angle_min, sensor_noise_ratio); // これはparticle.cppなのでそのhppにPose pose_が記載されておりこの変数をPoseとして使える
-
+            printf("estimated_dist=%lf\n", estimated_dist_);
             // 推定値を実測値と比較して尤度算出norm_pdf
             L *= norm_pdf(estimated_dist_,laser.angle_max-laser.angle_min,sensor_noise_ratio);
+            printf("L=%lf\n", L);
         }
     }
     return L;
@@ -58,18 +65,26 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
 // 柱がある範囲か判定
 bool Particle::is_ignore_angle(double angle, const std::vector<double>& ignore_angle_range_list)
 {
+    // printf("before_for\n");
+    double start_angle = 0.0;
+    double end_angle = 0.0;
+
     for (int i = 0; i < ignore_angle_range_list.size(); i += 2)
     {
-        double start_angle = ignore_angle_range_list[i];
-        double end_angle = ignore_angle_range_list[i + 1];
+        // printf("before_ifelse\n");
+        start_angle = ignore_angle_range_list[i];
+        end_angle = ignore_angle_range_list[i + 1];
+        printf("start_angle=%lf\n", start_angle);
 
         // 角度が柱の範囲内にある場合は無視すべき角度
         if (angle >= start_angle && angle <= end_angle)
         {
+            printf("true\n");
             return true;
         }
         else
         {
+            printf("false\n");
             return false; // 角度が柱の範囲外
         }
     }
