@@ -24,27 +24,27 @@ Particle& Particle::operator =(const Particle& p)
 }
 
 // setter
-void Particle::set_weight(const double weight)
+void Particle::set_weight(double weight)
 {
-        weight_ = weight; // メンバ変数に代入
+        weight = 1.0;
 }
 
 // 尤度関数
 // センサ情報からパーティクルの姿勢を尤度を算出
-double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const sensor_msgs::msg::LaserScan& laser,
+double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const sensor_msgs::msg::LaserScan& laser, // この&はポインタではなく普通に参照
         const double sensor_noise_ratio, const int laser_step, const std::vector<double>& ignore_angle_range_list)
 {
         double L = 1.0; // 尤度
         // センサ情報からパーティクルの姿勢を評価
         for(double i = 0;i < laser.angle_max - laser.angle_min; i += laser.angle_increment)
         {
-                if(is_ignore_angle(i,ignore_angle_range_list))//#hiraiwa thisを追加#
+                if(is_ignore_angle(i,ignore_angle_range_list[i]))
                 {
                         L *= 1.0;
                 }
                 else
                 {
-                        laser.ranges[i];
+
                         L *= norm_pdf(map.data[i],laser.ranges[i],sensor_noise_ratio);
                 }
         }
@@ -54,18 +54,23 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
 // 柱がある範囲か判定
 bool Particle::is_ignore_angle(double angle, const std::vector<double>& ignore_angle_range_list)
 {
+        double start_angle =0.0;
+        double end_angle = 0.0;
         for (int i = 0; i < ignore_angle_range_list.size(); i += 2)
-    {
-        double start_angle = ignore_angle_range_list[i];
-        double end_angle = ignore_angle_range_list[i + 1];
-
-        // 角度が範囲内にある場合は無視すべき角度
-        if (angle >= start_angle && angle <= end_angle)
         {
-            return true;
+                start_angle = ignore_angle_range_list[i];
+                end_angle = ignore_angle_range_list[i + 1];
+
+                // 角度が範囲内にある場合は無視すべき角度
+                if (angle >= start_angle && angle <= end_angle)
+                {
+                        return true;
+                }
+                
+                else{
+                        return false;
+                }
         }
-    }
-    return false;//#hiraiwa returnを移動#
 }
 
 // 与えられた座標と角度の方向にある壁までの距離を算出
@@ -94,16 +99,14 @@ double Particle::calc_dist_to_wall(double x, double y, const double laser_angle,
                 double new_y = y + dist * sin(laser_angle);
                 int map_data_size = width*height;
                 
-                int grid_x = static_cast<int>((x-origin_x)/resolution);//grid座標に変換 #hiraiwa map_を消去#
+                int grid_x = static_cast<int>((x-origin_x)/resolution);//grid座標に変換
                 int grid_y = static_cast<int>((x-origin_y)/resolution);//grid座標に変換
                 int grid_index=xy_to_grid_index(grid_x,grid_y,map.info);
                 int cell_value=map.data[grid_index];
-                
                 if(!in_map(grid_index,map_data_size))
                 {
                         return search_limit*2.0;
                 }
-                
                 else 
                 {
                         if (cell_value == 100)
@@ -114,12 +117,12 @@ double Particle::calc_dist_to_wall(double x, double y, const double laser_angle,
                         {
                                 return search_limit * 2.0;  // 未知領域
                         }
+                        else
+                        {
+                                return search_limit * sensor_noise_ratio * 5.0;
+                        }
                 }
-
-
         }
-        return search_limit * sensor_noise_ratio * 5.0;//#hiraiwa return の位置を移動
-        
 }
 
 // 座標からグリッドのインデックスを返す
