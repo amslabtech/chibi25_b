@@ -107,8 +107,10 @@ private:
 
     Node_ current_;     // 現在ノード
     const int phase = 6;//経由地の識別用phase
-    int start_point_x_[6] = {550,0,0,0,0,0};
-    int start_point_y_[6] = {400,0,0,0,0,0};
+    double start_point_x_;
+    double start_point_y_;
+
+    int select_limit;
     // double way_points_x_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};//経由地点の格納
     // double way_points_y_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
     std::vector<Node_> open_list_;  // openリスト
@@ -141,4 +143,3 @@ private:
 };
 
 #endif
-
