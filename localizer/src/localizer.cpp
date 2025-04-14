@@ -31,8 +31,8 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->declare_parameter("expansion_x_dev", 1.0);
     this->declare_parameter("expansion_y_dev", 1.0);
     this->declare_parameter("expansion_yaw_dev", 0.5);
-    this->declare_parameter("laser_step", 5);
-    this->declare_parameter("sensor_noise_ratio", 0.1);
+    this->declare_parameter("laser_step", 10);
+    this->declare_parameter("sensor_noise_ratio", 0.03);
     this->declare_parameter("ff_", 0.0);
     this->declare_parameter("fr_", 0.0);
     this->declare_parameter("rf_", 0.0);
@@ -62,7 +62,13 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->get_parameter("fr_", fr_);
     this->get_parameter("rf_", rf_);
     this->get_parameter("rr_", rr_);
-    ignore_angle_range_list_.reserve(100); // リサイズ回数の制限
+
+    ignore_angle_range_list_ = {-0.80, -0.62, 0.63, 1.20, 2.24, 2.74, 3.75, 3.93};
+    // this->declare_parameter<std::vector<double>>("ignore_angle_range_list", {-0.80, -0.62, 0.63, 1.20, 2.24, 2.74, 3.75, 3.93}); 
+    // ignore_angle_range_list_ = this->get_parameter("ignore_angle_range_list").as_double_array();
+        // particle.cppでstart_angle = ignore_angle_range_list[i]; // 下限
+        // end_angle = ignore_angle_range_list[i + 1]; // 上限
+    // ignore_angle_range_list_.reserve(4); // リサイズ回数の制限
 
     // Subscriberの設定
     // <subscriber名> = this->create_subscription<<msg型>>("<topic名>", rclcpp::QoS(<確保するtopicサイズ>).reliable(), std::bind(&<class名>::<コールバック関数名>, this, std::placeholders::_1));
@@ -158,6 +164,7 @@ void Localizer::initialize()
     
     // パーティクルの初期化
     particles_.clear();
+    // printf("size1=%ld\n", particles_.size()); // 0と出力された
 
     for (int i = 0; i < particle_num_; i++) {
         // particleのローカル変数を定義して，初期値を初期位置にノイズを加えてparticleをセット
@@ -173,6 +180,7 @@ void Localizer::initialize()
         normalize_angle(particle_yaw);
         Particle particle(particle_x, particle_y, particle_yaw, particle_weight);
         particles_.push_back(particle);
+        // printf("size2=%ld\n", particles_.size()); //1から増えていってparticle_numの数で出力停止
 
         // パーティクルの重みの初期化
         reset_weight();
@@ -271,6 +279,7 @@ void Localizer::reset_weight()
     // particles_.push_back(another_weight); // hppで定義済みのリストに追加
     for (auto& particle : particles_) {
         particle.set_weight(another_weight);
+        // printf("weight=%lf\n", particle.weight());
         // particle.cppの
             // setter
             // void Particle::set_weight(double weight)
@@ -318,11 +327,11 @@ void Localizer::broadcast_odom_state()
         double mx = map_to_base.pose.position.x;
         double my = map_to_base.pose.position.y;
         // base→odomの相対位置をmap座標系に変換（回転を考慮）
-        double theta = tf2::getYaw(map_to_base.pose.orientation); // map座標系から見たbaseの向き
+        double theta = estimated_pose_.yaw(); // map座標系から見たbaseの向き
         double dx = mx - (ox * cos(theta) - oy * sin(theta));
         double dy = my - (ox * sin(theta) + oy * cos(theta));
         // yaw差分（回転の向き）を取得
-        double yaw_odom = tf2::getYaw(odom_to_base.pose.orientation);
+        double yaw_odom = tf2::getYaw(last_odom_.pose.pose.orientation); // yawを取り出す
         double dyaw = theta - yaw_odom;
         dyaw = normalize_angle(dyaw); // 回転に関しては計算後に適切な範囲に変更
 
@@ -454,13 +463,13 @@ void Localizer::observation_update()
             // printf("for\n");
             // パーティクル1つの尤度算出
             double yudo = particle.likelihood(map_, laser_, sensor_noise_ratio_, laser_step_, ignore_angle_range_list_); // パーティクル一つの尤度を算出
-            printf("yudo=%lf\n", yudo);
-            double laser_num = ((laser_.angle_max - laser_.angle_min) / laser_.angle_increment) + 1; // パーティクル1つにおけるレーザの本数
-            double particle_alpha = yudo / laser_num; // このforで回してるparticleのレーザ1本における平均尤度
-            sum_particle_alpha += particle_alpha; // particles_内のparticleのレーザ1本における平均尤度の合計
+            // printf("yudo=%lf\n", yudo);
+            // double laser_num = ((laser_.angle_max - laser_.angle_min) / laser_.angle_increment) + 1; // パーティクル1つにおけるレーザの本数
+            // double particle_alpha = yudo / laser_num; // このforで回してるparticleのレーザ1本における平均尤度
+            // // sum_particle_alpha += particle_alpha; // particles_内のparticleのレーザ1本における平均尤度の合計
 
             // particle.weight() *= yudo; //！重みに尤度をかける
-            particle.set_weight(particle.weight() * yudo); // 重みを更新
+            particle.set_weight(particle.weight() * yudo); // 重みを更新、！掛け算
         }
         // 全体の平均alpha算出
         // double alpha = sum_particle_alpha / particle_num_; // particles_内の1つのparticleのレーザ1本における平均尤度
