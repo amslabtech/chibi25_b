@@ -54,8 +54,10 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
             // else // 柱無し、掛け算のとき
             {
                 // pose_とlaserの角度を使って壁までの距離を推定calc_dist_to_wall
-                // double estimated_dist_ = calc_dist_to_wall(pose_.x(), pose_.y(), pose_.yaw()+(laser.angle_max-laser.angle_min), map, laser.angle_max-laser.angle_min, sensor_noise_ratio); //  地図視点の壁からの距離
-                double estimated_dist_ = calc_dist_to_wall(pose_.x(), pose_.y(), pose_.yaw(), map, laser.angle_max-laser.angle_min, sensor_noise_ratio); //  地図視点の壁からの距離
+                double theta = pose_.yaw() + laser.angle_min + i * laser.angle_increment;
+                // double theta = pose_.yaw()+(laser.angle_max-laser.angle_min);
+                // double theta = pose_.yaw();
+                double estimated_dist_ = calc_dist_to_wall(pose_.x(), pose_.y(), theta, map, laser.angle_max-laser.angle_min, sensor_noise_ratio); //  地図視点の壁からの距離
                 // printf("estimated_dist=%lf\n", estimated_dist_);
 
                 // 推定値を実測値と比較して尤度算出norm_pdf
@@ -68,6 +70,12 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
             }
         }
         check_laser++;
+    }
+    // printf("L=%lf\n", L);
+
+    // 安全対策
+    if (L < 1.0) {
+        L = 1.0; // 最小尤度
     }
     return L;
 }

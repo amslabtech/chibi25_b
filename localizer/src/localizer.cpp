@@ -19,13 +19,15 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->declare_parameter("max_particle_num", 200);
     this->declare_parameter("min_particle_num", 50);
     this->declare_parameter("move_dist_th", 0.1);
-    this->declare_parameter("init_x", 0.0);
-    this->declare_parameter("init_y", 0.0);
-    this->declare_parameter("init_yaw", 0.0);
+    this->declare_parameter("init_x", 0.037751);
+    this->declare_parameter("init_y", 1.963176);
+    this->declare_parameter("init_yaw", 1.50784); // orientation.z = 0.999988
+    // last_odom_.pose.pose.orientation.z = 0.999988;
+    // printf("%lf\n", tf2::getYaw(last_odom_.pose.pose.orientation));
     this->declare_parameter("init_x_dev", 1.0);
     this->declare_parameter("init_y_dev", 1.0);
     this->declare_parameter("init_yaw_dev", 0.5);
-    this->declare_parameter("alpha_th", 0.01);
+    this->declare_parameter("alpha_th", 0.0017);
     // this->declare_parameter("marginal_likelihood_th_", 0.05);
     this->declare_parameter("reset_count_limit", 5);
     this->declare_parameter("expansion_x_dev", 1.0);
@@ -77,7 +79,7 @@ Localizer::Localizer() : Node("teamb_localizer")
     // sub_map_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>("/map", rclcpp::QoS(1).reliable(), std::bind(&Localizer::map_callback, this, std::placeholders::_1));
     sub_map_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>("/map", rclcpp::QoS(rclcpp::KeepLast(1)).reliable().transient_local(), std::bind(&Localizer::map_callback, this, std::placeholders::_1)); // サブスクライバーが処理できなくても1個前のmsgを残し常に一件保持、新しいサブスクライバーが来たら古いmsgも渡し後から来ても直前のを再送してくれる
     sub_odom_ = this->create_subscription<nav_msgs::msg::Odometry>("/odom", rclcpp::QoS(1).reliable(), std::bind(&Localizer::odom_callback, this, std::placeholders::_1));
-    sub_laser_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", rclcpp::QoS(1).reliable(), std::bind(&Localizer::laser_callback, this, std::placeholders::_1));
+    sub_laser_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", rclcpp::QoS(rclcpp::KeepLast(60)).reliable(), std::bind(&Localizer::laser_callback, this, std::placeholders::_1));
 
     // Publisherの設定
     // <publisher名> = this->create_publisher<<msg型>>("<topic名>", rclcpp::QoS(<確保するtopicサイズ>).reliable());
@@ -433,7 +435,7 @@ void Localizer::motion_update()
             double direction = std::atan2(dy, dx);
             double rotation = dyaw;
             // printf("rotation=%lf\n", rotation);
-            particle.getPose().move(length, direction, rotation, fw_noise, rot_noise); // lengthは直進距離
+            particle.pose_.move(length, direction, rotation, fw_noise, rot_noise); // lengthは直進距離
 
             // double dx_add_noise = dx + norm_rv(0, fx_noise);
             // double dy_add_noise = dy + norm_rv(0, fx_noise);
@@ -457,7 +459,7 @@ void Localizer::observation_update()
     if (flag_map_ && flag_laser_)
     {
         // printf("if\n");
-        double sum_particle_alpha = 1.0; 
+        double sum_particle_alpha = 1.0;
         for(auto& particle : particles_)
         {
             // printf("for\n");
@@ -468,8 +470,11 @@ void Localizer::observation_update()
             // double particle_alpha = yudo / laser_num; // このforで回してるparticleのレーザ1本における平均尤度
             // // sum_particle_alpha += particle_alpha; // particles_内のparticleのレーザ1本における平均尤度の合計
 
-            // particle.weight() *= yudo; //！重みに尤度をかける
+            reset_weight();
+            // printf("particle.weight1()=%lf\n", particle.weight()); // 0.01なのに途中から違う値になる→particle_num_は変動するからreset_weight()の返り値は変わるけど変わりすぎ
             particle.set_weight(particle.weight() * yudo); // 重みを更新、！掛け算
+            // particle.set_weight(yudo);
+            // printf("particle.weight2()=%lf\n", particle.weight());
         }
         // 全体の平均alpha算出
         // double alpha = sum_particle_alpha / particle_num_; // particles_内の1つのparticleのレーザ1本における平均尤度
@@ -486,8 +491,10 @@ void Localizer::observation_update()
 
         // ！パーティクル1つのレーザ1本における平均尤度(alpha)を算出
         double alpha = sum_yudo_ / ((laser_.ranges.size()/laser_step_) * particles_.size()); // sum_yudo_を使ってalphaを出す
+        // printf("alpha=%lf\n", alpha);
 
         // if (alpha < alpha_th_ && marginal_likelihood < marginal_likelihood_th_) // 閾値勝手に増やした
+        // alpha_th_=0.0017
         if (alpha < alpha_th_ && reset_counter < reset_count_limit_) // パーティクルが広がり過ぎないように膨張リセットの回数制限
         {
             // 膨張リセット
@@ -545,15 +552,19 @@ void Localizer::estimate_pose()
     
     for (auto& particle : particles_)
     {
-        sum_x += particle.getPose().x() * particle.weight();
-        sum_y += particle.getPose().y() * particle.weight();
-        sum_yaw += particle.getPose().yaw() * particle.weight();
+        sum_x += particle.pose_.x() * particle.weight();
+        sum_y += particle.pose_.y() * particle.weight();
+        sum_yaw += particle.pose_.yaw() * particle.weight();
         weight_sum += particle.weight();
     }
     // estimated_pose_.x() = sum_x;
     // estimated_pose_.y() = sum_y;
     // estimated_pose_.yaw() = sum_yaw;
+    // printf("sum_x=%lf\n", sum_x);
     estimated_pose_.set(sum_x, sum_y, sum_yaw);
+    // printf("estimated_pose_.x()=%lf\n", estimated_pose_.x());
+    // printf("estimated_pose_.y()=%lf\n", estimated_pose_.y());
+    // printf("estimated_pose_.yaw()=%lf\n", estimated_pose_.yaw());
 }
 
 // 重みの正規化(0から1の間、重要度重み、正規化→初期化？)
@@ -571,6 +582,7 @@ void Localizer::normalize_belief()
         {
             // particle.weight() /= sum_weights; //重要度重み算出
             particle.set_weight(particle.weight() / sum_weights);
+            // printf("particle.weight()=%lf\n", particle.weight());
         }
     }
 }
@@ -601,13 +613,14 @@ void Localizer::expansion_resetting()
         double yaw = dist_yaw(gen);
         
         yaw = normalize_angle(yaw); // yawを適切な範囲にする
-        particle.getPose().set(x, y, yaw);
+        particle.pose_.set(x, y, yaw);
         // particle.getPose().set(random_x_in_map(), random_y_in_map(), random_angle()); // これらのランダム配置の関数は定義されていない
 
         particle.set_weight(1.0);
     }
 
     normalize_belief();
+    printf("expansion\n");
 }
 
 // リサンプリング（系統サンプリング）
@@ -637,12 +650,12 @@ void Localizer::resampling(const double alpha)
     double target = start;
 
     // particle数の動的変更(AMCL特有のサンプリング、尤度が高い時は粒子減らし尤度が低い時は粒子増やす)
-    if (alpha > 0.80) // alpha(尤度)高い
+    if (alpha > 0.004) // alpha(尤度)高い
     {
         particle_num_ -= (particle_num_) / 3; // 粒子減らす
     }
 
-    else if (alpha < 0.30) // 尤度低い
+    else if (alpha < 0.003) // 尤度低い
     {
         particle_num_ += (particle_num_) / 3; // 粒子増やす
     }
@@ -684,6 +697,7 @@ void Localizer::resampling(const double alpha)
     // particles_.insert(next_particles_); // next_particles_をparticles_に代入するがリスト→リストの関数がわからないためnext_particles_の使用をやめた ↑
     reset_weight(); // particles_のparticleの重み初期化をする関数
     // particles_ = std::move(next_particles_); //観測更新はmove使用しない
+    printf("resampling\n");
 }
 
 // 推定位置のパブリッシュ
@@ -713,13 +727,13 @@ void Localizer::publish_particles()
     for (auto& particle : particles_)
     {
         geometry_msgs::msg::Pose pose;
-        pose.position.x = particle.getPose().x();
-        pose.position.y = particle.getPose().y();
+        pose.position.x = particle.pose_.x();
+        pose.position.y = particle.pose_.y();
         // pose.position.z = particle.getPose().z();
  
         // ！toMsg = tf2::Quaternion → geometry_msgs::msg::Quaternion
         tf2::Quaternion q;
-        q.setRPY(0, 0, particle.getPose().yaw()); // roll=0, pitch=0, yaw=pose.yaw()
+        q.setRPY(0, 0, particle.pose_.yaw()); // roll=0, pitch=0, yaw=pose.yaw()
         pose.orientation = tf2::toMsg(q); // tf2を使ってROSのQuaternionに変換
         // pose.yaw() = tf2::toMsg(tf2::Quaternion(0, 0, particle.getPose().yaw()));
 
@@ -749,3 +763,4 @@ void Localizer::publish_particles()
         // void set_weight(const double weight);   // 重みのセット、Particleの変数名.set_weight(引数)で使える
         // double weight() const { return weight_; } // 値を返すだけの関数(右辺)だから、重みの値を変え直接代入するとき(*=)はset_weight()を使うか、double& にして参照を返すと.weight()を直接変更できる
         // Particleのクラスの中にはPose pose_;の変数、getPose()があるから、pose_を介して座標にアクセス→particle.getPose().x()等
+        // ↑× particle.pose_.x()が正しい
