@@ -1,9 +1,9 @@
 #include "obstacle_detector/obstacle_detector.hpp"
 
-ObstacleDetector::ObstacleDetector() : Node("obstacle_detector"){
+ObstacleDetector::ObstacleDetector() : Node("teamb_obstacle_detector"){
     // global変数を定義(yamlファイルからパラメータを読み込めるようにすると，パラメータ調整が楽)
     obs_dist_ = this->declare_parameter<double>("obs_dist", 1.5);         // 前方障害物までの距離。これを下回ると障害物として認識する
-    laser_num_ = this->declare_parameter<int>("laser_num");
+    laser_num_ = this->declare_parameter<int>("laser_num", 1);              // とりあえず1を代入。33行目で正しく計算される。
     ignore_dist_ = this->declare_parameter<double>("ignore_dist", 0.2);     // これを下回った場合は無視する
     timer_ = this->create_wall_timer(0.5s, std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
 
@@ -25,6 +25,11 @@ void ObstacleDetector::scan_callback(const sensor_msgs::msg::LaserScan::SharedPt
 
 //一定周期で行う処理(obstacle_detectorの処理)
 void ObstacleDetector::process(){
+    if(!scan_.has_value()){
+        // scan_がmsgを受け取っていない場合はエラー
+        RCLCPP_WARN(this->get_logger(), "ERROR Obstacle_detector: No scan data received yet.");
+        return;
+    }
     scan_obstacle();    
 }
 
@@ -33,7 +38,7 @@ void ObstacleDetector::scan_obstacle(){
     laser_num_ = (scan_.value().angle_max - scan_.value().angle_min) / scan_.value().angle_increment;    // 測距レーザの本数
     int central_num = laser_num_ / 2;        // 中心レーザの番号。このレーザの角度 = π/2 rad
     double min_angle = M_PI/2 - central_num * scan_.value().angle_increment;  // angle_minの角度 [rad]。Roombaの3時方向を0とする。
-        // min_angleとcentral_numはLiDARの仕様により固定のはずなので、値が確かめられたら数式を消してもよい
+        // laser_numとcentral_num、min_angleはLiDARの仕様により固定のはずなので、値が確かめられたら数式を消してもよい
 
     std::vector<double> obs_ranges(laser_num_, 0.0);       // 各レーザによる測定値格納用配列
     std::vector<double> obs_angles(laser_num_, 0.0);       // 角度様配列
@@ -41,7 +46,8 @@ void ObstacleDetector::scan_obstacle(){
     for(int i=0; i<laser_num_; i++) obs_ranges[i] = scan_.value().ranges[i];     // ポインタを使えばもっと簡素にできるが要検証
     for(int i=0; i<laser_num_; i++) obs_angles[i] = scan_.value().angle_increment * i + min_angle;  
 
-    printf("OBS_DET test1: min_angle = %5.3f \n", min_angle);
+    // printf("OBS_DET test1: min_angle = %5.3f \n", min_angle);
+    printf("\n");   // デバッグ用
 
     // 障害物情報配列への格納
     for(int i=0; i<laser_num_; i++){
@@ -62,6 +68,8 @@ void ObstacleDetector::scan_obstacle(){
             o_points_[i] = {false, 0, 0, 0, 0};
         }
     }
+    // 前後の点から1つだけ大きく離れた値の場合外れ値とみなす(.existをfalseにする)処理？
+    // .existがtrueになっている点を全てpublishするのではなく、連続している点群を1つの情報としてpublishする方針でもいいかもしれない
 
     // ROS2メッセージに変換してpublish
     auto msg = geometry_msgs::msg::PoseArray();
@@ -80,7 +88,7 @@ void ObstacleDetector::scan_obstacle(){
     }
     o_points_pub_->publish(msg);
     
-    points_print();     // デバッグ用
+    points_print();     // デバッグ用printf
 
 
     /*
@@ -117,7 +125,7 @@ void ObstacleDetector::resize_points(){
 void ObstacleDetector::points_print(){
     for(int i=0; i<laser_num_; i++){
         if(o_points_[i].exist){
-            printf("\t\tOBS_DET test2: i = %d, r = %5.3f, θ = %5.3f[deg]\n", i, o_points_[i].r, o_points_[i].theta * 180/M_PI);
+            printf("\tOBS_DET: i = %4d, r = %5.3f, θ[deg] = %5.3f\n", i, o_points_[i].r, o_points_[i].theta * 180/M_PI);
         }
     }
 }
