@@ -38,7 +38,7 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
     double L = 0.0; // 尤度(掛け算だったら1.0)
     // センサ情報からパーティクルの姿勢を評価
     // printf("before_for\n");
-    for(int i = 0; i < laser.ranges.size(); i++)
+    for(int i = 0; i < laser.ranges.size(); i++) // i+=laser_stepにすれば間引きのif重ねず済んだ
     // for(double i = laser.angle_min; i <= laser.angle_max; i++) // iは配列のインデックスなためdoubleじゃバグる
     {
         int check_laser = 1; // for文で回されるチェックするレーザの本数
@@ -58,6 +58,7 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
                 // double theta = pose_.yaw()+(laser.angle_max-laser.angle_min);
                 // double theta = pose_.yaw();
                 double estimated_dist_ = calc_dist_to_wall(pose_.x(), pose_.y(), theta, map, laser.angle_max-laser.angle_min, sensor_noise_ratio); //  地図視点の壁からの距離
+                // double estimated_dist_ = calc_dist_to_wall(pose_.x(), pose_.y(), theta, map, laser.ranges[i], sensor_noise_ratio);
                 // printf("estimated_dist=%lf\n", estimated_dist_);
 
                 // 推定値を実測値と比較して尤度算出norm_pdf
@@ -66,6 +67,7 @@ double Particle::likelihood(const nav_msgs::msg::OccupancyGrid& map, const senso
                 // L *= norm_pdf(distance_error,laser.angle_max-laser.angle_min,sensor_noise_ratio);
                 // L *= norm_pdf(distance_error,0.0,sensor_noise_ratio);
                 L += norm_pdf(estimated_dist_,laser.ranges[i],sensor_noise_ratio); // 足し算
+                // L += norm_pdf(estimated_dist_,laser.ranges[i],laser.ranges[i]*sensor_noise_ratio); // 足し算
                 // printf("L_nonwall=%lf\n", L);
             }
         }

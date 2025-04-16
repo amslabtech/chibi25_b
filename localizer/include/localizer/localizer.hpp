@@ -50,6 +50,8 @@ class Localizer : public rclcpp::Node
         double norm_rv(const double mean, const double stddev);  // ランダム変数生成関数（正規分布）
         void   resampling(const double alpha);                   // リサンプリング（系統サンプリング）
 
+        double get_median(std::vector<double>& data);
+
         // ----- 関数（引数なし）------
         void   reset_weight();             // パーティクルの重みの初期化
         void   broadcast_odom_state();     // map座標系からみたodom座標系の位置と姿勢をtfでbroadcast
