@@ -46,7 +46,7 @@ private:
     void map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);  // マップデータを受信し処理
 
     // ----- 経路探索関連関数 -----
-    void obs_expand(const int index,nav_msgs::msg::OccupancyGrid new_map_);                // 指定されたインデックスの障害物を拡張
+    void obs_expand(const int index,int margin_length);                // 指定されたインデックスの障害物を拡張
     double make_heuristic(const Node_ node);         // ノードのヒューリスティック値を計算
     Node_ set_way_point(const int phase,int which);            // スタート・ゴールノードの設定
     void create_path(Node_ node);                    // ノードをたどり，パスを作成
@@ -77,7 +77,8 @@ private:
     // ----- デバッグ用関数 -----
     void show_node_point(const Node_ node);  // Rviz上でノードをポイントとして可視化
     void show_path(nav_msgs::msg::Path& current_path);  // Rviz上で経路を可視化
-    void show_exe_time();  // 経路計画の実行時間を表示
+    void show_exe_time();  // 経路計画の実行時間を表示/
+    // void print_list(std::vector<Node_>& list,int count);
 
     // =========================
     // ROS関連メンバ変数
@@ -98,16 +99,14 @@ private:
 
     // 基本設定
     double sleep_time_; // デバッグ用スリープ時間 [s]
-    double margin_length; // 障害物拡張マージン [m]
+    int margin_length; // 障害物拡張マージン [m]
     double robot_radius_;//ロボット半径
 
     // ノード情報
     Node_ start_node_;  // 開始ノード
     Node_ goal_node_;   // 目標ノード
+
     Node_ current_;     // 現在ノード
-    const int phase = 6;//経由地の識別用phase
-    double start_point_x_[6] = {571.0,0.0,0.0,0.0,0.0,0.0};//スタート地点の格納
-    double start_point_y_[6] = {573.5,0.0,0.0,0.0,0.0,0.0};
     // double way_points_x_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};//経由地点の格納
     // double way_points_y_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
     std::vector<Node_> open_list_;  // openリスト
