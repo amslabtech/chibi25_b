@@ -391,10 +391,6 @@ Node_ Astar::get_neighbor_node(const Node_ node, const Motion_ motion)
     neighbor.g = node.g + motion.cost;
     neighbor.h = make_heuristic(neighbor);
     neighbor.f = neighbor.g + neighbor.h;
-    // RCLCPP_INFO(this->get_logger(),"neighbor=%d %d",neighbor.x,neighbor.y);
-    // RCLCPP_INFO(this->get_logger(), "neighbor.g=%f",neighbor.g);
-    // RCLCPP_INFO(this->get_logger(), "neighbor.h=%f",neighbor.h);
-    // RCLCPP_INFO(this->get_logger(), "neighbor.f=%f",neighbor.f);
     return neighbor;
 }
 
@@ -563,9 +559,9 @@ void Astar::planning()
             }
         }
         // RCLCPP_INFO(this->get_logger(), "planning");
-        pub_path_ -> publish(global_path_);
+        // pub_path_ -> publish(global_path_);
     }
-
+    pub_path_ -> publish(global_path_);
     show_exe_time();
     RCLCPP_INFO_STREAM(get_logger(), "COMPLITE ASTAR PROGLAM");
     exit(0);
