@@ -1,0 +1,8 @@
+[0.000000] (-) TimerEvent: {}
+[0.000212] (-) JobUnselected: {'identifier': 'local_map_creator'}
+[0.000273] (-) JobUnselected: {'identifier': 'obstacle_detector'}
+[0.000301] (-) JobUnselected: {'identifier': 'team_global_path_planner'}
+[0.000325] (-) JobUnselected: {'identifier': 'teamb_local_goal_creator'}
+[0.000347] (-) JobUnselected: {'identifier': 'teamb_local_path_planner'}
+[0.000384] (-) JobUnselected: {'identifier': 'teamb_localizer'}
+[0.000413] (-) EventReactorShutdown: {}

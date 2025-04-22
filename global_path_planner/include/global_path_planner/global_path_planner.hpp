@@ -48,6 +48,7 @@ private:
 
     // ----- 経路探索関連関数 -----
     void obs_expand(const int index,int margin_length);                // 指定されたインデックスの障害物を拡張
+
     double make_heuristic(const Node_ node);         // ノードのヒューリスティック値を計算
     Node_ set_way_point(const int phase,int which);            // スタート・ゴールノードの設定
     void create_path(Node_ node);                    // ノードをたどり，パスを作成
@@ -101,6 +102,7 @@ private:
     // 基本設定
     double sleep_time_; // デバッグ用スリープ時間 [s]
     int margin_length; // 障害物拡張マージン [m]
+
     double robot_radius_;//ロボット半径
 
     // ノード情報
@@ -108,6 +110,7 @@ private:
     Node_ goal_node_;   // 目標ノード
 
     Node_ current_;     // 現在ノード
+
     // double way_points_x_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};//経由地点の格納
     // double way_points_y_[6] = {1.0,2.0,3.0,4.0,5.0,0.6};
     std::vector<Node_> open_list_;  // openリスト

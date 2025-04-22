@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>obstacle_detector</name>
+
+  <name>teamb_obstacle_detector</name>
   <version>0.0.0</version>
-  <description>The obstacle_detector package</description>
+  <description>The teamb_obstacle_detector package</description>
   <maintainer email="amsl@todo.todo">amsl</maintainer>
   <license>TODO</license>
 
@@ -13,7 +14,6 @@
   <depend>rclcpp</depend>
   <!-- <depend>rclcpp_components</depend> -->
   <!-- <depend>roomba_500driver_meiji</depend> -->
-  <depend>geometry_msgs</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

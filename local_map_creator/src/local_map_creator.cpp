@@ -1,63 +1,83 @@
-#include "local_map_creator/local_map_creator.hpp"
-
-// コンストラクタ
-LocalMapCreator::LocalMapCreator() : Node("local_map_creater")
+#include "local_goal_creator/local_goal_creator.hpp"
+LocalGoalCreator::LocalGoalCreator() : Node("LocalGoalCreator")
 {
-    // パラメータの取得(hz, map_size, map_reso)
-
-    // Subscriberの設定
-
-    // Publisherの設定
-
-    // --- 基本設定 ---
-    // マップの基本情報(local_map_)を設定する（header, info, data）
-    //   header
-    //   info(width, height, position.x, position.y)
-    //   data
+    pose_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>("/e_pose", rclcpp::QoS(1).reliable(),std::bind(&LocalGoalCreator::poseCallback,this,std::placeholders::_1));
+    //estimated poseの購読
+    path_sub_ = this->create_subscription<nav_msgs::msg::Path>("/g_path", rclcpp::QoS(1).reliable(),std::bind(&LocalGoalCreator::pathCallback,this,std::placeholders::_1));
+    //global pathの購読
+    //pubやsubの定義，tfの統合
+    local_goal_pub_ = this->create_publisher<geometry_msgs::msg::PointStamped>("/roomba/goal",rclcpp::QoS(1).reliable());//#########
+    //初期値の設定
+    hz_= this->declare_parameter<int>("hz", 100);// ループ周期 [Hz]
+    goal_index_ = this->declare_parameter<int>("goal", 1);// グローバルパス内におけるローカルゴールのインデックス
+    index_step_ = this->declare_parameter<int>("index", 1); // １回で更新するインデックス数
+    target_distance_ = this->declare_parameter<float>("distance", 1.0);// 現在位置-ゴール間の距離 [m]
+    //初期設定
+    geometry_msgs::msg::PointStamped path_msg;
+        path_msg.header.stamp = this->now();
+        path_msg.header.frame_id = "map";
 }
 
-// obs_posesのコールバック関数
-void LocalMapCreator::obs_poses_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg)
+void LocalGoalCreator::poseCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)//subのコールバック関数
 {
+    pose_ =*msg;
 }
 
-// 周期処理の実行間隔を取得する
-int LocalMapCreator::getFreq()
+void LocalGoalCreator::pathCallback(const nav_msgs::msg::Path::SharedPtr msg)//subのコールバック関数
 {
+    path_=*msg;
 }
 
-// 障害物情報が更新された場合、マップを更新する
-void LocalMapCreator::process()
+int LocalGoalCreator::getOdomFreq()//hzを返す関数（無くてもいい）
 {
+    return hz_;
 }
 
-// 障害物の情報をもとにローカルマップを更新する
-void LocalMapCreator::update_map()
+void LocalGoalCreator::process()//main文ので実行する関数
 {
-    // マップを初期化する
+    //pathが読み込めた場合にpublishGoal関数を実行
+    if (!path_.poses.empty()) {
+        publishGoal();
+    }
+    
 
-    // 障害物の位置を考慮してマップを更新する
-
-    // 更新したマップをpublishする
 }
 
-// マップの初期化(すべて「未知」にする)
-void LocalMapCreator::init_map()
+
+void LocalGoalCreator::publishGoal()
 {
+    if (goal_index_ >= static_cast<int>(path_.poses.size())) {
+        return; // すでに最後のゴールなら更新しない
+    }
+
+    // ゴールまでの距離を取得
+    target_distance_ = getDistance();
+    // double threshold_distance_ = 1.0;
+    
+    // ゴールに近づいたら次のゴールを選択
+    if (target_distance_ < threshold_distance_) {
+        goal_index_ += index_step_;
+
+        // インデックスがパスの範囲を超えたら最後のゴールに留まる
+        if (goal_index_ >= static_cast<int>(path_.poses.size())) {
+            goal_index_ = static_cast<int>(path_.poses.size()) - 1;
+        }
+    }
+
+    if (goal_index_ < static_cast<int>(path_.poses.size())) {
+        
+        path_msg.point = path_.poses[goal_index_].pose.position;
+
+        local_goal_pub_->publish(path_msg);
+    }
 }
 
-// マップ内の場合、trueを返す
-bool LocalMapCreator::in_map(const double dist, const double angle)
-{
-    // 指定された距離と角度がマップの範囲内か判定する
-}
 
-// 距離と角度からグリッドのインデックスを返す
-int LocalMapCreator::get_grid_index(const double dist, const double angle)
+double LocalGoalCreator::getDistance()
 {
-}
+    //if (path_.poses.empty()) return std::numeric_limits<double>::max(); // パスが空なら最大値を返す
 
-// 座標からグリッドのインデックスを返す
-int LocalMapCreator::xy_to_grid_index(const double x, const double y)
-{
+    double dx = path_.poses[goal_index_].pose.position.x - pose_.pose.position.x;
+    double dy = path_.poses[goal_index_].pose.position.y - pose_.pose.position.y;
+    return sqrt(dx * dx + dy * dy);
 }

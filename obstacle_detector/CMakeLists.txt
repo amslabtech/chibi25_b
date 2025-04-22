@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.8)
+
 project(obstacle_detector)
+
 
 # find dependencies
 find_package(ament_cmake_auto REQUIRED)
 # package.xmlのdependをチェックして自動的にfind_packageしてくれる
 ament_auto_find_build_dependencies()
+
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)

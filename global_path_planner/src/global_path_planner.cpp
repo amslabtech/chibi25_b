@@ -9,6 +9,7 @@ Astar::Astar() : Node("teamb_global_path_planner"), clock_(RCL_ROS_TIME)
     // ###### パラメータの宣言 ######
     robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
 
+<<<<<<< HEAD
     test_show_ = true;
 
     //経由地点を配列として格納
@@ -76,6 +77,7 @@ void Astar::map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)  //�
     RCLCPP_INFO(this->get_logger(), "origin_x: %d", origin_x_);
     RCLCPP_INFO(this->get_logger(), "origin_y: %d", origin_y_);
 
+
     process();
 }
 
@@ -87,12 +89,13 @@ void Astar::obs_expander()
     new_map_ = map_;  // 元のマップをコピー
     
     margin_length = static_cast<int>(std::ceil(robot_radius_ / resolution_));  // セル単位の拡張範囲
+<<<<<<< HEAD
     RCLCPP_INFO(this->get_logger(), "margin_length:%d",margin_length);
     // 一次配列だからindex分だけ回して障害物を探索する
     for(int i=0;i<map_.data.size();i++){
         if(map_.data[i] == 100) {  // 障害物セルを拡張
             obs_expand(i,margin_length);
-        }
+
     }
     // 拡張後のマップをPublish
     pub_new_map_->publish(new_map_);
@@ -141,7 +144,9 @@ Node_ Astar::set_way_point(const int phase,int which)
 {
     RCLCPP_INFO(this->get_logger(), "Phase: %d, Waypoint X: %f, Waypoint Y: %f", phase, way_points_x_[phase], way_points_y_[phase]);
 
+
     RCLCPP_INFO(this->get_logger(), "setway_point");
+
     // スタート地点
     if (phase < 0 || phase >= way_points_x_.size()) {
     RCLCPP_ERROR(this->get_logger(), "Phase out of bounds!");
@@ -188,7 +193,8 @@ void Astar::create_path(Node_ node)
     }
 
     std::reverse(partial_path.poses.begin(),partial_path.poses.end());
-    show_path(partial_path);   
+
+    show_path(partial_path);
     // ###### パスの追加 ######
     global_path_.poses.insert(global_path_.poses.end(), partial_path.poses.begin(), partial_path.poses.end());
     
@@ -295,6 +301,8 @@ bool Astar::check_obs(const Node_ node)
 // 複数の変数への代入はstd::tie(...)を使用すると便利 https://minus9d.hatenablog.com/entry/2015/05/24/133253
 void Astar::update_list(Node_ node)
 {
+    
+    RCLCPP_INFO(this->get_logger(), "update_list");
     // 隣接ノードを宣言
     std::vector<Node_> neighbor_nodes;
     neighbor_nodes.reserve(100000);
@@ -317,6 +325,7 @@ void Astar::update_list(Node_ node)
         if(which == -1){
             open_list_.push_back(neighbor);
             // RCLCPP_INFO(this->get_logger(), "4");
+
         }
         // openにある
         if(which == 1){
@@ -407,7 +416,7 @@ std::tuple<int, int> Astar::search_node(const Node_ node)
     // index格納
     open = search_node_from_list(node,open_list_);
     close = search_node_from_list(node,close_list_);
-    // どっちのリストに入っているか 
+    // どっちのリストに入っているか
     if(open == -1 && close >= 1){
         // closeにある
         which = 2;
@@ -421,6 +430,7 @@ std::tuple<int, int> Astar::search_node(const Node_ node)
         return std::tuple(which,open);
     }else{
         return std::tuple(open,close);
+
     }
 
 }
@@ -430,7 +440,6 @@ std::tuple<int, int> Astar::search_node(const Node_ node)
 bool Astar::check_parent(const int index, const Node_ node)
 {
     return (close_list_[index].x == node.parent_x && close_list_[index].y == node.parent_y);
-    // RCLCPP_INFO(this->get_logger(), "got parent");
     //インデックスが親ノードである場合
 }
 
@@ -457,6 +466,11 @@ int Astar::search_node_from_list(const Node_ node, std::vector<Node_>& list)
     else{
         return number;
     }
+    if(check == -1){
+        RCLCPP_WARN(this->get_logger(),"ok!!");    
+        return check;
+    }
+    
 }
 
 
@@ -465,6 +479,7 @@ int Astar::search_node_from_list(const Node_ node, std::vector<Node_>& list)
 // そのノードの情報をRvizにパブリッシュ
 void Astar::show_node_point(const Node_ node)
 {
+
     // RCLCPP_INFO(this->get_logger(), "show_node");
 
     if(test_show_)
@@ -547,14 +562,17 @@ void Astar::planning()
             show_node_point(current_);
             if(check_same_node(current_,goal_node_)){
                 create_path(current_);
+
                 pub_current_path_ -> publish(global_path_);
                 // RCLCPP_INFO(this->get_logger(), "planning_fin");
+
                 break;
             }
             if(!check_same_node(current_,goal_node_)){
                 // RCLCPP_INFO(this->get_logger(), "current.x size: %d meters per cell", current_.x);
                 // RCLCPP_INFO(this->get_logger(), "current.y size: %d meters per cell", current_.y);
                 update_list(current_);
+
                 swap_node(current_,open_list_,close_list_);
             }
         }
@@ -562,6 +580,7 @@ void Astar::planning()
         // pub_path_ -> publish(global_path_);
     }
     pub_path_ -> publish(global_path_);
+
     show_exe_time();
     RCLCPP_INFO_STREAM(get_logger(), "COMPLITE ASTAR PROGLAM");
     exit(0);
