@@ -2,7 +2,7 @@
 
 ObstacleDetector::ObstacleDetector() : Node("teamb_obstacle_detector"){
     // global変数を定義(yamlファイルからパラメータを読み込めるようにすると，パラメータ調整が楽)
-    obs_dist_ = this->declare_parameter<double>("obs_dist", 1.5);         // 前方障害物までの距離。これを下回ると障害物として認識する
+    obs_dist_ = this->declare_parameter<double>("obs_dist", 5);         // 前方障害物までの距離。これを下回ると障害物として認識する
     laser_num_ = this->declare_parameter<int>("laser_num", 1);              // とりあえず1を代入。33行目で正しく計算される。
     ignore_dist_ = this->declare_parameter<double>("ignore_dist", 0.2);     // これを下回った場合は無視する
     timer_ = this->create_wall_timer(0.5s, std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
@@ -11,6 +11,7 @@ ObstacleDetector::ObstacleDetector() : Node("teamb_obstacle_detector"){
     // subscriber
     scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
         "/scan", rclcpp::QoS(1).reliable(), std::bind(&ObstacleDetector::scan_callback, this, std::placeholders::_1));
+    
 
     // publisher
     o_points_pub_ = this->create_publisher<geometry_msgs::msg::PoseArray>(
@@ -36,8 +37,8 @@ void ObstacleDetector::process(){
 //Lidarから障害物情報を取得し，障害物の座標をpublish  ※msg型は自分で決めてください
 void ObstacleDetector::scan_obstacle(){
     laser_num_ = (scan_.value().angle_max - scan_.value().angle_min) / scan_.value().angle_increment;    // 測距レーザの本数
-    int central_num = laser_num_ / 2;        // 中心レーザの番号。このレーザの角度 = π/2 rad
-    double min_angle = M_PI/2 - central_num * scan_.value().angle_increment;  // angle_minの角度 [rad]。Roombaの3時方向を0とする。
+    int central_num = laser_num_ / 2;        // 中心レーザの番号。このレーザの角度 = 0 rad
+    double min_angle = 0 - central_num * scan_.value().angle_increment;  // angle_minの角度 [rad]。Roombaの3時方向? を0とする。
         // laser_numとcentral_num、min_angleはLiDARの仕様により固定のはずなので、値が確かめられたら数式を消してもよい
 
     std::vector<double> obs_ranges(laser_num_, 0.0);       // 各レーザによる測定値格納用配列
@@ -52,7 +53,7 @@ void ObstacleDetector::scan_obstacle(){
     // 障害物情報配列への格納
     for(int i=0; i<laser_num_; i++){
         if(obs_ranges[i] < ignore_dist_) {
-            // 検知物までの距離がignore_dist_未満の場合は障害物でないとする
+            // 検知物までの距離がignore_dist_未満の場合 (0.2m以下の場合) は障害物でないとする
             o_points_[i] = {false, 0, 0, 0, 0};
 
         } else if(obs_ranges[i] < obs_dist_ && !is_ignore_scan(obs_angles[i])) {
@@ -74,7 +75,7 @@ void ObstacleDetector::scan_obstacle(){
     // ROS2メッセージに変換してpublish
     auto msg = geometry_msgs::msg::PoseArray();
     msg.header.stamp = this->get_clock()->now();
-    msg.header.frame_id = "laser_frame";        // laser_frame 座標系に基づいた表記であることの明示
+    msg.header.frame_id = "laser";        // laser 座標系に基づいた表記であることの明示
     
     for (const auto &p : o_points_) {
         if (p.exist) {
@@ -109,8 +110,10 @@ void ObstacleDetector::scan_obstacle(){
 bool ObstacleDetector::is_ignore_scan(double angle){
     // ignoreする場合 (柱である場合) にtrueを返す
     // 柱の角度はExcelで調べました。データはGoogleドライブ参照
-    double pillar_B[4] = {-0.80, 0.63, 2.24, 3.75};    // 各柱の角度領域の下端。[rad]
-    double pillar_T[4] = {-0.62, 1.20, 2.74, 3.93};    // 各柱の角度領域の上端。[rad]
+
+    double pillar_B[4] = {-0.79-M_PI/2, 0.62-M_PI/2, 2.23-M_PI/2, 3.74-M_PI/2};    // 各柱の角度領域の下端。[rad]
+    double pillar_T[4] = {-0.63-M_PI/2, 1.21-M_PI/2, 2.75-M_PI/2, 3.94-M_PI/2};    // 各柱の角度領域の上端。[rad]
+
 
     for(int i=0; i<4; i++) if(pillar_B[i] < angle && angle < pillar_T[i])  return true;
     return false;
