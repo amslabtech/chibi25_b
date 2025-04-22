@@ -13,6 +13,7 @@
 // odometryのモデルの初期化
 Localizer::Localizer() : Node("teamb_localizer")
 { 
+    // (init_yaw, init_yaw_dev, expansion_yaw_dev) = (3.0, 0.60, 0.01), (0.5, 0.80, 0.03)だった(旧マップクリア)
     // パラメータの宣言
     this->declare_parameter("hz", 10);
     this->declare_parameter("particle_num", 500);
@@ -21,7 +22,7 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->declare_parameter("move_dist_th", 0.025);
     this->declare_parameter("init_x", 0.037751);
     this->declare_parameter("init_y", 1.963176);
-    this->declare_parameter("init_yaw", 3.0);
+    this->declare_parameter("init_yaw", -0.5); // 新マップで更に逆向きに変更
     // last_odom_.pose.pose.orientation.x = 0.000000;
     // last_odom_.pose.pose.orientation.y = 0.000000;
     // last_odom_.pose.pose.orientation.z = 0.999988;
@@ -29,13 +30,13 @@ Localizer::Localizer() : Node("teamb_localizer")
     // printf("%lf\n", tf2::getYaw(last_odom_.pose.pose.orientation));
     this->declare_parameter("init_x_dev", 0.8);
     this->declare_parameter("init_y_dev", 0.8);
-    this->declare_parameter("init_yaw_dev", 0.60);
+    this->declare_parameter("init_yaw_dev", 0.80);
     this->declare_parameter("alpha_th", 0.0017);
     // this->declare_parameter("marginal_likelihood_th_", 0.05);
     this->declare_parameter("reset_count_limit", 5);
     this->declare_parameter("expansion_x_dev", 0.05);
     this->declare_parameter("expansion_y_dev", 0.05);
-    this->declare_parameter("expansion_yaw_dev", 0.01);
+    this->declare_parameter("expansion_yaw_dev", 0.02); // 新マップで更に縮めた
     this->declare_parameter("laser_step", 10);
     this->declare_parameter("sensor_noise_ratio", 0.03);
 
@@ -43,6 +44,11 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->declare_parameter("fr_", 0.0005);
     this->declare_parameter("rf_", 0.13);
     this->declare_parameter("rr_", 0.2);
+
+    this->declare_parameter("flag_init_noise", true); // 使ってない
+    this->declare_parameter("flag_broadcast", true); // 使ってない
+    this->declare_parameter("flag_reverse", false); // 逆向きにしない
+    this->declare_parameter("is_visible", true); // パーティクルクラウドをパブリッシュする
 
     this->declare_parameter("ignore_angle_range_list", std::vector<double>({-0.80, -0.62, 0.63, 1.20, 2.24, 2.74, 3.75, 3.93}));
 
@@ -70,6 +76,10 @@ Localizer::Localizer() : Node("teamb_localizer")
     this->get_parameter("fr_", fr_);
     this->get_parameter("rf_", rf_);
     this->get_parameter("rr_", rr_);
+    this->get_parameter("flag_init_noise", flag_init_noise_);
+    this->get_parameter("flag_broadcast", flag_broadcast_);
+    this->get_parameter("flag_reverse", flag_reverse_);
+    this->get_parameter("is_visible", is_visible_);
     this->get_parameter("ignore_angle_range_list", ignore_angle_range_list_);
 
     // ignore_angle_range_list_ = {-0.80, -0.62, 0.63, 1.20, 2.24, 2.74, 3.75, 3.93};
@@ -166,7 +176,7 @@ int Localizer::getOdomFreq() // (constを付けることでhz_が外部から書
 void Localizer::initialize()
 {
     // 初期姿勢が逆にする場合、初期姿勢にπを加算する
-    // if(flag_reverse_) init_yaw_ = normalize_angle(init_yaw_ + M_PI);
+    if(flag_reverse_) init_yaw_ = normalize_angle(init_yaw_ + M_PI);
 
     // 推定位置の初期化
     estimated_pose_.set(init_x_, init_y_, init_yaw_);
@@ -793,28 +803,29 @@ void Localizer::publish_estimated_pose()
 // パーティクル数が変わる場合，リサイズする
 void Localizer::publish_particles()
 {
-    particle_cloud_msg_.header.stamp = this->now();
-    particle_cloud_msg_.poses.clear(); // 前回までのパーティクルデータの削除
-    for (auto& particle : particles_)
+    if (is_visible_)
     {
-        geometry_msgs::msg::Pose pose;
-        pose.position.x = particle.pose_.x();
-        pose.position.y = particle.pose_.y();
-        // pose.position.z = particle.getPose().z();
- 
-        // ！toMsg = tf2::Quaternion → geometry_msgs::msg::Quaternion
-        tf2::Quaternion q;
-        q.setRPY(0, 0, particle.pose_.yaw()); // roll=0, pitch=0, yaw=pose.yaw()
-        pose.orientation = tf2::toMsg(q); // tf2を使ってROSのQuaternionに変換
-        // pose.yaw() = tf2::toMsg(tf2::Quaternion(0, 0, particle.getPose().yaw()));
+        particle_cloud_msg_.header.stamp = this->now();
+        particle_cloud_msg_.poses.clear(); // 前回までのパーティクルデータの削除
+        for (auto& particle : particles_)
+        {
+            geometry_msgs::msg::Pose pose;
+            pose.position.x = particle.pose_.x();
+            pose.position.y = particle.pose_.y();
+            // pose.position.z = particle.getPose().z();
+    
+            // ！toMsg = tf2::Quaternion → geometry_msgs::msg::Quaternion
+            tf2::Quaternion q;
+            q.setRPY(0, 0, particle.pose_.yaw()); // roll=0, pitch=0, yaw=pose.yaw()
+            pose.orientation = tf2::toMsg(q); // tf2を使ってROSのQuaternionに変換
+            // pose.yaw() = tf2::toMsg(tf2::Quaternion(0, 0, particle.getPose().yaw()));
 
-        particle_cloud_msg_.poses.push_back(pose); // hppで定義済みのリストに追加、particle_cloud_msg_の型より.poses.push_back(geometry_msgs::msg::～)にする
+            particle_cloud_msg_.poses.push_back(pose); // hppで定義済みのリストに追加、particle_cloud_msg_の型より.poses.push_back(geometry_msgs::msg::～)にする
+        }
+
+        // <publisher名>->publish(<変数名>);
+        pub_particle_cloud_->publish(particle_cloud_msg_);
     }
-
-    // <publisher名>->publish(<変数名>);
-    pub_particle_cloud_->publish(particle_cloud_msg_);
-    is_visible_ = true; // パーティクルクラウドをパブリッシュした
-
 }
 
     // for (auto& particle : particles_) {
