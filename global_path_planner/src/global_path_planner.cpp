@@ -9,7 +9,7 @@ Astar::Astar() : Node("teamb_global_path_planner"), clock_(RCL_ROS_TIME)
     // ###### パラメータの宣言 ######
     robot_radius_ = this->declare_parameter<double>("robot_radius",0.3);
 
-<<<<<<< HEAD
+
     test_show_ = true;
 
     //経由地点を配列として格納
@@ -89,7 +89,6 @@ void Astar::obs_expander()
     new_map_ = map_;  // 元のマップをコピー
     
     margin_length = static_cast<int>(std::ceil(robot_radius_ / resolution_));  // セル単位の拡張範囲
-<<<<<<< HEAD
     RCLCPP_INFO(this->get_logger(), "margin_length:%d",margin_length);
     // 一次配列だからindex分だけ回して障害物を探索する
     for(int i=0;i<map_.data.size();i++){
@@ -100,6 +99,7 @@ void Astar::obs_expander()
     // 拡張後のマップをPublish
     pub_new_map_->publish(new_map_);
     RCLCPP_INFO(this->get_logger(), "Published expanded obstacle map.");
+    }
 }
 
 // 指定されたインデックスの障害物を拡張（margin_length分）
