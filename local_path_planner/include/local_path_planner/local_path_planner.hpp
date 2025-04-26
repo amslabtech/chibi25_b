@@ -1,3 +1,4 @@
+
 /*
 DWA: Dynamic Window Approach
 
@@ -18,6 +19,7 @@ speed         : 速度の総称(vel, yawrate)
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <geometry_msgs/msg/point_stamped.hpp>
 #include <geometry_msgs/msg/pose_array.hpp>
+#include <nav_msgs/msg/odometry.hpp>  // 必要なヘッダを忘れずに！
 #include <nav_msgs/msg/path.hpp>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer.h>
@@ -65,6 +67,7 @@ private:
     // コールバック関数
     void local_goal_callback(const geometry_msgs::msg::PointStamped::SharedPtr msg);
     void obs_poses_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg);
+    void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
     //void timer_callback();
 
     // その他の関数
@@ -144,7 +147,8 @@ private:
     // Subscriber
     rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr sub_local_goal_;
     rclcpp::Subscription<geometry_msgs::msg::PoseArray>::SharedPtr sub_obs_poses_;
-
+    // --- DWAPlanner クラスの中で ---
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
     // Publisher
     rclcpp::Publisher<roomba_500driver_meiji::msg::RoombaCtrl>::SharedPtr pub_cmd_speed_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pub_optimal_path_;
