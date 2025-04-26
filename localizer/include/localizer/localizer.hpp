@@ -13,7 +13,7 @@
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/pose_array.hpp>
 #include <tf2/utils.h>
-#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/transform_broadcaster.h> // broadcaster用
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 #include <random>
@@ -21,6 +21,15 @@
 #include "localizer/odom_model.hpp"
 #include "localizer/particle.hpp"
 #include "localizer/pose.hpp"
+
+// // 構造体
+// struct Particle_struct
+// {
+//     double x_;
+//     double y_;
+//     double yaw_;
+//     double weight_;
+// };
 
 class Localizer : public rclcpp::Node
 {
@@ -41,6 +50,8 @@ class Localizer : public rclcpp::Node
         double norm_rv(const double mean, const double stddev);  // ランダム変数生成関数（正規分布）
         void   resampling(const double alpha);                   // リサンプリング（系統サンプリング）
 
+        double get_median(std::vector<double>& data);
+
         // ----- 関数（引数なし）------
         void   reset_weight();             // パーティクルの重みの初期化
         void   broadcast_odom_state();     // map座標系からみたodom座標系の位置と姿勢をtfでbroadcast
@@ -58,6 +69,9 @@ class Localizer : public rclcpp::Node
         rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr sub_map_;
         rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_odom_;
         rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr sub_laser_;
+            // Nodeで定義したsub_odom_はmsgでなくSubscriptionなので,直接poseにアクセスできない
+            // → コールバック関数でodomのmsgデータ取得した後、他の関数からsub_odom_でそのデータを使えposeにアクセスできるように設定する
+
 
         // Publisher
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pub_estimated_pose_;
@@ -79,6 +93,7 @@ class Localizer : public rclcpp::Node
         double    init_yaw_dev_;       // 初期姿勢の標準偏差 [rad]
         // リセット関連
         double    alpha_th_;           // リセットに関する平均尤度の閾値 [-]
+        // double    marginal_likelihood_th_;
         int       reset_counter = 0;   // 連続リセットの回数 [-]
         int       reset_count_limit_;  // 連続リセットの回数の上限 [-]
         double    expansion_x_dev_;    // 膨張リセットの位置xの標準偏差 [m]
@@ -88,12 +103,14 @@ class Localizer : public rclcpp::Node
         int       laser_step_;         // 何本ずつレーザを見るか [-]
         double    sensor_noise_ratio_; // 距離に対するセンサノイズ比 [-]
 
-        Pose      estimated_pose_;     // 推定位置
+        Pose estimated_pose_;     // 推定位置
         OdomModel odom_model_;         // odometryのモデル
 
         // リスト
         std::vector<Particle> particles_;             // パーティクルクラウド（計算用）
+        // std::vector<Particle> next_particles_;             // リサンプリング用に足したけど使わなかった
         std::vector<double> ignore_angle_range_list_; // 柱に関する角度範囲の配列 [rad]
+        std::vector<int> indexes; // インデックスのリスト
 
         // msg受け取りフラグ
         bool flag_map_     = false;
@@ -124,6 +141,8 @@ class Localizer : public rclcpp::Node
         sensor_msgs::msg::LaserScan     laser_;              // レーザ値
         geometry_msgs::msg::PoseStamped estimated_pose_msg_; // 推定位置
         geometry_msgs::msg::PoseArray   particle_cloud_msg_; // パーティクルクラウド（パブリッシュ用）
+        
+        std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;  // tfのブロードキャスト用に追加した
 };
 
 #endif

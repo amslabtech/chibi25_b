@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="teamb_localizer" exec="teamb_localizer_node" name="teamb_localizer">
+        <param from="src/chibi25_b/localizer/param/params.yaml"/>
+    </node>
+    <node pkg="rviz2" exec="rviz2" name="rviz2"/>
+</launch>
