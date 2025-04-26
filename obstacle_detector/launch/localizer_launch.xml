@@ -1,0 +1,10 @@
+<launch>
+    <!-- node -->
+    <node pkg="teamb_localizer" exec="teamb_localizer_node" name="teamb_localizer_node">
+        <param name="frontal_threshold" value="0.2"/>
+        <param name="base_omega" value="0.6"/>
+    </node>
+
+    <node pkg="urg_node2" exec="urg_node2.launch.py" name="urg_node2.launch.py"/>
+    <node pkg="roomba_500driver_meiji" exec="main500" name="main500"/>
+</launch>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>teamb_obstacle_detector</name>
+  <version>0.0.0</version>
+  <description>The teamb_obstacle_detector package</description>
+  <maintainer email="amsl@todo.todo">amsl</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>ament_cmake_ros</buildtool_depend>
+
+  <depend>ament_cmake_auto</depend>
+  <depend>sensor_msgs</depend>
+  <depend>rclcpp</depend>
+  <!-- <depend>rclcpp_components</depend> -->
+  <!-- <depend>roomba_500driver_meiji</depend> -->
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
