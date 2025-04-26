@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(team_local_goal_creator)
+project(teamb_local_goal_creator)
 
 # find dependencies
 find_package(ament_cmake_auto REQUIRED)
@@ -14,5 +14,6 @@ install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}/
 )
+
 # ヘッダーのインストールや共有ライブラリのエクスポート等を自動で行ってくれる
 ament_auto_package()

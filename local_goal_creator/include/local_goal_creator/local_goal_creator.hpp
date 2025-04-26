@@ -22,7 +22,7 @@ private:
     int hz_;
     int index_step_;
     int goal_index_;
-    double taeget_distance_;
+    double target_distance_;
     bool is_path_ = false;
 
     //　Subscriber
