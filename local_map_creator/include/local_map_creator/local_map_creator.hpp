@@ -1,12 +1,14 @@
 #ifndef LOCAL_MAP_CREATOR_HPP
 #define LOCAL_MAP_CREATOR_HPP
 
+#include <chrono>
 #include <rclcpp/rclcpp.hpp>
 #include <functional>
 #include <memory>
 #include <nav_msgs/msg/occupancy_grid.hpp>
 #include <geometry_msgs/msg/pose_array.hpp>
 #include <geometry_msgs/msg/pose.hpp>
+#include <optional>
 
 class LocalMapCreator : public rclcpp::Node
 {
@@ -30,7 +32,7 @@ class LocalMapCreator : public rclcpp::Node
         void update_map(); // マップの更新
 
         // ----- 変数 -----
-        int    hz_;       // ループ周波数 [Hz]
+        double hz_;       // ループ周波数 [Hz]
         double map_size_; // マップの一辺の長さ [m]
         double map_reso_; // マップの解像度 [m/cell]、1つのセル(グリッド)の一辺の長さ
 
@@ -46,6 +48,9 @@ class LocalMapCreator : public rclcpp::Node
         // 各種オブジェクト
         geometry_msgs::msg::PoseArray obs_poses_; // 障害物のポーズ配列
         nav_msgs::msg::OccupancyGrid  local_map_; // ローカルマップ
+
+        rclcpp::TimerBase::SharedPtr timer_;
+
 };
 
 #endif

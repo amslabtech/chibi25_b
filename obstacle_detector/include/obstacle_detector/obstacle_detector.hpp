@@ -10,8 +10,6 @@
 #include <geometry_msgs/msg/pose_array.hpp>
 #include <math.h>
 
-using namespace std::chrono_literals;
-
 // 座標格納用構造体
 struct points{
   bool exist; // trueなら障害物あり
@@ -34,18 +32,25 @@ class ObstacleDetector : public rclcpp::Node
     void resize_points();   // points配列の長さ決定
     void points_print();    // 障害物情報のprintf
 
+  private:
     // 変数
-    double obs_dist_ = 0.0;
-    int laser_num_ = 0;
-    double ignore_dist_ = 0.0;
+    double obs_dist_;
+    double ignore_dist_;
+    int laser_num_;
+    std::vector<double> angle_bottom_;
+    std::vector<double> angle_top_;
+
+    double hz_;
+    std::string robot_frame_;
+
+    std::vector<points> o_points_;
     std::optional<sensor_msgs::msg::LaserScan> scan_;
 
+    // pub & sub
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;                 // scan SharedPtrは1stに倣って入れた
     rclcpp::Publisher<geometry_msgs::msg::PoseArray>::SharedPtr o_points_pub_;
     rclcpp::TimerBase::SharedPtr timer_;
 
-  private:
-    std::vector<points> o_points_;
 
 
 };

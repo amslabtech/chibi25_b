@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="use_sim_time" default="False"/>
+    <node pkg="rviz2" exec="rviz2" name="rviz2"/>
+    <node pkg="teamb_local_map_creator" exec="teamb_local_map_creator_node" name="teamb_local_map_creator"/>
+    <node pkg="teamb_obstacle_detector" exec="teamb_obstacle_detector_node" name="teamb_obstacle_detector">
+        <param from="src/final_challenge_taguchi/chibi25_b/obstacle_detector/config/obstacle_detector.yaml"/>
+        <!-- <param from="${find teamb_obstacle_detector}/config/obstacle_detector.yaml"/>   -->
+            <!-- 絶対パスを指定しないと動かない -->
+        <param name="use_sim_time" value="$(var use_sim_time)"/>
+    </node>
+</launch>

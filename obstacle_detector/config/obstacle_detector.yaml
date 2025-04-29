@@ -1,15 +1,14 @@
+# config/obstacle_detector.yaml:
 teamb_obstacle_detector:
-ros_parameters:
+  ros__parameters:
 
-hz: ###                   # ループ周期 [Hz]
-laser_step: ###            # 何本ずつレーザを見るか(全1080本)
-robot_frame: "base_link" # frame_id
-obs_dist: 1.5
-laser_num: 1
-ignore_dist: 0.2
+    obs_dist: 10.0             # これ以下を障害物とする
+    ignore_dist: 0.2          # これ以上を障害物とする
+    laser_num: 1              # 何本ずつレーザを見るか(全1080本)   
+    angle_bottom: [0.1, 0.2, 0.3, 0.4]    #まだ
+    angle_top:    [0.1, 0.2, 0.3, 0.4]    #まだ
 
+    hz: 2.0                     # ループ周期 [Hz]
+    robot_frame: "base_link"  # frame_id
 
-
-
-# --- はずれ値対策 ---
-ignore_dist: ######         # はずれ値とみなす距離 [m]
+    use_sim_time: True

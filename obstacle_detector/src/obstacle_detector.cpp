@@ -1,22 +1,41 @@
 #include "obstacle_detector/obstacle_detector.hpp"
 
+using namespace std::chrono_literals;
+
 ObstacleDetector::ObstacleDetector() : Node("teamb_obstacle_detector"){
-    // global変数を定義(yamlファイルからパラメータを読み込めるようにすると，パラメータ調整が楽)
-    obs_dist_ = this->declare_parameter<double>("obs_dist", 5);         // 前方障害物までの距離。これを下回ると障害物として認識する
-    laser_num_ = this->declare_parameter<int>("laser_num", 1);              // とりあえず1を代入。33行目で正しく計算される。
-    ignore_dist_ = this->declare_parameter<double>("ignore_dist", 0.2);     // これを下回った場合は無視する
-    timer_ = this->create_wall_timer(0.5s, std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
+    // global変数の定義
+    this->declare_parameter<double>("obs_dist", 1.0);
+    this->declare_parameter<double>("ignore_dist", 0.1);       // 名前変えたい
+    this->declare_parameter<int>("laser_num", 1);
+    this->declare_parameter<std::vector<double>>("angle_bottom", {0});
+    this->declare_parameter<std::vector<double>>("angle_top", {0});
+
+    this->declare_parameter<double>("hz", 2.0);
+    this->declare_parameter<std::string>("robot_frame", "frm");
+
+
+    // global変数の取得 (yamlファイルからパラメータを取得)
+    this->get_parameter("obs_dist", obs_dist_);
+    this->get_parameter("ignore_dist", ignore_dist_);
+    this->get_parameter("laser_num", laser_num_);
+    this->get_parameter("angle_bottom", angle_bottom_);
+    this->get_parameter("angle_top", angle_top_);
+
+    this->get_parameter("hz", hz_);
+    this->get_parameter("robot_frame", robot_frame_);
+
+
+    // timer_ = this->create_wall_timer(0.5s, std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
+    timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0 / hz_), std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
 
 
     // subscriber
     scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
         "/scan", rclcpp::QoS(1).reliable(), std::bind(&ObstacleDetector::scan_callback, this, std::placeholders::_1));
     
-
     // publisher
     o_points_pub_ = this->create_publisher<geometry_msgs::msg::PoseArray>(
         "/o_points", rclcpp::QoS(1).reliable());
-
 }
 
 //Lidarから障害物の情報を取得
@@ -28,7 +47,7 @@ void ObstacleDetector::scan_callback(const sensor_msgs::msg::LaserScan::SharedPt
 void ObstacleDetector::process(){
     if(!scan_.has_value()){
         // scan_がmsgを受け取っていない場合はエラー
-        RCLCPP_WARN(this->get_logger(), "ERROR Obstacle_detector: No scan data received yet.");
+        RCLCPP_WARN(this->get_logger(), "ERROR Obs_det: No scan data received yet.");
         return;
     }
     scan_obstacle();    
@@ -75,7 +94,7 @@ void ObstacleDetector::scan_obstacle(){
     // ROS2メッセージに変換してpublish
     auto msg = geometry_msgs::msg::PoseArray();
     msg.header.stamp = this->get_clock()->now();
-    msg.header.frame_id = "laser";        // laser 座標系に基づいた表記であることの明示
+    msg.header.frame_id = robot_frame_;        // base_link 座標系に基づいた表記であることの明示
     
     for (const auto &p : o_points_) {
         if (p.exist) {
@@ -89,6 +108,7 @@ void ObstacleDetector::scan_obstacle(){
     }
     o_points_pub_->publish(msg);
     
+    RCLCPP_INFO(this->get_logger(), "OD: published.");
     points_print();     // デバッグ用printf
 
 
@@ -132,3 +152,10 @@ void ObstacleDetector::points_print(){
         }
     }
 }
+
+
+
+
+
+
+

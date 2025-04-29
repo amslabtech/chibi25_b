@@ -1,11 +1,20 @@
 #include "local_map_creator/local_map_creator.hpp"
 
+using namespace std::chrono_literals;
+
 // コンストラクタ
-LocalMapCreator::LocalMapCreator() : Node("local_map_creater"){
+LocalMapCreator::LocalMapCreator() : Node("teamb_local_map_creater"){
+    // global変数の定義
+    this->declare_parameter<double>("hz", 4.0);
+    this->declare_parameter<double>("map_size", 4.0);
+    this->declare_parameter<double>("map_reso", 0.025);
+
     // パラメータの取得(hz, map_size, map_reso)
     this->get_parameter("hz", hz_);
     this->get_parameter("map_size", map_size_);
     this->get_parameter("map_reso", map_reso_);
+    
+    timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0 / hz_), std::bind(&LocalMapCreator::process, this)); // プログラムを動かす間隔。0.5s
 
     // Subscriberの設定
     sub_obs_poses_ = this->create_subscription<geometry_msgs::msg::PoseArray>(
@@ -19,7 +28,7 @@ LocalMapCreator::LocalMapCreator() : Node("local_map_creater"){
     // マップの基本情報(local_map_)を設定する（header, info, data）
     //   header:フレームIDとタイムスタンプ
     local_map_.header.stamp = this -> now();
-    local_map_.header.frame_id = "map";
+    local_map_.header.frame_id = "base_link";
 
     //   info(width, height, position.x, position.y):マップの解析度、サイズ、原点位置など
     local_map_.info.width = static_cast<int>(map_size_ / map_reso_); // グリッド数で表す
@@ -41,6 +50,7 @@ LocalMapCreator::LocalMapCreator() : Node("local_map_creater"){
 void LocalMapCreator::obs_poses_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg){
     obs_poses_ = *msg;
     flag_obs_poses_ = true;     // msgを取得した場合に true を返すことで判定できるようにする
+    // printf("aaa\n");
 }
 
 // 周期処理の実行間隔を取得する
@@ -53,6 +63,10 @@ void LocalMapCreator::process(){
     if (flag_obs_poses_){
         update_map();
         flag_obs_poses_ = false; // またmsgを取得したときコールバックでtrue判定できるようにfalseに戻しておく
+    } else {
+        // obs_poses_がmsgを受け取っていない場合はエラー
+        RCLCPP_WARN(this->get_logger(), "ERROR LMC: No obs data received yet.");
+        return;
     }
 }
 
@@ -64,13 +78,18 @@ void LocalMapCreator::update_map(){
     for (const auto &pose : obs_poses_.poses){
         // 障害物の位置情報
         int index = xy_to_grid_index(pose.position.x, pose.position.y); // (x, y)座標をグリッド数で示す
+        // printf("LMC index = %8d, ", index);
         if (index >= 0 && index < static_cast<int>(local_map_.data.size())) {
             local_map_.data[index] = 100; // 障害物を示す値
+            // printf("local_map_.data[] = %3d, ", local_map_.data[index]);
         }
     }
     local_map_.header.stamp = this->now();
+
     // 更新したマップをpublishする
     pub_local_map_ -> publish(local_map_);
+    RCLCPP_INFO(this->get_logger(), "LMC: published.");
+    printf("PUBLISHED\n");
 }
 
 // マップの初期化(すべて「未知」にする)
