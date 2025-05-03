@@ -9,12 +9,13 @@ LocalMapCreator::LocalMapCreator() : Node("teamb_local_map_creater"){
     this->declare_parameter<double>("map_size", 4.0);
     this->declare_parameter<double>("map_reso", 0.025);
 
-    // パラメータの取得(hz, map_size, map_reso)
+    // パラメータの取得(hz, map_size, map_reso)。今回はyamlファイルを使っていないため、本来は必要ない。
     this->get_parameter("hz", hz_);
     this->get_parameter("map_size", map_size_);
     this->get_parameter("map_reso", map_reso_);
     
-    timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0 / hz_), std::bind(&LocalMapCreator::process, this)); // プログラムを動かす間隔。0.5s
+    // プログラムを動かす間隔。1/Hz
+    timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0 / hz_), std::bind(&LocalMapCreator::process, this));
 
     // Subscriberの設定
     sub_obs_poses_ = this->create_subscription<geometry_msgs::msg::PoseArray>(
@@ -42,7 +43,7 @@ LocalMapCreator::LocalMapCreator() : Node("teamb_local_map_creater"){
     local_map_.info.origin.orientation.z = 0.0;
     local_map_.info.origin.orientation.w = 1.0;
 
-    //   data:実際のマップデータ(local_map_.data[]の0:空き, 100:障害物, -1:未知)
+    // data:実際のマップデータ (local_map_.data[]の0: 空き, 100: 障害物, -1: 未知)
     local_map_.data.resize(local_map_.info.width * local_map_.info.height, -1); // ☆マップの初期化とは違いマップのサイズを確保し、全て未知-1に
 }
 
@@ -50,7 +51,7 @@ LocalMapCreator::LocalMapCreator() : Node("teamb_local_map_creater"){
 void LocalMapCreator::obs_poses_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg){
     obs_poses_ = *msg;
     flag_obs_poses_ = true;     // msgを取得した場合に true を返すことで判定できるようにする
-    // printf("aaa\n");
+    // RCLCPP_INFO(this->get_logger(), "LMC: got msg ----------------------");
 }
 
 // 周期処理の実行間隔を取得する
@@ -63,6 +64,7 @@ void LocalMapCreator::process(){
     if (flag_obs_poses_){
         update_map();
         flag_obs_poses_ = false; // またmsgを取得したときコールバックでtrue判定できるようにfalseに戻しておく
+        RCLCPP_INFO(this->get_logger(), "LMC: Map updated.");
     } else {
         // obs_poses_がmsgを受け取っていない場合はエラー
         RCLCPP_WARN(this->get_logger(), "ERROR LMC: No obs data received yet.");
@@ -70,56 +72,76 @@ void LocalMapCreator::process(){
     }
 }
 
-// 障害物の情報をもとにローカルマップを更新する
+// 障害物の情報をもとにローカルマップをrenewal
 void LocalMapCreator::update_map(){
-    init_map();         // マップを初期化
+    init_map();         // マップのinitialize
 
-    // 障害物の位置を考慮してマップを更新する
-    for (const auto &pose : obs_poses_.poses){
-        // 障害物の位置情報
-        int index = xy_to_grid_index(pose.position.x, pose.position.y); // (x, y)座標をグリッド数で示す
-        // printf("LMC index = %8d, ", index);
-        if (index >= 0 && index < static_cast<int>(local_map_.data.size())) {
-            local_map_.data[index] = 100; // 障害物を示す値
-            // printf("local_map_.data[] = %3d, ", local_map_.data[index]);
+    // 軽量化のため、ここでまとめてdeclarement
+    double obs_x = 0.0;
+    double obs_y = 0.0;
+    double obs_dist  = 0.0;
+    double obs_angle = 0.0;
+    int index = 0;
+
+    // 障害物情報を1度受け取るごとに、msg内の全ての障害物情報をマップにreflect
+    for (const auto &obs_pose : obs_poses_.poses){
+        // 極座標と直交座標へstorage
+        obs_x = obs_pose.position.x;
+        obs_y = obs_pose.position.y;
+        obs_dist  = hypot(obs_x, obs_y);
+        obs_angle = atan2(obs_y, obs_x);
+        printf("x: %5.2f, y: %5.2f, dist: %5.2f, angle: %5.2f\n", obs_x, obs_y, obs_dist, obs_angle);
+
+        // (1度に受け取った障害物点群情報に対し) マップの各グリッド (ピクセル) に対する「空き」か「障害物」のjudgement
+        for(double target_dist = 0.0; (target_dist<obs_dist) && is_in_map(target_dist, obs_angle); target_dist += map_reso_){
+            index = polar_to_grid_index(target_dist, obs_angle);
+            local_map_.data[index] = 0;             // (マップ内外に関わらず) 障害物がある方向全てに "empty"
+            
+            if(is_in_map(obs_dist, obs_angle)) {
+                index = xy_to_grid_index(obs_x, obs_y);
+                local_map_.data[index] = 100;       // 障害物があるグリッドで、かつマップ内なら "obstacle"
+            }
         }
     }
-    local_map_.header.stamp = this->now();
+    local_map_.header.stamp = this->now();  // 不必要？
 
-    // 更新したマップをpublishする
+    // 更新したマップをpublish
     pub_local_map_ -> publish(local_map_);
     RCLCPP_INFO(this->get_logger(), "LMC: published.");
-    printf("PUBLISHED\n");
 }
 
-// マップの初期化(すべて「未知」にする)
+// マップの初期化 (すべてが「未知」になる)
 void LocalMapCreator::init_map(){
     std::fill(local_map_.data.begin(), local_map_.data.end(), -1); // ☆サイズは決まっているから新しく確保せずに内容だけをリセットする
     // fill: local_map_.data[] の local_map_.data.begin() から local_map_.data.end() までの要素をすべて -1 で埋める
 }
 
 // 指定された距離と角度がマップの範囲内か判定する
-bool LocalMapCreator::in_map(const double dist, const double angle){
+bool LocalMapCreator::is_in_map(const double dist, const double angle){
     double x = dist * cos(angle);
     double y = dist * sin(angle);
     if (x >= -map_size_/2.0 && x <= map_size_/2.0 && y >= -map_size_/2.0 && y <= map_size_/2.0) return true;  // マップ内部ならtrue
     else return false;
 }
 
-// 距離と角度からグリッドのインデックスを返す
-int LocalMapCreator::get_grid_index(const double dist, const double angle){
-    if (in_map(dist, angle)) {
-        double x = dist * cos(angle);
-        double y = dist * sin(angle);
-        return xy_to_grid_index(x, y);
+// 極座標からグリッドのインデックスを返す
+int LocalMapCreator::polar_to_grid_index(const double dist, const double angle){
+    if(is_in_map(dist, angle)) {
+        // double x = dist * cos(angle);
+        // double y = dist * sin(angle);
+        return xy_to_grid_index(dist * cos(angle), dist * sin(angle));  // (x座標, y座標)
     } else {
         return -1;
     }
 }
 
-// 座標からグリッドのインデックスを返す
+// 直交座標からグリッドのインデックスを返す
 int LocalMapCreator::xy_to_grid_index(const double x, const double y){
-    int grid_x = static_cast<int>((x + map_size_ / 2.0) / map_reso_);
-    int grid_y = static_cast<int>((y + map_size_ / 2.0) / map_reso_);
-    return grid_y * local_map_.info.width + grid_x;
+    if(is_in_map(hypot(x, y), atan2(y, x))){
+        int grid_x = static_cast<int>((x + map_size_ / 2.0) / map_reso_);
+        int grid_y = static_cast<int>((y + map_size_ / 2.0) / map_reso_);
+        return grid_y * local_map_.info.width + grid_x;
+    } else {
+        return -1;
+    }
 }

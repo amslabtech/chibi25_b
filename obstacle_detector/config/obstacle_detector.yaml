@@ -1,14 +1,17 @@
 # config/obstacle_detector.yaml:
+# 浮動小数点型は小数点以下1桁が0でも少数表記しないとエラーになります
 teamb_obstacle_detector:
   ros__parameters:
 
-    obs_dist: 10.0             # これ以下を障害物とする
+    obs_dist: 30.0             # これ以下を障害物とする
     ignore_dist: 0.2          # これ以上を障害物とする
     laser_num: 1              # 何本ずつレーザを見るか(全1080本)   
-    angle_bottom: [0.1, 0.2, 0.3, 0.4]    #まだ
-    angle_top:    [0.1, 0.2, 0.3, 0.4]    #まだ
+    # angle_bottom: [-2.36, -0.95, 0.65, 2.17]    #Excelによる参考値
+    # angle_top:    [-2.20, -0.36, 1.18, 2.37]    #Excelによる参考値
+    angle_bottom: [-2.36, -0.90, 0.80, 2.17]
+    angle_top:    [-2.20, -0.47, 1.27, 2.37]
 
-    hz: 2.0                     # ループ周期 [Hz]
+    hz: 10.0                     # ループ周期 [Hz]
     robot_frame: "base_link"  # frame_id
 
     use_sim_time: True

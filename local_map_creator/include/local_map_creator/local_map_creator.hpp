@@ -19,12 +19,9 @@ class LocalMapCreator : public rclcpp::Node
 
     private:
         // ----- 関数（引数あり) ------
-        // コールバック関数
-        void obs_poses_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg);
-
-        // その他の関数
-        bool in_map(const double dist, const double angle);         // マップ内か判断
-        int  get_grid_index(const double dist, const double angle); // グリッドのインデックスを返す
+        void obs_poses_callback(const geometry_msgs::msg::PoseArray::SharedPtr msg);  // コールバック関数
+        bool is_in_map(const double dist, const double angle);         // マップ内か判断
+        int  polar_to_grid_index(const double dist, const double angle); // グリッドのインデックスを返す
         int  xy_to_grid_index(const double x, const double y);      // グリッドのインデックスを返す
 
         // ----- 関数（引数なし）-----

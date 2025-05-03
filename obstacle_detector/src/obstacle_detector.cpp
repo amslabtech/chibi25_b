@@ -4,13 +4,13 @@ using namespace std::chrono_literals;
 
 ObstacleDetector::ObstacleDetector() : Node("teamb_obstacle_detector"){
     // global変数の定義
-    this->declare_parameter<double>("obs_dist", 1.0);
-    this->declare_parameter<double>("ignore_dist", 0.1);       // 名前変えたい
+    this->declare_parameter<double>("obs_dist", 30.0);
+    this->declare_parameter<double>("ignore_dist", 0.2);       // 名前変えたい
     this->declare_parameter<int>("laser_num", 1);
-    this->declare_parameter<std::vector<double>>("angle_bottom", {0});
-    this->declare_parameter<std::vector<double>>("angle_top", {0});
+    this->declare_parameter<std::vector<double>>("angle_bottom", {-2.36, -0.90, 0.80, 2.17});
+    this->declare_parameter<std::vector<double>>("angle_top",    {-2.20, -0.47, 1.27, 2.37});
 
-    this->declare_parameter<double>("hz", 2.0);
+    this->declare_parameter<double>("hz", 10.0);
     this->declare_parameter<std::string>("robot_frame", "frm");
 
 
@@ -24,10 +24,9 @@ ObstacleDetector::ObstacleDetector() : Node("teamb_obstacle_detector"){
     this->get_parameter("hz", hz_);
     this->get_parameter("robot_frame", robot_frame_);
 
-
-    // timer_ = this->create_wall_timer(0.5s, std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
-    timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0 / hz_), std::bind(&ObstacleDetector::process, this)); // プログラムを動かす間隔。0.5s
-
+    // プログラムを動かす間隔。
+    timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0 / hz_), 
+        std::bind(&ObstacleDetector::process, this)); 
 
     // subscriber
     scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
@@ -57,7 +56,7 @@ void ObstacleDetector::process(){
 void ObstacleDetector::scan_obstacle(){
     laser_num_ = (scan_.value().angle_max - scan_.value().angle_min) / scan_.value().angle_increment;    // 測距レーザの本数
     int central_num = laser_num_ / 2;        // 中心レーザの番号。このレーザの角度 = 0 rad
-    double min_angle = 0 - central_num * scan_.value().angle_increment;  // angle_minの角度 [rad]。Roombaの3時方向? を0とする。
+    double min_angle = 0 - central_num * scan_.value().angle_increment;  // angle_minの角度 [rad]。Roombaの正面を0、反時計回りに正。
         // laser_numとcentral_num、min_angleはLiDARの仕様により固定のはずなので、値が確かめられたら数式を消してもよい
 
     std::vector<double> obs_ranges(laser_num_, 0.0);       // 各レーザによる測定値格納用配列
@@ -72,7 +71,7 @@ void ObstacleDetector::scan_obstacle(){
     // 障害物情報配列への格納
     for(int i=0; i<laser_num_; i++){
         if(obs_ranges[i] < ignore_dist_) {
-            // 検知物までの距離がignore_dist_未満の場合 (0.2m以下の場合) は障害物でないとする
+            // 検知物までの距離がignore_dist_未満の場合は障害物でないとする
             o_points_[i] = {false, 0, 0, 0, 0};
 
         } else if(obs_ranges[i] < obs_dist_ && !is_ignore_scan(obs_angles[i])) {
@@ -88,13 +87,11 @@ void ObstacleDetector::scan_obstacle(){
             o_points_[i] = {false, 0, 0, 0, 0};
         }
     }
-    // 前後の点から1つだけ大きく離れた値の場合外れ値とみなす(.existをfalseにする)処理？
-    // .existがtrueになっている点を全てpublishするのではなく、連続している点群を1つの情報としてpublishする方針でもいいかもしれない
 
     // ROS2メッセージに変換してpublish
     auto msg = geometry_msgs::msg::PoseArray();
     msg.header.stamp = this->get_clock()->now();
-    msg.header.frame_id = robot_frame_;        // base_link 座標系に基づいた表記であることの明示
+    msg.header.frame_id = robot_frame_;        // robot_frame_ (base_link) 座標系に基づいた表記であることの明示
     
     for (const auto &p : o_points_) {
         if (p.exist) {
@@ -102,18 +99,15 @@ void ObstacleDetector::scan_obstacle(){
             pose.position.x = p.x;
             pose.position.y = p.y;
             pose.position.z = 0.0;
-            // orientation は使わないのでデフォルト（0）でも良い
             msg.poses.push_back(pose);
         }
     }
     o_points_pub_->publish(msg);
     
     RCLCPP_INFO(this->get_logger(), "OD: published.");
-    points_print();     // デバッグ用printf
-
+    // points_print();     // デバッグ用printf
 
     /*
-    障害物の座標を格納するmsgについて
     構造体 o_points_ (points型)の宣言：
         struct points{
             bool exist; // trueなら障害物あり
@@ -131,11 +125,13 @@ bool ObstacleDetector::is_ignore_scan(double angle){
     // ignoreする場合 (柱である場合) にtrueを返す
     // 柱の角度はExcelで調べました。データはGoogleドライブ参照
 
-    double pillar_B[4] = {-0.79-M_PI/2, 0.62-M_PI/2, 2.23-M_PI/2, 3.74-M_PI/2};    // 各柱の角度領域の下端。[rad]
-    double pillar_T[4] = {-0.63-M_PI/2, 1.21-M_PI/2, 2.75-M_PI/2, 3.94-M_PI/2};    // 各柱の角度領域の上端。[rad]
+    // double pillar_B[4] = {-0.79-M_PI/2, 0.62-M_PI/2, 2.23-M_PI/2, 3.74-M_PI/2};    // 各柱の角度領域の下端。[rad]
+    // double pillar_T[4] = {-0.63-M_PI/2, 1.21-M_PI/2, 2.75-M_PI/2, 3.94-M_PI/2};    // 各柱の角度領域の上端。[rad]
+    // double pillar_B[4] = {-2.36, -0.95, 0.65, 2.17};
+    // double pillar_T[4] = {-2.20, -0.36, 1.18, 2.37};
 
-
-    for(int i=0; i<4; i++) if(pillar_B[i] < angle && angle < pillar_T[i])  return true;
+    // for(int i=0; i<4; i++) if(pillar_B[i] < angle && angle < pillar_T[i])  return true;
+    for(int i=0; i<4; i++) if(angle_bottom_[i] < angle && angle < angle_top_[i])  return true;
     return false;
 }
 
@@ -152,10 +148,4 @@ void ObstacleDetector::points_print(){
         }
     }
 }
-
-
-
-
-
-
 
